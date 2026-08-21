@@ -51,7 +51,7 @@ function Refresh-ProcessPath {
     $env:Path = $entries -join ";"
 }
 
-function Test-PythonAvailable {
+function Get-PythonCommand {
     foreach ($name in @("py.exe", "python.exe")) {
         foreach ($command in @(Get-Command $name -All -ErrorAction SilentlyContinue)) {
             if (-not $command.Source) { continue }
@@ -60,7 +60,7 @@ function Test-PythonAvailable {
                 $ErrorActionPreference = "Continue"
                 $global:LASTEXITCODE = $null
                 & $command.Source --version *> $null
-                if ($LASTEXITCODE -eq 0) { return $true }
+                if ($LASTEXITCODE -eq 0) { return $command.Source }
             } catch {
             } finally {
                 $ErrorActionPreference = $previousErrorActionPreference
@@ -68,7 +68,11 @@ function Test-PythonAvailable {
             }
         }
     }
-    return $false
+    return $null
+}
+
+function Test-PythonAvailable {
+    return -not [string]::IsNullOrWhiteSpace((Get-PythonCommand))
 }
 
 function Install-WingetPackage([string]$Id) {
@@ -104,12 +108,36 @@ function Ensure-Python {
     }
 }
 
+function Install-PythonRequirements {
+    $requirements = Join-Path $SourceRoot "requirements-windows.txt"
+    if (-not (Test-Path -LiteralPath $requirements -PathType Leaf)) {
+        throw "The release ZIP is missing requirements-windows.txt."
+    }
+    $python = Get-PythonCommand
+    if (-not $python) { throw "A working Python command was not found." }
+    Write-Step "Installing the plugin's Python requirements."
+    $previousErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        $global:LASTEXITCODE = $null
+        & $python -m pip install --disable-pip-version-check --quiet --requirement $requirements
+        $exitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+        $global:LASTEXITCODE = 0
+    }
+    if ($null -eq $exitCode -or $exitCode -ne 0) {
+        throw "The plugin's Python requirements could not be installed (exit code $exitCode)."
+    }
+}
+
 function Test-PluginTree([string]$Root) {
     $marketplace = Join-Path $Root ".agents\plugins\marketplace.json"
     $manifest = Join-Path $Root "plugins\$PluginName\.codex-plugin\plugin.json"
     $skill = Join-Path $Root "plugins\$PluginName\skills\$PluginName\SKILL.md"
     $updater = Join-Path $Root "scripts\update-windows.ps1"
-    return ((Test-Path -LiteralPath $marketplace) -and (Test-Path -LiteralPath $manifest) -and (Test-Path -LiteralPath $skill) -and (Test-Path -LiteralPath $updater))
+    $requirements = Join-Path $Root "requirements-windows.txt"
+    return ((Test-Path -LiteralPath $marketplace) -and (Test-Path -LiteralPath $manifest) -and (Test-Path -LiteralPath $skill) -and (Test-Path -LiteralPath $updater) -and (Test-Path -LiteralPath $requirements))
 }
 
 function Test-CodexExecutable([string]$Candidate) {
@@ -261,7 +289,7 @@ function Copy-ManagedTree {
             }
             Copy-Item -LiteralPath $source -Destination $staging -Recurse -Force
         }
-        foreach ($file in @("README.md", "INSTALL-WINDOWS.cmd", "install-from-download-windows.ps1")) {
+        foreach ($file in @("README.md", "INSTALL-WINDOWS.cmd", "install-from-download-windows.ps1", "requirements-windows.txt")) {
             $source = Join-Path $SourceRoot $file
             if (Test-Path -LiteralPath $source -PathType Leaf) {
                 Copy-Item -LiteralPath $source -Destination $staging -Force
@@ -369,6 +397,7 @@ function Register-AutoUpdate {
 function Install-DownloadedPlugin {
     Write-Step "Installing the managed plugin without changing the ChatGPT app or Git."
     Ensure-Python
+    Install-PythonRequirements
 
     if ($env:CODEX_HOME -and -not (Test-Path -LiteralPath $env:CODEX_HOME)) {
         New-Item -ItemType Directory -Path $env:CODEX_HOME -Force | Out-Null

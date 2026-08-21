@@ -37,6 +37,7 @@ def main() -> int:
     required = [
         ROOT / "INSTALL-WINDOWS.cmd",
         ROOT / "install-from-download-windows.ps1",
+        ROOT / "requirements-windows.txt",
         ROOT / "scripts" / "apply-local-edits-windows.ps1",
         ROOT / "scripts" / "update-windows.ps1",
         ROOT / ".github" / "workflows" / "windows-install.yml",
@@ -68,6 +69,7 @@ def main() -> int:
     require("DestinationPath $expanded -Force" not in launcher, "bootstrap must not use Expand-Archive -Force")
     require("function Remove-TempDirectoryBestEffort" in installer, "nonfatal cleanup helper is missing")
     require("Test-PythonAvailable" in installer and "Python.Python.3.14" in installer, "Python alias-safe dependency handling is missing")
+    require("Install-PythonRequirements" in installer and "requirements-windows.txt" in installer, "plugin Python dependency installation is missing")
     require("plugin --help" in installer, "functional Codex CLI probe is missing")
     require("https://chatgpt.com/codex/install.ps1" in installer, "official Codex installer fallback is missing")
     require("Get-AppxPackage" not in installer and '-Filter "codex.exe"' not in installer, "protected Appx Codex discovery must not be used")
