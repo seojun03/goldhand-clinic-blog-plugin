@@ -29,7 +29,7 @@ if exist "%LOCAL_INSTALLER%" (
     "  };" ^
     "  $expanded = Join-Path $tempRoot 'x';" ^
     "  Expand-Archive -LiteralPath $archive -DestinationPath $expanded;" ^
-    "  $installer = Get-ChildItem -LiteralPath $expanded -Filter 'install-from-download-windows.ps1' -File -Recurse ^| Select-Object -First 1;" ^
+    "  $installer = Get-ChildItem -LiteralPath $expanded -Filter 'install-from-download-windows.ps1' -File -Recurse | Select-Object -First 1;" ^
     "  if (-not $installer) { throw 'Downloaded ZIP is missing install-from-download-windows.ps1.' };" ^
     "  $installer = $installer.FullName;" ^
     "  & $installer;" ^
