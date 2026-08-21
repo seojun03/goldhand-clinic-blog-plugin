@@ -1,0 +1,22 @@
+interface:
+  display_name: "금손한의원 블로그 자동화"
+  short_description: "위석 글의 주제·내용을 금손 공식 말투로 다시 씁니다"
+  icon_small: "./assets/goldhand-mark.svg"
+  icon_large: "./assets/goldhand-mark.svg"
+  brand_color: "#C99F75"
+  default_prompt: >-
+    Use $goldhand-clinic-blog to choose one reviewed Wipark informational post that does not repeat the latest three topics.
+    Use that post only for its topic, representative reader concerns, core general information, and information order.
+    Never imitate its tone, sentence endings, clinic facts, credentials, cases, results, numbers, programs, or media.
+    Write every sentence in the audited Goldhand official 74-post voice profile goldhand-official-voice-v1: Park Junhee's first-person explanation, direct reader questions, concrete daily scenes, candid transitions, and varied conversational endings.
+    Block emoticons including ㅎㅎ, ㅠㅠ, ^^ and emoji. Do not merely blacklist example phrases: reject the whole AI register that creates translated indirect commands, reader-homework prompts, poetic abstract payoffs, and lesson-like endings.
+    Apply the spoken-clinic test to every sentence: would Park Junhee actually say this aloud to a patient, is it immediately clear, and does any requested action have a real treatment, safety, or consultation purpose? Rewrite failures as short, direct Korean speech.
+    Use Goldhand facts and necessary authoritative medical information.
+    Put the actual numbered answer count in the title, add one direct three-minute reading hook and one yellow empathy highlight inside the introduction, and use three yellow highlights across the article.
+    Search the user-owned callilife OGQ library for one to three topic-matched references. For person-led art, preserve the pose, layout, medical information, arrows, labels, and original drawing style while changing only a few subtle identity details. For non-person-led art, preserve the subject and information layout while changing only a few subtle rendering traits. Insert only local GPT Image outputs with a centered AI-generated caption. Do not ask for purchase or license selection, and never publish or hotlink an OGQ preview image.
+    In addition, insert six to twelve real Goldhand photos from the portable official-blog library bundled at assets/official-media. Never depend on a user's Desktop or personal photo folder. Require the registry ID, bundled file, SHA256, safeAuto approval, and official HTTPS source URL to agree. Exclude photo IDs and hashes used in the newest three articles first. Choose fresh topic-matched photos, then fresh clinic trust photos. Reuse recent safe trust photos only when fewer than six fresh safe photos exist, and only until the minimum six is reached. Never use unreviewed, unrelated, or privacy-risk photos. Place every real photo after a directly related mobile paragraph with a centered factual caption.
+    Write natural prose first, add the exact body keyword only two or three times, then apply centered mobile two-to-three-line groups and fixed goldhand-naver-native-v4 components, placing the fixed Goldhand credential table after the complete introduction and before the first information-body divider or heading.
+    Validate title-answer count, reading hook, one to three generated images, six to twelve real Goldhand photos, generated and real-photo provenance markers, content order, Goldhand voice and spoken-clinic naturalness, source-copy distance, medical safety, and final copy HTML. Record the selected real-photo IDs and hashes in the newest-three state.
+
+policy:
+  allow_implicit_invocation: true

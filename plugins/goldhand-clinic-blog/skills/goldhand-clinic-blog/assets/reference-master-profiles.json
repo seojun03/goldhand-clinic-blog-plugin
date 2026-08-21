@@ -1,0 +1,5888 @@
+{
+  "schemaVersion": 4,
+  "sourceBlogId": "wi-parkclinic",
+  "cutoffInclusive": "2024-10-04",
+  "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+  "allowedMasterIds": [
+    "INFO01",
+    "INFO03",
+    "INFO04",
+    "INFO05",
+    "INFO06",
+    "INFO07",
+    "INFO08",
+    "INFO09",
+    "INFO10",
+    "INFO11",
+    "INFO12"
+  ],
+  "sourceFactsBlocked": true,
+  "sourceToneBlocked": true,
+  "topicAndContentAuthority": "wi-parkclinic-reviewed-11-posts",
+  "voiceAuthority": "goldhand-official-voice-v1",
+  "profiles": {
+    "INFO03": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224337414108",
+      "sourceTitle": "전남광주 광산구 구안와사, 25년 경력 한의사가 답하는 질문 2가지",
+      "publishedAt": "2026-07-05",
+      "autoEligible": true,
+      "selectionTags": [
+        "질문 2가지",
+        "갑작스러운 증상",
+        "언제 검사",
+        "치료 병행",
+        "안전 기준"
+      ],
+      "bestFor": "환자의 두 가지 핵심 질문에 각각 직접 답하고 다른 검사·기관이 먼저인 경우를 밝힐 때",
+      "writingContract": {
+        "hook": "긴급성과 치료 가능성에 관한 질문 두 개를 글 맨 앞에 배치",
+        "contentProgress": "결론부터 답한 뒤 이유·예외·병행 판단을 한 질문씩 깊게 설명",
+        "close": "두 답을 다시 정리하고 불안한 독자에게 다음 판단을 건넴",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "갑작스러운 안면마비 의심 증상의 초기 판단과 치료 병행",
+        "readerConcerns": [
+          "갑자기 입이 돌아갔을 때 바로 진료가 필요한지",
+          "한방 치료만으로 충분한지"
+        ],
+        "orderedGeneralInformation": [
+          "갑작스러운 얼굴 마비는 중추성과 말초성을 먼저 구분해야 한다.",
+          "팔·다리 힘 빠짐이나 말 어눌함 같은 증상이 동반되면 응급 평가가 우선이다.",
+          "말초성 안면마비도 초기 평가와 치료 시기를 놓치지 않는 것이 중요하다.",
+          "침·한약 등 한방 치료는 현재 상태와 다른 치료의 필요성을 함께 판단해 선택한다."
+        ],
+        "blockedFromSource": [
+          "특정 회복 기간·회복률",
+          "WHO 인정 문구를 근거 확인 없이 재사용",
+          "침과 한약이 가장 효과적이라는 단정"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 1778,
+            "paragraphCount": 31,
+            "medianParagraphChars": 44,
+            "maxParagraphChars": 137,
+            "sentenceCount": 38,
+            "questionCount": 7
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 56,
+          "#1f2937": 7
+        },
+        "backgroundColors": {
+          "#f1f1f1": 2,
+          "#ffffff": 8,
+          "#ffff66": 4
+        },
+        "alignmentCounts": {
+          "default": 15,
+          "left": 2,
+          "center": 1
+        },
+        "componentCounts": {
+          "quotation": 2,
+          "image": 3,
+          "text": 8,
+          "table": 1,
+          "horizontalLine": 3,
+          "imageGroup": 1
+        },
+        "fontSizeClasses": {
+          "fs19": 3
+        },
+        "boldCount": 9,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 29,
+          "sentenceCount": 2,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 27,
+          "sentenceCount": 2,
+          "questionCount": 2,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 6,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "left",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 228,
+          "sentenceCount": 5,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 6
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 119,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 8
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "credential-proof"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 25,
+          "sentenceCount": 2,
+          "questionCount": 2,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 2,
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 8,
+          "charCount": 604,
+          "sentenceCount": 10,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 16,
+            "#1f2937": 3
+          },
+          "backgroundColors": {
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 6,
+          "charCount": 436,
+          "sentenceCount": 10,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 13,
+            "#1f2937": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 128,
+          "sentenceCount": 2,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 4,
+            "#1f2937": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 4,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "left",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 12,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1,
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 170,
+          "sentenceCount": 5,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 7
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "neutral-close"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "before-greeting",
+        "openingMode": "two-quotation-components",
+        "solutionPreviewMode": "greeting-and-preview",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO01": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224320052203",
+      "sourceTitle": "일자목 거북목, 추나요법 받아도 소용없는 직장인 특징 2가지",
+      "publishedAt": "2026-06-18",
+      "autoEligible": true,
+      "selectionTags": [
+        "치료받아도 소용없는 특징",
+        "생활습관",
+        "치료 지속",
+        "직장인",
+        "2가지"
+      ],
+      "bestFor": "치료만 반복해도 변화가 더딘 이유와 생활 조건 두 가지를 설명할 때",
+      "writingContract": {
+        "hook": "독자가 품을 수 있는 치료 효과 질문 두 개를 연속 인용",
+        "contentProgress": "솔직한 한계를 먼저 인정한 뒤 특징·생활 조건·치료 선택을 구체적으로 설명",
+        "close": "두 특징을 다시 확인시키고 치료와 생활관리의 공동 역할로 마무리",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "추나요법이나 통증 치료를 받아도 변화가 더딘 생활 조건",
+        "readerConcerns": [
+          "치료를 받아도 다시 아픈 이유",
+          "직장 생활을 하면서도 관리할 수 있는지"
+        ],
+        "orderedGeneralInformation": [
+          "짧은 기간의 반응만 보고 치료를 중단하면 경과를 다시 판단하기 어렵다.",
+          "치료 뒤에도 모니터 높이·스마트폰 자세·오래 앉는 습관이 그대로면 같은 부위에 부담이 반복될 수 있다.",
+          "일자목·거북목은 뼈의 배열만이 아니라 주변 근육의 긴장과 움직임을 함께 봐야 한다.",
+          "치료와 생활 습관 조정이 같이 가야 한다."
+        ],
+        "blockedFromSource": [
+          "최소 4주 치료 단정",
+          "치료 효과 2배·3개월 변화 보장",
+          "약침 병행이 반드시 필요하다는 단정"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 1708,
+            "paragraphCount": 32,
+            "medianParagraphChars": 47.0,
+            "maxParagraphChars": 128,
+            "sentenceCount": 43,
+            "questionCount": 6
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 39,
+          "#1f2937": 13
+        },
+        "backgroundColors": {
+          "#ffff66": 10,
+          "#f1f1f1": 2,
+          "#ffffff": 9
+        },
+        "alignmentCounts": {
+          "default": 18,
+          "center": 2
+        },
+        "componentCounts": {
+          "quotation": 2,
+          "text": 9,
+          "table": 1,
+          "imageGroup": 4,
+          "horizontalLine": 3,
+          "image": 1
+        },
+        "fontSizeClasses": {
+          "fs19": 3
+        },
+        "boldCount": 15,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 16,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 20,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 253,
+          "sentenceCount": 7,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 6,
+            "#1f2937": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 125,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 9
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "credential-proof"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 18,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 273,
+          "sentenceCount": 8,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 5,
+            "#1f2937": 2
+          },
+          "backgroundColors": {
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {},
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 200,
+          "sentenceCount": 5,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 4,
+            "#1f2937": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 15,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 337,
+          "sentenceCount": 8,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 7,
+            "#1f2937": 3
+          },
+          "backgroundColors": {
+            "#ffff66": 3
+          },
+          "fontSizeClasses": {},
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 72,
+          "sentenceCount": 3,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1,
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 271,
+          "sentenceCount": 7,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 3,
+            "#374151": 6
+          },
+          "backgroundColors": {
+            "#ffff66": 3
+          },
+          "fontSizeClasses": {},
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "recap"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 108,
+          "sentenceCount": 4,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 3
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "neutral-close"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "before-greeting",
+        "openingMode": "two-quotation-components",
+        "solutionPreviewMode": "greeting-and-preview",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO09": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224314708696",
+      "sourceTitle": "위고비와 마운자로 이후, 25년 차 한의사가 말하는 주의사항 2가지",
+      "publishedAt": "2026-06-13",
+      "autoEligible": true,
+      "selectionTags": [
+        "주의사항 2가지",
+        "중단 이후",
+        "요요",
+        "생활 변화",
+        "유지 조건"
+      ],
+      "bestFor": "치료·관리 중단 뒤 생길 수 있는 변화와 이후 유지 조건 두 가지를 설명할 때",
+      "writingContract": {
+        "hook": "중단 뒤 다시 문제가 생길지와 유지 방법에 관한 질문 두 개를 연속 인용",
+        "contentProgress": "독자의 불안을 구체화한 뒤 변화가 생기는 이유와 두 가지 주의점을 차례로 설명",
+        "close": "두 주의점을 다시 묶고 개인 상태와 생활 조건을 함께 확인하라는 판단으로 끝냄",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "위고비·마운자로 중단 뒤 체중을 유지할 때 살필 점",
+        "readerConcerns": [
+          "중단 뒤 식욕과 체중이 다시 늘 수 있는지",
+          "주사 없이 체중을 유지하려면 무엇을 해야 하는지"
+        ],
+        "orderedGeneralInformation": [
+          "중단 뒤 식욕과 체중 변화가 생길 수 있어 처방 의료진과 전환 계획을 상의한다.",
+          "주사를 사용하는 동안 식사량만 줄인 경우 생활 습관이 그대로 남아 있을 수 있다.",
+          "식사·근력운동·수면·체중 기록을 함께 보며 유지 가능한 방식을 만든다.",
+          "임의로 중단하거나 한방 식욕억제제로 대체한다고 쓰지 않는다."
+        ],
+        "blockedFromSource": [
+          "중단하면 높은 확률로 요요가 온다는 수치 단정",
+          "한방 식욕억제환 권유",
+          "감량·혈당·콜레스테롤 성과 사례"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 2061,
+            "paragraphCount": 36,
+            "medianParagraphChars": 52.5,
+            "maxParagraphChars": 137,
+            "sentenceCount": 45,
+            "questionCount": 4
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 62,
+          "#1f2937": 17,
+          "#e9eced": 3
+        },
+        "backgroundColors": {
+          "#ffef34": 6,
+          "#f1f1f1": 2,
+          "#ffffff": 9,
+          "#ffff66": 7
+        },
+        "alignmentCounts": {
+          "center": 3,
+          "default": 15
+        },
+        "componentCounts": {
+          "image": 3,
+          "quotation": 2,
+          "text": 7,
+          "table": 1,
+          "horizontalLine": 4,
+          "imageGroup": 1
+        },
+        "fontSizeClasses": {
+          "fs19": 4
+        },
+        "boldCount": 17,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 15,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 20,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 258,
+          "sentenceCount": 7,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 8
+          },
+          "backgroundColors": {
+            "#ffef34": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 110,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 9
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "credential-proof"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 20,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 2
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 2
+          },
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 8,
+          "charCount": 582,
+          "sentenceCount": 12,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 16,
+            "#1f2937": 4
+          },
+          "backgroundColors": {
+            "#ffef34": 1,
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 4,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 8,
+          "charCount": 682,
+          "sentenceCount": 14,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 24,
+            "#1f2937": 6
+          },
+          "backgroundColors": {
+            "#ffef34": 4,
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {},
+          "boldCount": 6,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 8,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 16,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#e9eced": 2,
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 221,
+          "sentenceCount": 5,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 6,
+            "#1f2937": 4,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 3
+          },
+          "fontSizeClasses": {},
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "recap"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 137,
+          "sentenceCount": 5,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "neutral-close"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 1,
+          "charCount": 12,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "before-greeting",
+        "openingMode": "lead-image-then-two-quotations",
+        "solutionPreviewMode": "greeting-and-preview",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO08": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224307070715",
+      "sourceTitle": "여름철 보약, 25년 경력 한의사가 말하는 시기 2가지",
+      "publishedAt": "2026-06-05",
+      "autoEligible": true,
+      "selectionTags": [
+        "시기 2가지",
+        "보약",
+        "예방",
+        "회복",
+        "체질 차이"
+      ],
+      "bestFor": "같은 관리도 시작 시점과 몸 상태에 따라 달라지는 두 경우를 비교할 때",
+      "writingContract": {
+        "hook": "언제 시작해야 하는지에 관한 상반된 질문 두 개를 제시",
+        "contentProgress": "첫 시기와 둘째 시기를 각각 대상·이유·차이로 설명하고 예외를 덧붙임",
+        "close": "두 시기는 일반 기준일 뿐이라는 한계를 밝히고 개인 상태 확인으로 끝냄",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "여름철 보약을 생각할 수 있는 두 시기와 몸 상태",
+        "readerConcerns": [
+          "더위 전에 미리 먹어야 하는지",
+          "기력이 떨어진 뒤 먹어도 되는지"
+        ],
+        "orderedGeneralInformation": [
+          "더위 전에 쉽게 지치는 사람은 소화·수면·평소 체력을 먼저 본다.",
+          "한여름 이후 기력이 떨어진 사람은 땀·식욕·수면·회복 상태를 함께 본다.",
+          "같은 보약이라도 시작 시점보다 현재 몸 상태가 처방을 결정한다.",
+          "특정 달을 모든 사람에게 같은 복용 시기로 권하지 않는다."
+        ],
+        "blockedFromSource": [
+          "6월 중순·7월 하순을 보편적 정답으로 고정",
+          "복용 후 2~3주 효과 단정",
+          "체질별 약재를 원문 그대로 처방"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 1730,
+            "paragraphCount": 33,
+            "medianParagraphChars": 43,
+            "maxParagraphChars": 111,
+            "sentenceCount": 38,
+            "questionCount": 3
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 45,
+          "#1f2937": 39,
+          "#e9eced": 3
+        },
+        "backgroundColors": {
+          "#ffff66": 10,
+          "#f1f1f1": 2,
+          "#ffffff": 10
+        },
+        "alignmentCounts": {
+          "default": 25,
+          "center": 1
+        },
+        "componentCounts": {
+          "text": 13,
+          "quotation": 2,
+          "imageGroup": 4,
+          "table": 1,
+          "horizontalLine": 5,
+          "image": 1
+        },
+        "fontSizeClasses": {
+          "fs19": 81
+        },
+        "boldCount": 83,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 49,
+          "sentenceCount": 2,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1,
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 2
+          },
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 35,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "quotation"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 32,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "quotation"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 126,
+          "sentenceCount": 3,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 4,
+            "#1f2937": 3
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {
+            "fs19": 7
+          },
+          "boldCount": 7,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 105,
+          "sentenceCount": 2,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#e9eced": 1,
+            "#374151": 2
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 3
+          },
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 6,
+          "charCount": 140,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 6
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 10
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "credential-proof"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 19,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#e9eced": 1,
+            "#1f2937": 2
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 3
+          },
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 148,
+          "sentenceCount": 4,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 5,
+            "#374151": 4
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {
+            "fs19": 9
+          },
+          "boldCount": 9,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 217,
+          "sentenceCount": 5,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 6,
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {
+            "fs19": 11
+          },
+          "boldCount": 11,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 22,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 3
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 3
+          },
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 7,
+          "charCount": 403,
+          "sentenceCount": 10,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 12,
+            "#374151": 12
+          },
+          "backgroundColors": {
+            "#ffff66": 5
+          },
+          "fontSizeClasses": {
+            "fs19": 24
+          },
+          "boldCount": 24,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 119,
+          "sentenceCount": 3,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 2,
+            "#1f2937": 2,
+            "#e9eced": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 5
+          },
+          "boldCount": 5,
+          "underlineCount": 0,
+          "role": "recap"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 315,
+          "sentenceCount": 7,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 5,
+            "#374151": 7
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {
+            "fs19": 12
+          },
+          "boldCount": 12,
+          "underlineCount": 0,
+          "role": "neutral-close"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "after-greeting",
+        "openingMode": "greeting-then-two-quotations",
+        "solutionPreviewMode": "knowledge-gap-then-preview",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO04": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224291545650",
+      "sourceTitle": "공황장애·불면증 한방 치료, 효과 보는 사람 vs 못 보는 사람",
+      "publishedAt": "2026-05-20",
+      "autoEligible": true,
+      "selectionTags": [
+        "효과 보는 사람",
+        "못 보는 사람",
+        "비교",
+        "공통점",
+        "자가 점검"
+      ],
+      "bestFor": "같은 관리에도 반응이 다른 조건을 비교하고 자신에게 맞는지 구분하게 할 때",
+      "writingContract": {
+        "hook": "치료 가능성과 중단 후 재발 걱정을 연속 질문으로 제시",
+        "contentProgress": "반응 차이의 공통 조건을 설명하고 자가 점검 항목과 적용 한계를 함께 제시",
+        "close": "누구에게나 같은 결과가 아님을 밝히고 상태 파악의 필요성을 회수",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "공황·불면 관리에서 반응 차이를 만드는 상태 구분",
+        "readerConcerns": [
+          "한의원 치료가 자신에게 맞는지",
+          "약을 줄이거나 끊으면 다시 힘들어질지"
+        ],
+        "orderedGeneralInformation": [
+          "증상 기간·현재 복용약·수면 양상·신체 증상을 먼저 확인한다.",
+          "가슴 답답함·두근거림·소화불량 같은 신체 반응이 함께 나타나는지 살핀다.",
+          "치료 반응은 사람마다 다르며 한 가지 치료만으로 판단하지 않는다.",
+          "필요하면 정신건강의학과 치료와 병행하거나 다른 평가를 먼저 한다."
+        ],
+        "blockedFromSource": [
+          "EFT 적합도 체크리스트와 횟수",
+          "약 중단 사례",
+          "특정 치료 반응 수치"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 1909,
+            "paragraphCount": 47,
+            "medianParagraphChars": 32,
+            "maxParagraphChars": 106,
+            "sentenceCount": 41,
+            "questionCount": 5
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 54,
+          "#e9eced": 4,
+          "#1f2937": 8
+        },
+        "backgroundColors": {
+          "#ffff66": 5,
+          "#f1f1f1": 2,
+          "#ffffff": 9
+        },
+        "alignmentCounts": {
+          "default": 19,
+          "center": 2
+        },
+        "componentCounts": {
+          "quotation": 2,
+          "text": 10,
+          "imageGroup": 4,
+          "table": 1,
+          "horizontalLine": 3,
+          "image": 1
+        },
+        "fontSizeClasses": {
+          "fs19": 16
+        },
+        "boldCount": 11,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 24,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 29,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 114,
+          "sentenceCount": 4,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 5,
+            "#e9eced": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 1,
+          "charCount": 12,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 120,
+          "sentenceCount": 3,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 3,
+            "#1f2937": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 135,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 9
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "credential-proof"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 20,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#e9eced": 2,
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 13,
+          "charCount": 731,
+          "sentenceCount": 14,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 21,
+            "#1f2937": 4,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 4
+          },
+          "fontSizeClasses": {
+            "fs19": 12
+          },
+          "boldCount": 4,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 106,
+          "sentenceCount": 2,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 1,
+          "charCount": 10,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 22,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 11,
+          "charCount": 430,
+          "sentenceCount": 12,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 12
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 3,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 175,
+          "sentenceCount": 6,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "neutral-close"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "before-greeting",
+        "openingMode": "two-quotation-components",
+        "solutionPreviewMode": "separate-preview-after-context-media",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO10": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224287906098",
+      "sourceTitle": "갱년기 증상, 태반약침 모르면 해결 어렵습니다",
+      "publishedAt": "2026-05-17",
+      "autoEligible": true,
+      "selectionTags": [
+        "증상 원인",
+        "일반 치료의 한계",
+        "치료 원리",
+        "오래가는 불편",
+        "두 고민"
+      ],
+      "bestFor": "오래 이어지는 증상의 원인, 흔한 접근의 한계, 고려할 치료 원리를 순서대로 설명할 때",
+      "writingContract": {
+        "hook": "일상·수면을 흔드는 서로 다른 두 불편을 인용",
+        "contentProgress": "왜 선택이 어려운지 짚은 뒤 원인·기존 접근의 한계·선택 기준을 정보 중심으로 전개",
+        "close": "증상 이름만으로 치료를 고르지 말고 현재 양상과 한계를 확인하라는 판단으로 끝냄",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "갱년기 증상이 오래갈 때 원인과 치료 선택을 보는 순서",
+        "readerConcerns": [
+          "안면홍조 때문에 일상이 불편한 상황",
+          "불면·피로·우울감이 함께 이어지는 상황"
+        ],
+        "orderedGeneralInformation": [
+          "갱년기에는 호르몬 변화와 함께 여러 신체·수면·기분 증상이 나타날 수 있다.",
+          "증상 강도와 기간, 현재 복용 중인 약과 건강 상태를 먼저 확인한다.",
+          "한 가지 건강기능식품이나 치료만으로 모든 증상을 설명하지 않는다.",
+          "태반약침 등 특정 치료는 금손에서 실제 시행이 확인된 경우에만 다루고, 아니라면 일반적인 선택 기준으로 바꾼다."
+        ],
+        "blockedFromSource": [
+          "태반약침 횟수·효과 시점",
+          "세포 재생·호르몬 촉진 단정",
+          "위석부부한의원 통합치료 구성"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 2176,
+            "paragraphCount": 62,
+            "medianParagraphChars": 19.5,
+            "maxParagraphChars": 165,
+            "sentenceCount": 39,
+            "questionCount": 2
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 53,
+          "#1f2937": 13,
+          "#e9eced": 1,
+          "#000000": 1,
+          "#ff0010": 1
+        },
+        "backgroundColors": {
+          "#f1f1f1": 2,
+          "#ffffff": 8,
+          "#ffff66": 6,
+          "#ffef34": 1,
+          "#3fcc9c": 1
+        },
+        "alignmentCounts": {
+          "center": 7,
+          "default": 20
+        },
+        "componentCounts": {
+          "image": 4,
+          "text": 13,
+          "quotation": 2,
+          "imageGroup": 1,
+          "table": 3,
+          "horizontalLine": 4
+        },
+        "fontSizeClasses": {
+          "fs19": 3,
+          "fs24": 1
+        },
+        "boldCount": 10,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 49,
+          "sentenceCount": 2,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 43,
+          "sentenceCount": 2,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 2
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "quotation"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 49,
+          "sentenceCount": 2,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 2
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "quotation"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 138,
+          "sentenceCount": 3,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 4
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 87,
+          "sentenceCount": 2,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 3,
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 117,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 8
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "supporting-table"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 20,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#e9eced": 1,
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 466,
+          "sentenceCount": 7,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 8,
+            "#1f2937": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 80,
+          "sentenceCount": 3,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 2,
+            "#1f2937": 2
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 305,
+          "sentenceCount": 7,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 10,
+            "#1f2937": 2
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 225,
+          "sentenceCount": 4,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 7,
+            "#1f2937": 5
+          },
+          "backgroundColors": {
+            "#ffef34": 1,
+            "#ffff66": 3
+          },
+          "fontSizeClasses": {},
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 5,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 136,
+          "sentenceCount": 4,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 3
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 150,
+          "sentenceCount": 3,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 3
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "recap"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 6,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 3
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "table",
+          "layout": "table_layout1",
+          "paragraphCount": 19,
+          "charCount": 108,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "supporting-table"
+        },
+        {
+          "kind": "table",
+          "layout": "table_layout1",
+          "paragraphCount": 3,
+          "charCount": 43,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#000000": 1,
+            "#ff0010": 1
+          },
+          "backgroundColors": {
+            "#3fcc9c": 1
+          },
+          "fontSizeClasses": {
+            "fs24": 1
+          },
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "supporting-table"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "after-greeting",
+        "openingMode": "lead-image-and-greeting-then-two-quotations",
+        "solutionPreviewMode": "knowledge-gap-then-preview",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO05": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224280621821",
+      "sourceTitle": "추나요법 건강보험 적용? 25년 경력 한의사가 알려주는 2가지",
+      "publishedAt": "2026-05-10",
+      "autoEligible": true,
+      "selectionTags": [
+        "건강보험",
+        "적용 기준",
+        "비용",
+        "횟수",
+        "많이 묻는 질문"
+      ],
+      "bestFor": "보험·제도·적용 조건처럼 정확한 기준과 예외를 두 갈래로 설명할 때",
+      "writingContract": {
+        "hook": "환자가 반복해서 묻는 적용 여부와 부담 질문을 도입 안에 포함",
+        "contentProgress": "기준을 먼저 공개하고 적용 대상·예외·치료 의미를 순서대로 구체화",
+        "close": "일반 기준과 개인별 차이를 구분하고 현재 상태 확인으로 연결",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "추나요법 건강보험 적용 기준과 치료 적합성",
+        "readerConcerns": [
+          "건강보험·자동차보험 적용 여부",
+          "본인부담과 이용 횟수"
+        ],
+        "orderedGeneralInformation": [
+          "보험 적용 여부와 횟수·본인부담금은 시점에 따라 달라질 수 있어 발행 직전 공식 기준을 확인한다.",
+          "근골격계 상태와 진단에 따라 추나요법의 적용 여부를 먼저 판단한다.",
+          "가격만 보지 않고 현재 통증과 움직임에 추나요법이 맞는지 확인한다.",
+          "다른 치료나 검사가 먼저인 상태도 구분한다."
+        ],
+        "blockedFromSource": [
+          "원문에 적힌 횟수·금액을 현재값으로 복사",
+          "소화불량·이명 등 비근골격 증상에 효과적이라는 단정",
+          "자동차보험 무부담 단정"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 2456,
+            "paragraphCount": 65,
+            "medianParagraphChars": 28,
+            "maxParagraphChars": 152,
+            "sentenceCount": 38,
+            "questionCount": 3
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 49,
+          "#e9eced": 3,
+          "#1f2937": 8,
+          "#000000": 1,
+          "#ff0010": 1
+        },
+        "backgroundColors": {
+          "#fff593": 4,
+          "#f1f1f1": 2,
+          "#ffffff": 9,
+          "#ffff66": 5,
+          "#3fcc9c": 1
+        },
+        "alignmentCounts": {
+          "default": 18,
+          "center": 8
+        },
+        "componentCounts": {
+          "text": 13,
+          "imageGroup": 2,
+          "table": 3,
+          "horizontalLine": 4,
+          "image": 4
+        },
+        "fontSizeClasses": {
+          "fs19": 3,
+          "fs24": 1
+        },
+        "boldCount": 9,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 257,
+          "sentenceCount": 5,
+          "questionCount": 3,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 5,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#fff593": 2
+          },
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "collage",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 61,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 2
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 137,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 9
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "credential-proof"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 19,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 334,
+          "sentenceCount": 6,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1,
+            "#374151": 7
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 319,
+          "sentenceCount": 5,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 7,
+            "#1f2937": 1,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#fff593": 1,
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 22,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 6,
+          "charCount": 451,
+          "sentenceCount": 9,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 13,
+            "#1f2937": 2
+          },
+          "backgroundColors": {
+            "#ffff66": 2,
+            "#fff593": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 112,
+          "sentenceCount": 2,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 2,
+            "#1f2937": 1,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "collage",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 15,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 7,
+          "charCount": 421,
+          "sentenceCount": 9,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 8
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "recap"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 6,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "table",
+          "layout": "table_layout1",
+          "paragraphCount": 19,
+          "charCount": 108,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "supporting-table"
+        },
+        {
+          "kind": "table",
+          "layout": "table_layout1",
+          "paragraphCount": 3,
+          "charCount": 43,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#000000": 1,
+            "#ff0010": 1
+          },
+          "backgroundColors": {
+            "#3fcc9c": 1
+          },
+          "fontSizeClasses": {
+            "fs24": 1
+          },
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "supporting-table"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "after-greeting",
+        "openingMode": "two-quoted-questions-inside-opening-text",
+        "solutionPreviewMode": "same-opening-text",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO11": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224221217878",
+      "sourceTitle": "광주 트라우마치료, 25년 부부한의사가 알려주는 극복방법 2가지",
+      "publishedAt": "2026-03-18",
+      "autoEligible": true,
+      "selectionTags": [
+        "극복 방법 2가지",
+        "오래된 불편",
+        "몸과 마음",
+        "치료 가능성",
+        "두 질문"
+      ],
+      "bestFor": "오래된 불편을 한 면으로만 보지 않고 두 갈래의 회복 기준을 설명할 때",
+      "writingContract": {
+        "hook": "오래 안고 가야 하는지와 기존 관리로도 달라지지 않는다는 질문 두 개를 인용",
+        "contentProgress": "막막함의 이유를 풀고 서로 다른 두 관리 축을 원리·적용 범위·한계와 함께 설명",
+        "close": "두 축을 함께 보되 현재 상태에 맞게 순서를 정해야 한다는 판단으로 끝냄",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "트라우마 뒤 몸과 마음의 반응을 함께 보는 회복 원칙",
+        "readerConcerns": [
+          "과거 경험을 평생 안고 살아야 하는지",
+          "약을 먹어도 계속 힘든 경우 무엇을 더 볼지"
+        ],
+        "orderedGeneralInformation": [
+          "트라우마 뒤에는 기억뿐 아니라 긴장·수면·호흡·통증 같은 신체 반응이 함께 나타날 수 있다.",
+          "몸의 반응과 감정·수면 상태를 나누지 않고 함께 평가한다.",
+          "과거 경험을 무리하게 말하게 하지 않고 안전한 속도로 접근한다.",
+          "심한 불안·자해 위험·일상 기능 저하가 있으면 정신건강의학과 평가가 우선이다."
+        ],
+        "blockedFromSource": [
+          "EFT를 금손의 치료로 소개",
+          "몇 회 만에 약 중단·50% 개선",
+          "트라우마를 지운다는 표현"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 2303,
+            "paragraphCount": 63,
+            "medianParagraphChars": 28,
+            "maxParagraphChars": 116,
+            "sentenceCount": 44,
+            "questionCount": 2
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 55,
+          "#1f2937": 9,
+          "#e9eced": 2
+        },
+        "backgroundColors": {
+          "#f1f1f1": 2,
+          "#ffffff": 9,
+          "#ffff66": 6,
+          "#ffef34": 4
+        },
+        "alignmentCounts": {
+          "default": 18,
+          "center": 1
+        },
+        "componentCounts": {
+          "quotation": 2,
+          "text": 9,
+          "table": 1,
+          "imageGroup": 2,
+          "horizontalLine": 4,
+          "image": 1
+        },
+        "fontSizeClasses": {
+          "fs19": 3
+        },
+        "boldCount": 12,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 19,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 22,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 272,
+          "sentenceCount": 8,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 6
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 132,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 9
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "credential-proof"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 17,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 385,
+          "sentenceCount": 9,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 13,
+            "#1f2937": 1,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1,
+            "#ffef34": 2
+          },
+          "fontSizeClasses": {},
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 16,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1,
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 377,
+          "sentenceCount": 7,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 7,
+            "#1f2937": 2
+          },
+          "backgroundColors": {
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {},
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 1,
+          "charCount": 18,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 255,
+          "sentenceCount": 6,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 6,
+            "#1f2937": 3,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 312,
+          "sentenceCount": 8,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 10,
+            "#1f2937": 1
+          },
+          "backgroundColors": {
+            "#ffef34": 2,
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "recap"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 186,
+          "sentenceCount": 4,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "neutral-close"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "before-greeting",
+        "openingMode": "two-quotation-components",
+        "solutionPreviewMode": "greeting-and-preview",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO12": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224212833691",
+      "sourceTitle": "갱년기여성 다이어트, 15년 경력 원장이 말하는 성공 조건 3가지",
+      "publishedAt": "2026-03-11",
+      "autoEligible": true,
+      "selectionTags": [
+        "성공 조건",
+        "같은 노력 다른 결과",
+        "몸의 변화",
+        "조건 3가지",
+        "두 고민"
+      ],
+      "bestFor": "같은 노력을 해도 결과가 다른 이유와 성공을 좌우하는 여러 조건을 설명할 때",
+      "writingContract": {
+        "hook": "노력해도 달라지지 않는다는 독자의 현실적인 고민 두 개를 연속 인용",
+        "contentProgress": "반응 차이에 대한 질문을 던진 뒤 원인과 성공 조건을 번호가 있는 정보 절로 전개",
+        "close": "조건의 우선순위는 사람마다 다르며 현재 상태부터 구분해야 한다고 끝냄",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "갱년기 여성의 체중 관리가 달라져야 하는 이유와 조건",
+        "readerConcerns": [
+          "운동과 식사 조절에도 체중이 변하지 않는 상황",
+          "예전 방식이 더는 통하지 않는 이유"
+        ],
+        "orderedGeneralInformation": [
+          "갱년기에는 호르몬·근육량·수면·활동량 변화가 체중 관리에 함께 영향을 줄 수 있다.",
+          "개인의 건강 상태와 식사 패턴을 먼저 확인한다.",
+          "겉모습만이 아니라 건강을 위한 지속 가능한 목표를 세운다.",
+          "유산소 운동만 고집하지 않고 근력운동과 회복을 함께 계획한다."
+        ],
+        "blockedFromSource": [
+          "기초대사율 15~20% 감소 수치",
+          "체질별 처방과 성공률 2배",
+          "3개월 5~7kg·갱년기 증상 개선 보장"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 2333,
+            "paragraphCount": 50,
+            "medianParagraphChars": 45.5,
+            "maxParagraphChars": 117,
+            "sentenceCount": 59,
+            "questionCount": 4
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 58,
+          "#e9eced": 2,
+          "#1f2937": 11,
+          "#000000": 1,
+          "#ff0010": 1
+        },
+        "backgroundColors": {
+          "#f1f1f1": 2,
+          "#ffffff": 9,
+          "#ffff66": 7,
+          "#3fcc9c": 1
+        },
+        "alignmentCounts": {
+          "default": 21,
+          "center": 3
+        },
+        "componentCounts": {
+          "quotation": 5,
+          "text": 9,
+          "image": 4,
+          "table": 2,
+          "horizontalLine": 4
+        },
+        "fontSizeClasses": {
+          "fs19": 4,
+          "fs24": 1
+        },
+        "boldCount": 12,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 27,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 29,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 6,
+          "charCount": 316,
+          "sentenceCount": 8,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 7,
+            "#e9eced": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 119,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 9
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "credential-proof"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "quotation",
+          "layout": "quotation_postit",
+          "paragraphCount": 1,
+          "charCount": 15,
+          "sentenceCount": 1,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "quotation"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 270,
+          "sentenceCount": 7,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 6,
+            "#1f2937": 1,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 174,
+          "sentenceCount": 6,
+          "questionCount": 2,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 4,
+            "#1f2937": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "quotation",
+          "layout": "quotation_postit",
+          "paragraphCount": 1,
+          "charCount": 19,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "quotation"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 304,
+          "sentenceCount": 7,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 5,
+            "#1f2937": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 11,
+          "charCount": 629,
+          "sentenceCount": 17,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 21,
+            "#1f2937": 2
+          },
+          "backgroundColors": {
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {},
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "recap"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "quotation",
+          "layout": "quotation_postit",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "quotation"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 359,
+          "sentenceCount": 10,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 8,
+            "#1f2937": 2
+          },
+          "backgroundColors": {
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {},
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "neutral-close"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "table",
+          "layout": "table_layout1",
+          "paragraphCount": 3,
+          "charCount": 43,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#000000": 1,
+            "#ff0010": 1
+          },
+          "backgroundColors": {
+            "#3fcc9c": 1
+          },
+          "fontSizeClasses": {
+            "fs24": 1
+          },
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "supporting-table"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "before-greeting",
+        "openingMode": "two-quotation-components",
+        "solutionPreviewMode": "greeting-and-preview",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO06": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224205420099",
+      "sourceTitle": "무릎통증치료, 25년 경력 한의사 2명이 알려주는 회복 원칙",
+      "publishedAt": "2026-03-05",
+      "autoEligible": true,
+      "selectionTags": [
+        "회복 원칙",
+        "움직임 분석",
+        "구조적 원인",
+        "2가지",
+        "통증 반복"
+      ],
+      "bestFor": "아픈 부위만 보지 않고 움직임과 주변 구조를 함께 살피는 두 원칙을 설명할 때",
+      "writingContract": {
+        "hook": "일상 동작의 불편과 검사상 이상 없음이라는 답답함을 인용",
+        "contentProgress": "첫 원칙·근거·확인 장면, 둘째 원칙·근거·재점검 순으로 단호하게 전개",
+        "close": "두 원칙을 실제 명사로 다시 묶고 반복 통증의 판단 기준으로 끝냄",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "무릎 통증을 아픈 부위만 보지 않는 회복 원칙",
+        "readerConcerns": [
+          "계단을 내려갈 때 반복되는 통증",
+          "검사상 큰 이상이 없는데 계속 아픈 이유"
+        ],
+        "orderedGeneralInformation": [
+          "걷는 모습과 체중이 실리는 방향을 확인한다.",
+          "발·발목·무릎·골반과 주변 근육의 연결을 함께 본다.",
+          "영상검사에서 큰 이상이 없어도 움직임에 따른 통증은 남을 수 있다.",
+          "치료 뒤 보행과 일상 동작이 실제로 달라졌는지 다시 확인한다."
+        ],
+        "blockedFromSource": [
+          "보이지 않는 에너지 불균형 진단 주장",
+          "특정 통합치료가 재발을 막는다는 단정",
+          "타지역 소개·소개율"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 1740,
+            "paragraphCount": 37,
+            "medianParagraphChars": 30,
+            "maxParagraphChars": 127,
+            "sentenceCount": 38,
+            "questionCount": 1
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 34,
+          "#e9eced": 5,
+          "#1f2937": 7,
+          "#000000": 1,
+          "#ff0010": 1
+        },
+        "backgroundColors": {
+          "#f1f1f1": 2,
+          "#ffffff": 10,
+          "#ffff66": 4,
+          "#3fcc9c": 1
+        },
+        "alignmentCounts": {
+          "default": 20,
+          "center": 4
+        },
+        "componentCounts": {
+          "quotation": 2,
+          "text": 11,
+          "image": 5,
+          "table": 2,
+          "imageGroup": 1,
+          "horizontalLine": 3
+        },
+        "fontSizeClasses": {
+          "fs19": 3,
+          "fs24": 1
+        },
+        "boldCount": 8,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 24,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 29,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 4,
+          "charCount": 293,
+          "sentenceCount": 8,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 6,
+            "#e9eced": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "table",
+          "layout": "default",
+          "paragraphCount": 6,
+          "charCount": 138,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 6
+          },
+          "backgroundColors": {
+            "#f1f1f1": 2,
+            "#ffffff": 10
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "credential-proof"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "collage",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 19,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 141,
+          "sentenceCount": 4,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 3,
+            "#1f2937": 1,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 2,
+          "charCount": 169,
+          "sentenceCount": 5,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 3,
+            "#1f2937": 1,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 20,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 247,
+          "sentenceCount": 6,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 4,
+            "#1f2937": 1,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 3,
+          "charCount": 264,
+          "sentenceCount": 7,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 4,
+            "#1f2937": 2,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "recap"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 332,
+          "sentenceCount": 8,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 6
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "neutral-close"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "table",
+          "layout": "table_layout1",
+          "paragraphCount": 3,
+          "charCount": 43,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#000000": 1,
+            "#ff0010": 1
+          },
+          "backgroundColors": {
+            "#3fcc9c": 1
+          },
+          "fontSizeClasses": {
+            "fs24": 1
+          },
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "supporting-table"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "before-greeting",
+        "openingMode": "two-quotation-components",
+        "solutionPreviewMode": "greeting-and-preview",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    },
+    "INFO07": {
+      "type": "정보전달형",
+      "referenceFamilyId": "two-or-three-reader-concern-hooks-solution-preview-info",
+      "sourceBlogId": "wi-parkclinic",
+      "sourceUrl": "https://blog.naver.com/wi-parkclinic/224134818728",
+      "sourceTitle": "오십견치료방법, 29,000명 진료한 한의사가 공개하는 핵심",
+      "publishedAt": "2026-01-05",
+      "autoEligible": true,
+      "selectionTags": [
+        "치료방법 핵심",
+        "관절 움직임",
+        "염증",
+        "일상 불편",
+        "단계별 설명"
+      ],
+      "bestFor": "한 증상의 치료 원리를 두세 단계로 나누고 각 단계의 이유를 설명할 때",
+      "writingContract": {
+        "hook": "옷 입기·물건 꺼내기처럼 구체적인 일상 불편 질문으로 시작",
+        "contentProgress": "먼저 풀 문제, 다음에 살필 문제, 개인별 차이를 짧은 소제목으로 전개",
+        "close": "증상 이름보다 현재 제한과 원인을 확인해야 한다는 답으로 회수",
+        "sourceFactsBlocked": true,
+        "sourceSentencesBlocked": true,
+        "sourceMediaBlocked": true,
+        "sourceToneBlocked": true
+      },
+      "contentContract": {
+        "topic": "오십견에서 통증과 관절 움직임을 함께 관리하는 순서",
+        "readerConcerns": [
+          "옷 입기·머리 감기처럼 팔을 올리는 동작의 어려움",
+          "물리치료를 받아도 변화가 더딘 이유"
+        ],
+        "orderedGeneralInformation": [
+          "오십견은 통증뿐 아니라 관절 가동범위 제한을 함께 본다.",
+          "아프다고 전혀 움직이지 않거나 반대로 무리하게 스트레칭하는 두 극단을 피한다.",
+          "통증·염증 상태와 어깨 주변 구조를 확인해 운동과 치료 순서를 정한다.",
+          "다른 어깨 질환이나 목에서 내려오는 증상과의 구분이 필요할 수 있다."
+        ],
+        "blockedFromSource": [
+          "한 번의 시술로 즉각 개선",
+          "약침이 재발을 막는다는 단정",
+          "오십견은 저절로 낫지 않는다는 절대 표현"
+        ],
+        "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다."
+      },
+      "toneContract": {
+        "voiceAuthority": "goldhand-official-voice-v1",
+        "sourceToneBlocked": true,
+        "sourceRhythmObservationOnly": {
+          "textStats": {
+            "nonWhitespaceChars": 1814,
+            "paragraphCount": 52,
+            "medianParagraphChars": 17.0,
+            "maxParagraphChars": 117,
+            "sentenceCount": 43,
+            "questionCount": 1
+          }
+        },
+        "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다."
+      },
+      "observedStyle": {
+        "textColors": {
+          "#374151": 34,
+          "#1f2937": 19,
+          "#e9eced": 1,
+          "#000000": 1,
+          "#ff0010": 1
+        },
+        "backgroundColors": {
+          "#ffff66": 12,
+          "#3fcc9c": 1
+        },
+        "alignmentCounts": {
+          "default": 15,
+          "center": 5
+        },
+        "componentCounts": {
+          "quotation": 2,
+          "text": 9,
+          "image": 3,
+          "horizontalLine": 3,
+          "imageGroup": 1,
+          "table": 2
+        },
+        "fontSizeClasses": {
+          "fs19": 3,
+          "fs24": 1
+        },
+        "boldCount": 19,
+        "underlineCount": 0
+      },
+      "componentBlueprint": [
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 18,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "quotation",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 32,
+          "sentenceCount": 2,
+          "questionCount": 1,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "reader-question"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 296,
+          "sentenceCount": 9,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 8,
+            "#1f2937": 2,
+            "#e9eced": 1
+          },
+          "backgroundColors": {
+            "#ffff66": 2
+          },
+          "fontSizeClasses": {},
+          "boldCount": 2,
+          "underlineCount": 0,
+          "role": "greeting-authority"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 17,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 365,
+          "sentenceCount": 10,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 3,
+            "#374151": 7
+          },
+          "backgroundColors": {
+            "#ffff66": 3
+          },
+          "fontSizeClasses": {},
+          "boldCount": 3,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 17,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 450,
+          "sentenceCount": 9,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 9,
+            "#1f2937": 10
+          },
+          "backgroundColors": {
+            "#ffff66": 6
+          },
+          "fontSizeClasses": {},
+          "boldCount": 10,
+          "underlineCount": 0,
+          "role": "explanation"
+        },
+        {
+          "kind": "image",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 13,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {
+            "fs19": 1
+          },
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "horizontalLine",
+          "layout": "line1",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "divider"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 5,
+          "charCount": 348,
+          "sentenceCount": 10,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#1f2937": 1,
+            "#374151": 5
+          },
+          "backgroundColors": {
+            "#ffff66": 1
+          },
+          "fontSizeClasses": {},
+          "boldCount": 1,
+          "underlineCount": 0,
+          "role": "recap"
+        },
+        {
+          "kind": "imageGroup",
+          "layout": "slide",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "evidence-media"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 1,
+          "charCount": 6,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#374151": 2
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        },
+        {
+          "kind": "table",
+          "layout": "table_layout1",
+          "paragraphCount": 19,
+          "charCount": 108,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {},
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "supporting-table"
+        },
+        {
+          "kind": "table",
+          "layout": "table_layout1",
+          "paragraphCount": 3,
+          "charCount": 43,
+          "sentenceCount": 1,
+          "questionCount": 0,
+          "alignment": "center",
+          "textColors": {
+            "#000000": 1,
+            "#ff0010": 1
+          },
+          "backgroundColors": {
+            "#3fcc9c": 1
+          },
+          "fontSizeClasses": {
+            "fs24": 1
+          },
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "supporting-table"
+        },
+        {
+          "kind": "text",
+          "layout": "default",
+          "paragraphCount": 0,
+          "charCount": 0,
+          "sentenceCount": 0,
+          "questionCount": 0,
+          "alignment": "default",
+          "textColors": {
+            "#374151": 1
+          },
+          "backgroundColors": {},
+          "fontSizeClasses": {},
+          "boldCount": 0,
+          "underlineCount": 0,
+          "role": "section-heading"
+        }
+      ],
+      "renderContract": {
+        "nativeDesignSystemId": "goldhand-naver-native-v4",
+        "referenceControlsDecoration": false,
+        "allowedArticleHexColors": [
+          "#C99F75",
+          "#7A5434",
+          "#4D4D4D",
+          "#6C6B6D",
+          "#FBF8F4",
+          "#F3E8DD",
+          "#FFF2A8",
+          "#E53935",
+          "#D6D6D6",
+          "#FFFFFF"
+        ],
+        "requiredOrderedRoles": [
+          "reader-question",
+          "reader-question",
+          "solution-preview",
+          "explanation",
+          "neutral-close",
+          "contact"
+        ],
+        "requiredRoleMinimums": {
+          "reader-question": 2,
+          "solution-preview": 1,
+          "explanation": 1,
+          "neutral-close": 1,
+          "contact": 1
+        },
+        "requiredRoleMaximums": {
+          "reader-question": 3,
+          "solution-preview": 1
+        },
+        "minimumCenterRatio": 1.0,
+        "maximumCenterRatio": 1.0,
+        "requiredUnderlineMinimum": 2,
+        "maxConsecutiveBodyParagraphs": 3,
+        "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다."
+      },
+      "familyContract": {
+        "label": "독자 고민 2~3개·해결 방향 예고·정보 본문형",
+        "minimumReaderHookCount": 2,
+        "maximumReaderHookCount": 3,
+        "allowedReaderHookCounts": [
+          2,
+          3
+        ],
+        "questionPlacement": "before-greeting",
+        "openingMode": "two-quotation-components",
+        "solutionPreviewMode": "greeting-and-preview",
+        "requiresSolutionPreviewBeforeBody": true,
+        "sameReferenceForIdeaAndContentFlow": true,
+        "referenceControlsDecoration": false,
+        "nativeDesignSystemId": "goldhand-naver-native-v4"
+      }
+    }
+  }
+}

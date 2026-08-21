@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-22",
+  "policy": "시각 검수에서 식별 가능한 환자 얼굴, 차트, 개인 연락처가 없고 장면이 확인된 자산만 승인한다. 원장과 환자가 치료·진찰·상담하는 사람 대 사람 장면을 최우선 신뢰 사진으로 분류한다.",
+  "approved": {
+    "224379815063:1": {"scene": "ICT 물리치료기", "duplicateGroup": ""},
+    "224379815063:3": {"scene": "약침 재료와 일회용 주사기", "duplicateGroup": ""},
+    "224379815063:5": {"scene": "맞춤 탕약 포장", "duplicateGroup": ""},
+    "224379815063:6": {"scene": "금손한의원 건물 외관", "duplicateGroup": "clinic-exterior-2026"},
+    "224376660990:1": {"scene": "금손한의원 건물 외관", "duplicateGroup": "clinic-exterior-2026"},
+    "224179867672:1": {"scene": "계지복령환 제품 포장", "duplicateGroup": ""},
+    "224179867672:2": {"scene": "계지복령환과 칠제향부환 스틱", "duplicateGroup": ""},
+    "224179738511:1": {"scene": "칠제향부환 제품 포장", "duplicateGroup": ""},
+    "223950001905:1": {"scene": "금손한의원 로고", "duplicateGroup": ""},
+    "223428011694:1": {"scene": "소청룡탕 보험한약 제형", "duplicateGroup": ""},
+    "223428011694:2": {"scene": "갈근탕가천궁신이 과립한약 제형", "duplicateGroup": ""},
+    "224345090374:2": {
+      "scene": "박준희 원장이 의료봉사 현장에서 아이의 상태를 살피는 장면",
+      "sceneType": "director-patient-treatment",
+      "personInteraction": true,
+      "directorVisible": true,
+      "trustPriority": 100,
+      "safetyApproved": true,
+      "safetyNote": "아이와 관계자 얼굴이 장식으로 가려져 식별되지 않음",
+      "duplicateGroup": ""
+    },
+    "224345090374:3": {
+      "scene": "박준희 원장이 아이와 마주 앉아 문진·상담하는 장면",
+      "sceneType": "director-patient-consultation",
+      "personInteraction": true,
+      "directorVisible": true,
+      "trustPriority": 100,
+      "safetyApproved": true,
+      "safetyNote": "아이 얼굴이 장식으로 가려져 식별되지 않음",
+      "duplicateGroup": ""
+    },
+    "224345065147:1": {
+      "scene": "박준희 원장이 환자 다리에 침 치료하는 장면",
+      "sceneType": "director-patient-treatment",
+      "personInteraction": true,
+      "directorVisible": true,
+      "trustPriority": 110,
+      "safetyApproved": true,
+      "safetyNote": "환자 얼굴과 식별정보가 보이지 않음",
+      "duplicateGroup": ""
+    },
+    "224345065147:2": {
+      "scene": "박준희 원장이 환자 복부에 침 치료하는 장면",
+      "sceneType": "director-patient-treatment",
+      "personInteraction": true,
+      "directorVisible": true,
+      "trustPriority": 110,
+      "safetyApproved": true,
+      "safetyNote": "환자 얼굴이 장식으로 가려져 식별되지 않음",
+      "duplicateGroup": ""
+    },
+    "224342597447:1": {
+      "scene": "박준희 원장이 환자와 보호자에게 방문진료 내용을 설명하는 장면",
+      "sceneType": "director-patient-consultation",
+      "personInteraction": true,
+      "directorVisible": true,
+      "trustPriority": 105,
+      "safetyApproved": true,
+      "safetyNote": "환자 얼굴이 장식으로 가려지고 보호자는 뒷모습만 보임",
+      "duplicateGroup": ""
+    },
+    "224342597447:3": {
+      "scene": "박준희 원장이 누워 있는 환자의 다리 상태를 진찰하는 장면",
+      "sceneType": "director-patient-examination",
+      "personInteraction": true,
+      "directorVisible": true,
+      "trustPriority": 108,
+      "safetyApproved": true,
+      "safetyNote": "환자 얼굴과 차트가 보이지 않음",
+      "duplicateGroup": ""
+    }
+  },
+  "denied": {}
+}
