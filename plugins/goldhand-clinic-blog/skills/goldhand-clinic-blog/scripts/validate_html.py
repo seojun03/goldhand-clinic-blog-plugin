@@ -39,6 +39,14 @@ REQUIRED_SNIPPETS = {
     "native-copy-sanitizer": "stripInternalMetadata",
     "editorial-copy-sanitizer": "name.startsWith('data-editorial-')",
     "article-wrapper-strip": "root.querySelector('article')",
+    "fixed-closing-links": 'data-goldhand-closing-links="true"',
+    "official-blog-photo-link": 'data-goldhand-photo-link="official-blog"',
+    "native-map": 'class="se-component se-placesMap',
+    "native-module-data": 'class="__se_module_data"',
+    "official-blog-link": "https://blog.naver.com/goldhand7582_",
+    "official-place-link": "https://map.naver.com/p/entry/place/1598180269",
+    "official-place-id": "1598180269",
+    "native-copy-component-preservation": "parent.closest('strong,b,u,.se-image,.se-placesMap')",
 }
 
 
@@ -89,6 +97,56 @@ def validate_html(raw: str, *, max_megabytes: float = 30.0) -> dict[str, object]
         add(issues, "error", "custom-box-marker", "CSS 카드용 data-goldhand-box가 남아 있습니다.")
     if article_match:
         article_html = article_match.group(0)
+        closing_matches = list(
+            re.finditer(
+                r"<section\b(?=[^>]*\bdata-goldhand-closing-links\s*=\s*['\"]true['\"])[^>]*>.*?</section>",
+                article_html,
+                flags=re.I | re.S,
+            )
+        )
+        if len(closing_matches) != 1:
+            add(
+                issues,
+                "error",
+                "fixed-closing-links-count",
+                f"금손 공식 블로그 링크와 네이버 지도 고정 블록은 정확히 1개여야 합니다. 현재 {len(closing_matches)}개입니다.",
+            )
+        else:
+            closing_match = closing_matches[0]
+            remainder = re.sub(r"</article>\s*$", "", article_html[closing_match.end():], flags=re.I)
+            if remainder.strip():
+                add(issues, "error", "fixed-closing-links-not-last", "금손 공식 블로그 링크와 네이버 지도는 글의 맨 마지막이어야 합니다.")
+            closing_html = closing_match.group(0)
+            photo_links = re.findall(
+                r"<a\b(?=[^>]*\bhref\s*=\s*['\"]https://blog\.naver\.com/goldhand7582_['\"])(?=[^>]*\bdata-linktype\s*=\s*['\"]img['\"])[^>]*>\s*<img\b[^>]*>\s*</a>",
+                closing_html,
+                flags=re.I | re.S,
+            )
+            if len(photo_links) != 1:
+                add(
+                    issues,
+                    "error",
+                    "official-blog-photo-link-count",
+                    f"공식 블로그는 승인된 상담 사진 한 장 자체에 링크해야 합니다. 현재 {len(photo_links)}개입니다.",
+                )
+            if re.search(r"\bse-oglink(?:-|\b)|\bdata-linktype\s*=\s*['\"]oglink['\"]", closing_html, flags=re.I):
+                add(issues, "error", "text-oglink-card-forbidden", "제목·설명·주소가 보이는 OG 링크 카드는 사용하지 않습니다.")
+            if not re.search(r"\bclass\s*=\s*['\"][^'\"]*\bse-image\b", closing_html, flags=re.I):
+                add(issues, "error", "native-blog-image-missing", "사진형 공식 블로그 링크의 네이버 이미지 구조가 없습니다.")
+            if "&quot;linkUse&quot;:&quot;true&quot;" not in closing_html or "&quot;type&quot;:&quot;v2_image&quot;" not in closing_html:
+                add(issues, "error", "native-blog-image-link-data", "사진형 공식 블로그 링크의 linkUse 또는 v2_image 데이터가 없습니다.")
+            if len(re.findall(r"\bclass\s*=\s*['\"][^'\"]*\bse-placesMap\b", closing_html, flags=re.I)) < 1:
+                add(issues, "error", "native-map-missing", "글 마지막에 네이버 지도 구조가 없습니다.")
+            if len(re.findall(r"\bdata-module\s*=", closing_html, flags=re.I)) != 2:
+                add(issues, "error", "native-module-legacy-count", "금손 링크·지도에는 네이버 data-module 두 개가 필요합니다.")
+            if len(re.findall(r"\bdata-module-v2\s*=", closing_html, flags=re.I)) != 2:
+                add(issues, "error", "native-closing-module-count", "사진형 공식 블로그 링크와 지도용 네이버 모듈 데이터가 각각 하나씩 필요합니다.")
+            if "https://blog.naver.com/goldhand7582_" not in closing_html:
+                add(issues, "error", "official-blog-link-missing", "금손한의원 공식 블로그 링크가 없습니다.")
+            if "https://map.naver.com/p/entry/place/1598180269" not in closing_html or "1598180269" not in closing_html:
+                add(issues, "error", "official-map-link-missing", "금손한의원 네이버 플레이스 링크 또는 장소 ID가 없습니다.")
+            if re.search(r"(?:og_270x270\.png|한의원로고|goldhand-mark\.svg)", closing_html, flags=re.I):
+                add(issues, "error", "closing-logo-forbidden", "글 마지막 공식 블로그 연결 사진에도 로고 이미지를 사용할 수 없습니다.")
         if re.search(r"<figcaption\b", article_html, flags=re.I):
             add(issues, "error", "visible-image-caption-forbidden", "복사용 HTML에 보이는 이미지 캡션이 남아 있습니다.")
         real_photo_count = len(

@@ -38,6 +38,7 @@ def main() -> int:
         ROOT / "INSTALL-WINDOWS.cmd",
         ROOT / "install-from-download-windows.ps1",
         ROOT / "scripts" / "apply-local-edits-windows.ps1",
+        ROOT / "scripts" / "update-windows.ps1",
         ROOT / ".github" / "workflows" / "windows-install.yml",
     ]
     for path in required:
@@ -58,6 +59,7 @@ def main() -> int:
 
     launcher = (ROOT / "INSTALL-WINDOWS.cmd").read_text(encoding="ascii")
     installer = (ROOT / "install-from-download-windows.ps1").read_text(encoding="ascii")
+    updater = (ROOT / "scripts" / "update-windows.ps1").read_text(encoding="ascii")
     helper_bytes = (ROOT / "scripts" / "apply-local-edits-windows.ps1").read_bytes()
     require(helper_bytes.startswith(b"\xef\xbb\xbf"), "PowerShell 5.1 edit helper is missing UTF-8 BOM")
     require(f"{ENV_PREFIX}_BOOTSTRAP_ARCHIVE" in launcher, "isolated CMD archive override is missing")
@@ -71,6 +73,11 @@ def main() -> int:
     require("Get-AppxPackage" not in installer and '-Filter "codex.exe"' not in installer, "protected Appx Codex discovery must not be used")
     require("if ($env:CODEX_HOME -and -not (Test-Path -LiteralPath $env:CODEX_HOME))" in installer, "CODEX_HOME creation guard is missing")
     require("sourceType" in installer and "local" in installer, "local marketplace verification is missing")
+    require("Copy-ManagedTree" in installer and "Restore-ManagedTree" in installer, "transactional managed replacement is missing")
+    require("Register-AutoUpdate" in installer and "New-ScheduledTaskTrigger" in installer, "automatic update registration is missing")
+    require("goldhand-clinic-blog-plugin.zip" in launcher, "isolated CMD must download the validated release ZIP")
+    require("releases/latest" in updater and "goldhand-clinic-blog-plugin.zip" in updater, "release-only updater is missing")
+    require("archive/refs/heads/main.zip" not in launcher and "archive/refs/heads/main.zip" not in updater, "Windows install paths must not consume unvalidated main branch ZIPs")
     print(f"distribution validation passed: {PLUGIN_NAME} {manifest['version']}")
     return 0
 

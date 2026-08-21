@@ -25,7 +25,7 @@ if exist "%LOCAL_INSTALLER%" (
     "  } else {" ^
     "    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;" ^
     "    $cacheBuster = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds();" ^
-    "    Invoke-WebRequest -UseBasicParsing -Uri ('https://github.com/seojun03/goldhand-clinic-blog-plugin/archive/refs/heads/main.zip?cachebust=' + $cacheBuster) -OutFile $archive;" ^
+    "    Invoke-WebRequest -UseBasicParsing -Uri ('https://github.com/seojun03/goldhand-clinic-blog-plugin/releases/latest/download/goldhand-clinic-blog-plugin.zip?cachebust=' + $cacheBuster) -OutFile $archive;" ^
     "  };" ^
     "  $expanded = Join-Path $tempRoot 'x';" ^
     "  Expand-Archive -LiteralPath $archive -DestinationPath $expanded;" ^

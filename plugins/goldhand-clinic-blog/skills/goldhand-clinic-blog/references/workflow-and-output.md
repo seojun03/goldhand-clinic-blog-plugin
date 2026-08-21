@@ -2,7 +2,7 @@
 
 ## 자동모드 상태 흐름
 
-`모드 확인 → 메인키워드 → 최근 3개 주제·실제 사진 이력 읽기 → 검토 완료 위석 정보글 11편 중 겹치지 않는 한 편 선택 → 주제·독자 고민·핵심 일반 정보·정보 순서 고정 → 위석 말투 제거 → 금손 공식 74편 말투 프로필 적용 → 제목 생성·검증 → 사실 팩 → 내용 대응표 → 금손 말투 초안 → 내용 순서·말투·문장 중복 독립 검수 → 부분 수정 → SEO 2~3회 → 모바일 시각 분할 → 질문·인사·해결 방향 예고 직후 credential 고정 → GPT Image 1~3장 생성 → 플러그인 내장 실제 금손 사진 6~12장 선택 → 관련 문단에 이미지 분산 → 네이버 순정 구분선·필요한 표·HTML → 발행 게이트 → 사진 ID·해시 포함 이력 기록`
+`모드 확인 → 메인키워드 → 최근 3개 주제·실제 사진 이력 읽기 → 검토 완료 위석 정보글 11편 중 겹치지 않는 한 편 선택 → 주제·독자 고민·핵심 일반 정보·정보 순서 고정 → 위석 말투 제거 → 금손 공식 74편 말투 프로필 적용 → 제목 생성·검증 → 사실 팩 → 내용 대응표 → 금손 말투 초안 → 진료실 발화·생활어 검사 → 내용 순서·말투·문장 중복 독립 검수 → 부분 수정 → SEO 2~3회 → 모바일 시각 분할 → 질문·인사·해결 방향 예고 직후 credential 고정 → GPT Image 1~3장 생성 → 원장-환자 치료·상담·검사 사진 6~12장 선택 → 관련 문단에 이미지 분산 → 네이버 순정 구분선·필요한 표·운영정보 → 클릭 가능한 공식 블로그 상담 사진·네이버 지도 → HTML → 발행 게이트 → 사진 ID·해시 포함 이력 기록`
 
 메인키워드 하나 외에는 사전 질문하지 않는다. 확인된 사실이 없어 제목의 답을 만들 수 없을 때만 누락값 하나를 묻는다.
 
@@ -144,6 +144,9 @@
 - goldhand-voice-profile-missing
 - wipark-tone-leak
 - ai-template-phrase
+- literary-body-location
+- abstract-gait-description
+- abstract-editorial-predicate
 - emoticon-or-hashtag
 - production-residue
 - aggressive-cta
@@ -155,7 +158,7 @@
 
 - 지적된 문장과 필요한 앞뒤 문장만 고친다.
 - 반복은 다른 말로 바꾸지 말고 삭제한다.
-- 추상어는 사실 팩의 실제 증상·움직임·판단 기준으로 바꾼다.
+- 추상어는 사실 팩의 실제 증상·움직임으로 바꾼다. `아픈 자리`, `걷기가 달라지다`, `자세가 이어지다`, `부담이 반복되다`, `치료 방향에 차이를 만들다`처럼 환자가 바로 떠올리기 어려운 표현은 낱말만 바꾸지 말고 `아픈 곳`, `평소보다 걷기 힘들다`, `오래 같은 자세로 일하면 목이 다시 뻐근하다`처럼 문장 구조부터 생활어로 다시 쓴다.
 - 근거 없는 주장은 삭제하고 필요하면 제목을 다시 검증한다.
 - 문제가 없는 문단은 고정한다.
 - 부분 수정은 최대 두 번, 제목·논리가 바뀐 전체 재작성은 최대 한 번으로 제한한다.
@@ -186,13 +189,14 @@
 8. 모든 글은 중앙 정렬하고, 노란 하이라이트 정확히 3개·밑줄 2~3개·안전 경계용 빨간 글씨 1~2개를 합계 6~8개 적용한다.
 9. 일반 문단은 `data-mobile-group="true"`와 `<br>`로 2~3줄을 만들고, 직후 `<p data-preview-gap="true">&#8288;</p>`를 둔다.
 10. `sync_official_media_assets.py --verify-only`로 `assets/media-library.json`의 113개 레코드와 `assets/official-media`의 내장 파일·SHA256이 모두 일치하는지 확인한다. 새 공식 글을 인덱싱해 사진을 추가한 경우에만 동기화 모드로 번들을 갱신한 뒤 플러그인을 재배포한다.
-11. `recommend_media.py --count 8`로 내장 승인본을 고른다. 최근 3개 이력의 `realMediaIds`·`realMediaHashes`는 먼저 제외한다. 원장-환자 치료 장면, 원장-환자 진찰·상담·설명 장면, 그 밖의 사람 중심 진료 장면을 먼저 선택하고, 부족할 때만 주제 일치 사물 사진과 약·장비·원내 공간을 사용한다. 새 안전 사진이 6장 미만일 때만 최근 안전 신뢰 사진을 최소 6장까지 재사용한다. 최근 사진까지 써도 6장이 안 되면 발행하지 않는다.
+11. `recommend_media.py --count 6`으로 내장 승인본을 고른다. 최근 3개 이력의 `realMediaIds`·`realMediaHashes`는 먼저 제외한다. `personInteraction: true`, `directorVisible: true`, `sceneType: director-patient-*`인 원장-환자 치료·진찰·상담·검사 장면만 선택한다. 금손 로고·간판·건물·약·환제·탕약·장비·제품·빈 공간은 수량이 부족해도 사용하지 않는다. 새 승인 사진이 6장 미만일 때만 최근 승인 사진을 최소 6장까지 재사용하고, 그래도 6장이 안 되면 발행하지 않는다.
 12. 실제 사진은 선택과 무결성 검사에는 플러그인 내장 파일을 사용하고, 네이버 HTML에는 같은 레코드의 **금손한의원 원본** HTTPS URL을 `src`와 `data-reference-source-url`에 함께 넣는다. `data-real-photo="true" data-media-origin="goldhand-bundled-official-library" data-goldhand-media="GH..." data-media-sha256="..."`를 표시한다. 사용자 로컬 사진 경로나 레퍼런스 원문 사진은 넣지 않는다.
 13. GPT Image와 실제 사진 모두 `<figure data-image-placement="after-related-paragraph" data-image-anchor="핵심어1|핵심어2">`로 만든다. figure 바로 앞에는 anchor 가운데 하나를 실제로 포함한 `data-mobile-group="true"` 문단만 두고, 허용되는 사이는 `data-preview-gap="true"` 한 개뿐이다. 모든 이미지에서 `<figcaption>`과 이미지 아래 설명·출처 문단을 만들지 않는다. 이미지를 연속 배치하거나 글 끝에 몰아넣지 않는다.
-14. 고정 문의·운영정보는 `data-goldhand-role="contact" data-reference-role="contact" data-native-table-purpose="clinic-info"`인 2열 표로 마지막에 한 번만 두고, 모든 셀을 `width:50%;height:64px;line-height:1.8;word-break:keep-all`로 고정한다.
-15. `validate_article.py --editorial-close`, `validate_reference_reconstruction.py --editorial-close`, `validate_copy_overlap.py`, `validate_goldhand_voice.py`를 모두 통과시킨다. 실제 사진 6~12장과 GPT Image 1~3장을 서로 별도로 센다.
-16. `build_naver_copy_page.py`를 실행하고 `validate_html.py`를 통과시킨다. 빌더는 모든 로컬 이미지에 콘텐츠 해시 파일명을 부여해 금손 전용 HTTPS 호스트에 게시한다. 출력 HTML의 이미지 수가 원고와 같고 모든 `src`가 공개 HTTPS인지 확인한다. `data:image/...;base64`, `file:`, 절대 로컬 경로가 하나라도 남으면 실패다.
-17. 브라우저에서 복사 버튼을 실제로 한 번 눌러 `text/html`·`text/plain` 복사, 내부 `data-*` 제거, 이미지 수 유지, 580px·375px 줄바꿈을 확인한다. 실제 네이버 편집기를 확인할 수 있으면 이미지까지 붙는지와 인용구·구분선·표가 순정 컴포넌트로 변환됐는지도 확인한다. 브라우저 제어가 없으면 정적 검증까지만 했다고 정확히 알린다.
+14. 고정 문의·운영정보는 `data-goldhand-role="contact" data-reference-role="contact" data-native-table-purpose="clinic-info"`인 2열 표로 마지막 본문 정보에 한 번만 두고, 모든 셀을 `width:50%;height:64px;line-height:1.8;word-break:keep-all`로 고정한다.
+15. 빌더가 운영정보 뒤에 `assets/goldhand-closing-links.json`의 클릭 가능한 원장-환자 상담 사진과 네이버 플레이스 지도 묶음을 정확히 한 번 붙인다. 상담 사진 자체에 공식 블로그 링크를 걸고 제목·소개·URL이 보이는 OG 카드는 만들지 않는다. 로고·건물 사진은 쓰지 않으며 이 묶음이 article의 최종 컴포넌트여야 한다.
+16. `validate_article.py --editorial-close`, `validate_reference_reconstruction.py --editorial-close`, `validate_copy_overlap.py`, `validate_goldhand_voice.py`를 모두 통과시킨다. 실제 사진 6~12장과 GPT Image 1~3장을 서로 별도로 센다.
+17. `build_naver_copy_page.py`를 실행하고 `validate_html.py`를 통과시킨다. 빌더는 모든 로컬 이미지에 콘텐츠 해시 파일명을 부여해 금손 전용 HTTPS 호스트에 게시한다. 출력 HTML의 이미지 수가 원고보다 공식 블로그 링크 사진·정적 지도 두 장만 더 많고 모든 `src`가 공개 HTTPS인지 확인한다. `data:image/...;base64`, `file:`, 절대 로컬 경로가 하나라도 남으면 실패다.
+18. 브라우저에서 복사 버튼을 실제로 한 번 눌러 `text/html`·`text/plain` 복사, 내부 검수용 `data-*` 제거, 본문 이미지 수 유지, 고정 글말미의 `photoLinks=1`·`maps=1`·`nativeModules=2`, 보이는 블로그 링크 문구 0개, 580px·375px 줄바꿈을 확인한다. 실제 네이버 편집기를 확인할 수 있으면 상담 사진을 눌렀을 때 공식 블로그로 이동하는지, 지도까지 붙는지와 인용구·구분선·표가 순정 컴포넌트로 변환됐는지도 확인한다. 브라우저 제어가 없으면 정적 검증까지만 했다고 정확히 알린다.
 
 ## 기본 출력
 

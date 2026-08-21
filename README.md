@@ -11,16 +11,16 @@ Windows recipients can install this plugin from one file. They do not need Git, 
 3. Double-click `INSTALL-WINDOWS.cmd`.
 4. Wait for `INSTALLATION COMPLETE`, close the window, and reopen ChatGPT.
 
-The installer does not install, update, remove, or modify the ChatGPT app. It verifies Python and a Codex CLI that supports plugins, downloads the complete package to a short path, copies it to `%USERPROFILE%\GoldhandClinicPlugin`, and connects it as a local marketplace plugin.
+The installer does not install, update, remove, or modify the ChatGPT app. It verifies Python and a Codex CLI that supports plugins, downloads the latest validated release to a short path, transactionally replaces `%USERPROFILE%\GoldhandClinicPlugin`, and connects it as a local marketplace plugin.
 
-If the recipient edits the local skill, run `goldhand-clinic-blog-apply-my-edits.cmd` from the Desktop to refresh the installed cache.
+The managed copy checks for a newer validated GitHub Release at Windows sign-in and every six hours. It never installs directly from the unvalidated `main` branch. During an update, the previous complete folder is retained until the new plugin is enabled; a failed update restores the previous folder and connection. Recipient-side edits inside the managed folder are replaced by the next official update.
 
 Direct selector: `goldhand-clinic-blog@goldhand-clinic`
 
 ## Source archive fallback
 
-[Download the complete source ZIP](https://github.com/seojun03/goldhand-clinic-blog-plugin/archive/refs/heads/main.zip), extract it, and double-click `INSTALL-WINDOWS.cmd`. If the CMD is accidentally separated from the other files, it downloads a complete copy and continues.
+[Download the validated release ZIP](https://github.com/seojun03/goldhand-clinic-blog-plugin/releases/latest/download/goldhand-clinic-blog-plugin.zip), extract it, and double-click `INSTALL-WINDOWS.cmd`. If the CMD is accidentally separated from the other files, it downloads the same validated release and continues.
 
 ## Verification
 
-The GitHub Actions workflow runs on Windows PowerShell 5.1 and verifies complete-archive installation, isolated-CMD recovery, invalid Codex candidate rejection, missing `CODEX_HOME` creation, nonfatal locked cleanup, and enabled local plugin registration.
+The GitHub Actions workflow runs the plugin's own content contract tests and uses Windows PowerShell 5.1 to verify complete-archive installation, isolated-CMD recovery, invalid Codex candidate rejection, missing `CODEX_HOME` creation, nonfatal locked cleanup, transactional managed replacement, and enabled local plugin registration.

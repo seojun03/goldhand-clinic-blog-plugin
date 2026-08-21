@@ -87,6 +87,7 @@ SOLUTION_PREVIEW_CUE = re.compile(r"(?:오늘은|이\s*글에서는|이\s*글에
 SOLUTION_PAYOFF_CUE = re.compile(r"(?:구분|기준|판단|확인|이해|순서|놓치|살펴)")
 READING_TIME_TEXT = re.compile(r"3\s*분.{0,30}(?:읽어|읽으)", re.S)
 HOOK_TOKEN_STOP = {"광주", "한의원", "금손한의원", "어떻게", "무엇", "정말", "경우", "있을까요", "할까요"}
+FORBIDDEN_REAL_PHOTO_DESCRIPTOR = re.compile(r"(?:로고|logo|건물\s*외관|건물\s*외부|환제|제품\s*포장|장비|원내\s*공간)", re.I)
 
 
 def normalize(value: str) -> str:
@@ -737,11 +738,30 @@ def image_checks(
                 bundle = bundled_asset_path(asset) if asset else None
                 expected_hash = str(asset.get("sha256", "")) if asset else ""
                 tag_hashes = attr_values(tag, "data-media-sha256")
+                descriptor = " ".join(
+                    str(asset.get(field, ""))
+                    for field in ("filename", "caption", "sceneType")
+                ) if asset else ""
+                person_scene_ok = bool(
+                    asset
+                    and asset.get("personInteraction") is True
+                    and asset.get("directorVisible") is True
+                    and str(asset.get("sceneType", "")).startswith("director-patient-")
+                    and FORBIDDEN_REAL_PHOTO_DESCRIPTOR.search(descriptor) is None
+                )
+                if asset and not person_scene_ok:
+                    add(
+                        issues,
+                        "error",
+                        "nonperson-or-logo-real-photo-forbidden",
+                        f"실제 사진 {media_id.group(1)}는 원장 치료·진찰·상담 장면이 아니거나 로고·사물·공간 사진입니다.",
+                    )
                 if (
                     not asset
                     or asset.get("url") != url
                     or asset.get("safeAuto") is not True
                     or asset.get("requiresReview") is True
+                    or not person_scene_ok
                     or bundle is None
                     or not bundle.is_file()
                     or not expected_hash

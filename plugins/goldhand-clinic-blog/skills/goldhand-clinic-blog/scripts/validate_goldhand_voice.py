@@ -159,6 +159,9 @@ def validate(fragment: str, profile: dict[str, object]) -> dict[str, object]:
                         "over-softened-medical-guidance",
                         "blog-meta-framing",
                         "lesson-afterglow-ending",
+                        "literary-body-location",
+                        "abstract-gait-description",
+                        "abstract-editorial-predicate",
                     }
                 ]
             ),

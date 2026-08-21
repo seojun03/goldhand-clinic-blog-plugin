@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Recommend 6-12 safe bundled Goldhand photos for one article.
+"""Recommend 6-12 safe director-patient Goldhand photos for one article.
 
-Fresh director-patient treatment or consultation scenes come first because
-they provide the strongest human trust signal. Non-person objects, medicine,
-equipment, and clinic-space photos are fallbacks. Photos used in the newest
-three articles may be reused only when needed to reach the hard minimum of six.
+Only visually approved photos of the director treating, examining, consulting,
+or explaining to a patient are eligible. Logos, buildings, medicine, equipment,
+products, and empty clinic-space photos are never article-photo fallbacks.
+Photos used in the newest three articles may be reused only when needed to
+reach the hard minimum of six.
 """
 
 from __future__ import annotations
@@ -27,12 +28,9 @@ STOPWORDS = {
     "없는", "방법", "이유", "기준", "정보", "블로그", "작성", "원고", "환자", "박준희", "원장",
 }
 TYPE_TAGS = {"정보전달형": set()}
-TRUST_TAGS = {
-    "clinic-space", "director-story", "physical-therapy", "acupuncture", "chuna",
-    "golta", "pharmacopuncture", "cupping", "herbal-medicine",
-}
 MIN_REAL_PHOTOS = 6
 MAX_REAL_PHOTOS = 12
+FORBIDDEN_DESCRIPTOR = re.compile(r"(?:로고|logo|건물\s*외관|건물\s*외부|환제|제품\s*포장|장비|원내\s*공간)", re.I)
 
 
 def default_state_path() -> Path:
@@ -111,24 +109,26 @@ def bundled_assets(official: dict[str, Any]) -> list[dict[str, Any]]:
 def is_safe_candidate(asset: dict[str, Any]) -> bool:
     if asset.get("safeAuto") is not True or asset.get("requiresReview") is True:
         return False
+    descriptor = " ".join(
+        str(asset.get(field, ""))
+        for field in ("filename", "caption", "sceneType")
+    )
     path = bundled_file(asset)
     return (
         str(asset.get("origin", "")) == "goldhand-bundled-official-library"
         and str(asset.get("url", "")).startswith("https://")
         and bool(str(asset.get("id", "")).strip())
         and bool(str(asset.get("sha256", "")).strip())
+        and person_interaction(asset)
+        and bool(asset.get("directorVisible"))
+        and FORBIDDEN_DESCRIPTOR.search(descriptor) is None
         and path is not None
         and path.is_file()
     )
 
 
 def trust_eligible(asset: dict[str, Any]) -> bool:
-    if person_interaction(asset):
-        return True
-    if asset.get("trustEligible") is True:
-        return True
-    tags = {str(value) for value in asset.get("tags", []) if value}
-    return bool(tags & TRUST_TAGS)
+    return person_interaction(asset) and bool(asset.get("directorVisible"))
 
 
 def person_interaction(asset: dict[str, Any]) -> bool:
@@ -238,26 +238,8 @@ def recommend(
         key=rank,
         reverse=True,
     )
-    fresh_semantic = sorted(
-        (item for item in candidates if not item[6] and item[4] and not person_interaction(item[3])),
-        key=rank,
-        reverse=True,
-    )
-    fresh_trust = sorted(
-        (
-            item for item in candidates
-            if not item[6] and not item[4] and not person_interaction(item[3]) and trust_eligible(item[3])
-        ),
-        key=rank,
-        reverse=True,
-    )
     recent_human_trust = sorted(
         (item for item in candidates if item[6] and person_interaction(item[3])),
-        key=rank,
-        reverse=True,
-    )
-    recent_trust = sorted(
-        (item for item in candidates if item[6] and not person_interaction(item[3]) and trust_eligible(item[3])),
         key=rank,
         reverse=True,
     )
@@ -293,13 +275,9 @@ def recommend(
 
     take(fresh_human_semantic, requested, "director-patient-topic-match")
     take(fresh_human_trust, requested, "director-patient-trust")
-    take(fresh_semantic, requested, "topic-match-fallback")
-    take(fresh_trust, requested, "object-or-space-trust-fallback")
     fresh_count = len(selected)
     if len(selected) < MIN_REAL_PHOTOS:
         take(recent_human_trust, MIN_REAL_PHOTOS, "recent-director-patient-fallback")
-    if len(selected) < MIN_REAL_PHOTOS:
-        take(recent_trust, MIN_REAL_PHOTOS, "recent-trust-fallback")
 
     selected_count = len(selected)
     status = "complete" if selected_count >= requested else "minimum-complete" if selected_count >= MIN_REAL_PHOTOS else "shortage"
@@ -308,7 +286,7 @@ def recommend(
         "status": status, "requested": requested, "minimum": MIN_REAL_PHOTOS, "maximum": MAX_REAL_PHOTOS,
         "selectedCount": selected_count, "freshCount": fresh_count, "fallbackRecentTrustCount": reused_count,
         "missingToMinimum": max(0, MIN_REAL_PHOTOS - selected_count), "missingToRequested": max(0, requested - selected_count),
-        "policy": "플러그인 내장 사진 중 새 원장-환자 치료·상담 장면 → 그 밖의 주제 일치 사진 → 약·장비·공간 fallback → 6장 미만일 때만 최근 안전 사진 재사용",
+        "policy": "플러그인 내장 사진 중 새 원장-환자 치료·진찰·상담·검사 장면만 사용 → 6장 미만일 때만 최근의 같은 승인 사진 재사용; 로고·간판·건물·약·환제·탕약·제품·장비·빈 공간 fallback 금지",
         "query": {"topic": topic, "keyword": keyword, "type": article_type}, "selected": selected,
     }
 

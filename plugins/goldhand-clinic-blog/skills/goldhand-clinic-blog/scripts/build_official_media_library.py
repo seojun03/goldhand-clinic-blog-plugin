@@ -236,8 +236,11 @@ def main() -> int:
             posts = posts[: args.limit]
         assets: list[dict[str, Any]] = []
         existing_by_post: dict[str, list[dict[str, Any]]] = {}
+        existing_payload: dict[str, Any] = {}
         if args.resume and args.output.exists():
             existing = json.loads(args.output.read_text(encoding="utf-8"))
+            if isinstance(existing, dict):
+                existing_payload = existing
             for asset in existing.get("assets", []) if isinstance(existing, dict) else []:
                 if isinstance(asset, dict) and asset.get("sourceLogNo"):
                     asset["url"] = naver_render_url(str(asset.get("url", "")))
@@ -271,11 +274,12 @@ def main() -> int:
             review_key = f"{asset['sourceLogNo']}:{asset['imageOrder']}"
             review = approved.get(review_key) if isinstance(approved, dict) else None
             denial = denied.get(review_key) if isinstance(denied, dict) else None
-            descriptor_safe = asset.get("safeAuto") is True
             manual_person_safe = bool(
                 isinstance(review, dict)
                 and review.get("safetyApproved") is True
                 and review.get("personInteraction") is True
+                and review.get("directorVisible") is True
+                and str(review.get("sceneType", "")).startswith("director-patient-")
             )
             asset["reviewKey"] = review_key
             asset["visualReviewed"] = isinstance(review, dict)
@@ -288,23 +292,24 @@ def main() -> int:
                 asset["safeAuto"] = False
                 asset["requiresReview"] = False
                 asset["safetyReason"] = "visual-review-denied"
-            elif isinstance(review, dict) and (descriptor_safe or manual_person_safe):
+            elif isinstance(review, dict) and manual_person_safe:
                 asset["safeAuto"] = True
                 asset["requiresReview"] = False
-                asset["safetyReason"] = (
-                    "manual-person-interaction-visual-review-approved"
-                    if manual_person_safe
-                    else "descriptor-and-visual-review-approved"
-                )
+                asset["safetyReason"] = "manual-director-patient-visual-review-approved"
             else:
                 asset["safeAuto"] = False
                 asset["requiresReview"] = True
-                if descriptor_safe:
-                    asset["safetyReason"] = "awaiting-visual-review"
+                asset["safetyReason"] = "article-use-requires-director-patient-scene"
         for index, asset in enumerate(assets, start=1):
             asset["id"] = f"GH{index:04d}"
+        bundled_assets = [
+            asset
+            for asset in assets
+            if asset.get("bundledPath") and asset.get("sha256") and asset.get("sizeBytes")
+        ]
+        fully_bundled = bool(assets) and len(bundled_assets) == len(assets)
         payload = {
-            "schemaVersion": 1,
+            "schemaVersion": 2 if fully_bundled else 1,
             "generatedAt": datetime.now(SEOUL).isoformat(timespec="seconds"),
             "sourceBlog": "https://blog.naver.com/goldhand7582_",
             "inventoryPosts": requested_posts,
@@ -312,9 +317,18 @@ def main() -> int:
             "failedPosts": failures,
             "assetCount": len(assets),
             "safeAutoCount": sum(asset["safeAuto"] for asset in assets),
-            "policy": "Metadata inventory; run sync_official_media_assets.py before packaging or use",
+            "policy": (
+                "All indexed official-blog image binaries are bundled in the plugin; only visually approved "
+                "director-patient safeAuto assets may be selected automatically"
+                if fully_bundled
+                else "Metadata inventory; run sync_official_media_assets.py before packaging or use"
+            ),
             "assets": assets,
         }
+        if bundled_assets:
+            payload["bundledAt"] = existing_payload.get("bundledAt", datetime.now(SEOUL).isoformat(timespec="seconds"))
+            payload["bundledAssetCount"] = len(bundled_assets)
+            payload["bundledBytes"] = sum(int(asset.get("sizeBytes", 0) or 0) for asset in bundled_assets)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:

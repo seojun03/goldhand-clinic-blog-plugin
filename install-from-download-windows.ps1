@@ -108,7 +108,8 @@ function Test-PluginTree([string]$Root) {
     $marketplace = Join-Path $Root ".agents\plugins\marketplace.json"
     $manifest = Join-Path $Root "plugins\$PluginName\.codex-plugin\plugin.json"
     $skill = Join-Path $Root "plugins\$PluginName\skills\$PluginName\SKILL.md"
-    return ((Test-Path -LiteralPath $marketplace) -and (Test-Path -LiteralPath $manifest) -and (Test-Path -LiteralPath $skill))
+    $updater = Join-Path $Root "scripts\update-windows.ps1"
+    return ((Test-Path -LiteralPath $marketplace) -and (Test-Path -LiteralPath $manifest) -and (Test-Path -LiteralPath $skill) -and (Test-Path -LiteralPath $updater))
 }
 
 function Test-CodexExecutable([string]$Candidate) {
@@ -232,138 +233,141 @@ function Invoke-Codex([string[]]$Arguments, [switch]$IgnoreFailure, [switch]$Cap
     }
 }
 
-function Disable-AutoUpdate {
-    if (-not (Get-Command "Get-ScheduledTask" -ErrorAction SilentlyContinue)) { return }
-    $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-    if ($task) {
-        Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
-        Write-Step "Disabled the central automatic updater."
-    }
-}
-
-function Copy-EditableTree {
-    if (Test-Path -LiteralPath $EditableRoot) {
-        if (Test-PluginTree -Root $EditableRoot) {
-            Write-Step "Keeping the existing editable copy and reconnecting it."
-            return
-        }
-        $parent = Split-Path -Parent $EditableRoot
-        $leaf = Split-Path -Leaf $EditableRoot
-        $quarantine = Join-Path $parent ($leaf + ".incomplete." + [DateTime]::UtcNow.ToString("yyyyMMddHHmmss") + "." + [Guid]::NewGuid().ToString("N").Substring(0, 8))
-        Move-Item -LiteralPath $EditableRoot -Destination $quarantine
-        Write-Warning "The incomplete existing folder was preserved at: $quarantine"
-    }
-
+function Copy-ManagedTree {
     if (-not (Test-PluginTree -Root $SourceRoot)) {
         throw "Required plugin files are missing. Extract the whole ZIP before running INSTALL-WINDOWS.cmd."
+    }
+
+    $sourceFull = [IO.Path]::GetFullPath($SourceRoot).TrimEnd('\')
+    $targetFull = [IO.Path]::GetFullPath($EditableRoot).TrimEnd('\')
+    if ($sourceFull.Equals($targetFull, [StringComparison]::OrdinalIgnoreCase)) {
+        Write-Step "The managed plugin folder is already in place. Reconnecting it."
+        return [PSCustomObject]@{ Replaced = $false; BackupRoot = $null }
     }
 
     $parent = Split-Path -Parent $EditableRoot
     if ($parent -and -not (Test-Path -LiteralPath $parent)) {
         New-Item -ItemType Directory -Path $parent -Force | Out-Null
     }
-    $staging = "$EditableRoot.installing.$([Guid]::NewGuid().ToString('N'))"
+    $leaf = Split-Path -Leaf $EditableRoot
+    $staging = Join-Path $parent ($leaf + ".installing." + [Guid]::NewGuid().ToString("N"))
+    $backup = Join-Path $parent ($leaf + ".backup." + [DateTime]::UtcNow.ToString("yyyyMMddHHmmss") + "." + [Guid]::NewGuid().ToString("N").Substring(0, 8))
     New-Item -ItemType Directory -Path $staging -Force | Out-Null
     try {
         foreach ($directory in @(".agents", "plugins", "scripts")) {
-            Copy-Item -LiteralPath (Join-Path $SourceRoot $directory) -Destination $staging -Recurse -Force
+            $source = Join-Path $SourceRoot $directory
+            if (-not (Test-Path -LiteralPath $source -PathType Container)) {
+                throw "The release ZIP is missing the $directory directory."
+            }
+            Copy-Item -LiteralPath $source -Destination $staging -Recurse -Force
         }
         foreach ($file in @("README.md", "INSTALL-WINDOWS.cmd", "install-from-download-windows.ps1")) {
             $source = Join-Path $SourceRoot $file
-            if (Test-Path -LiteralPath $source) {
+            if (Test-Path -LiteralPath $source -PathType Leaf) {
                 Copy-Item -LiteralPath $source -Destination $staging -Force
             }
         }
         if (-not (Test-PluginTree -Root $staging)) {
-            throw "The copied plugin folder is incomplete."
+            throw "The staged plugin folder is incomplete."
         }
-        Move-Item -LiteralPath $staging -Destination $EditableRoot
+
+        if (Test-Path -LiteralPath $EditableRoot) {
+            Move-Item -LiteralPath $EditableRoot -Destination $backup
+        } else {
+            $backup = $null
+        }
+        try {
+            Move-Item -LiteralPath $staging -Destination $EditableRoot
+        } catch {
+            if ($backup -and (Test-Path -LiteralPath $backup) -and -not (Test-Path -LiteralPath $EditableRoot)) {
+                Move-Item -LiteralPath $backup -Destination $EditableRoot
+            }
+            throw
+        }
     } finally {
         try { [void](Remove-TempDirectoryBestEffort -LiteralPath $staging) } catch {
         }
     }
-    Write-Step "Created an editable copy at $EditableRoot"
+    Write-Step "Replaced the managed plugin tree at $EditableRoot"
+    return [PSCustomObject]@{ Replaced = $true; BackupRoot = $backup }
 }
 
-function Refresh-EditableSupportFiles {
-    $source = Join-Path $SourceRoot "scripts\apply-local-edits-windows.ps1"
-    $destination = Join-Path $EditableRoot "scripts\apply-local-edits-windows.ps1"
-    if (-not (Test-Path -LiteralPath $source -PathType Leaf)) {
-        throw "The ZIP is missing scripts\apply-local-edits-windows.ps1."
-    }
-    $destinationParent = Split-Path -Parent $destination
-    if (-not (Test-Path -LiteralPath $destinationParent -PathType Container)) {
-        New-Item -ItemType Directory -Path $destinationParent -Force | Out-Null
-    }
-
-    $validatedSource = Get-Content -LiteralPath $source -Raw -Encoding UTF8
-    $tokens = $null
-    $parseErrors = $null
-    [System.Management.Automation.Language.Parser]::ParseInput($validatedSource, [ref]$tokens, [ref]$parseErrors) | Out-Null
-    if (@($parseErrors).Count -gt 0) {
-        throw "The ZIP contains an invalid local edit helper. The existing helper was preserved."
-    }
-    foreach ($requiredFunction in @("Test-CodexExecutable", "Get-CodexCommand", "Invoke-Codex")) {
-        if ($validatedSource -notmatch ("function\s+" + [regex]::Escape($requiredFunction) + "\b")) {
-            throw "The ZIP local edit helper is missing $requiredFunction. The existing helper was preserved."
+function Restore-ManagedTree([string]$BackupRoot, [bool]$Replaced) {
+    if (-not $Replaced) { return }
+    if (Test-Path -LiteralPath $EditableRoot) {
+        if (-not (Remove-TempDirectoryBestEffort -LiteralPath $EditableRoot)) {
+            throw "The failed replacement could not be removed from $EditableRoot."
         }
     }
-
-    # Always rewrite the helper with a UTF-8 BOM. Windows PowerShell 5.1 reads
-    # UTF-8 script files without a BOM as the active ANSI code page, which can
-    # turn Korean messages into parser errors when the helper runs directly.
-    $tempPath = Join-Path $destinationParent (".apply-local-edits-windows." + [Guid]::NewGuid().ToString("N") + ".tmp.ps1")
-    $backupPath = Join-Path $destinationParent (".apply-local-edits-windows." + [Guid]::NewGuid().ToString("N") + ".backup.ps1")
-    $utf8Bom = New-Object System.Text.UTF8Encoding($true)
-    try {
-        [IO.File]::WriteAllText($tempPath, $validatedSource, $utf8Bom)
-        if (Test-Path -LiteralPath $destination -PathType Leaf) {
-            [IO.File]::Replace($tempPath, $destination, $backupPath)
-        } else {
-            [IO.File]::Move($tempPath, $destination)
-        }
-    } finally {
-        if (Test-Path -LiteralPath $tempPath) {
-            Remove-Item -LiteralPath $tempPath -Force -ErrorAction SilentlyContinue
-        }
-        if (Test-Path -LiteralPath $backupPath) {
-            if (-not (Test-Path -LiteralPath $destination -PathType Leaf)) {
-                Move-Item -LiteralPath $backupPath -Destination $destination -Force
-            } else {
-                Remove-Item -LiteralPath $backupPath -Force -ErrorAction SilentlyContinue
-            }
-        }
+    if ($BackupRoot -and (Test-Path -LiteralPath $BackupRoot)) {
+        Move-Item -LiteralPath $BackupRoot -Destination $EditableRoot
+        Write-Step "Restored the previous managed plugin tree."
     }
-    Write-Step "Refreshed the local edit helper without replacing SKILL.md."
 }
 
 function Set-UniqueLocalVersion {
     $manifestPath = Join-Path $EditableRoot "plugins\$PluginName\.codex-plugin\plugin.json"
     $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-    $baseVersion = ([string]$manifest.version -split "\+", 2)[0]
+    $sourceVersion = [string]$manifest.version
+    $baseVersion = ($sourceVersion -split "\+", 2)[0]
     $cacheBuster = [DateTime]::UtcNow.ToString("yyyyMMddHHmmssfff")
-    $manifest.version = "$baseVersion+codex.local.install.$cacheBuster.$PID"
+    $manifest.version = "$baseVersion+codex.managed.install.$cacheBuster.$PID"
     $encoding = New-Object System.Text.UTF8Encoding($false)
     [IO.File]::WriteAllText($manifestPath, ($manifest | ConvertTo-Json -Depth 100) + [Environment]::NewLine, $encoding)
+    $releaseId = if ($env:GOLDHAND_RELEASE_TAG) { [string]$env:GOLDHAND_RELEASE_TAG } else { $sourceVersion }
+    [IO.File]::WriteAllText((Join-Path $EditableRoot ".goldhand-managed-release"), $releaseId + [Environment]::NewLine, $encoding)
     return $manifest.version
 }
 
-function Create-DesktopShortcut {
-    if ($env:GOLDHAND_SKIP_DESKTOP_SHORTCUT -eq "1") { return }
+function Remove-LegacyDesktopShortcut {
     $desktop = [Environment]::GetFolderPath("Desktop")
     if (-not $desktop) { return }
     $shortcut = Join-Path $desktop "goldhand-clinic-blog-apply-my-edits.cmd"
-    $applyScript = Join-Path $EditableRoot "scripts\apply-local-edits-windows.ps1"
-    $content = "@echo off`r`npowershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$applyScript`" -CodexPath `"$script:CodexExecutable`"`r`npause`r`n"
-    $encoding = New-Object System.Text.UTF8Encoding($true)
-    [IO.File]::WriteAllText($shortcut, $content, $encoding)
+    if (Test-Path -LiteralPath $shortcut -PathType Leaf) {
+        Remove-Item -LiteralPath $shortcut -Force -ErrorAction SilentlyContinue
+    }
+}
+
+function Register-AutoUpdate {
+    if ($env:GOLDHAND_SKIP_AUTO_UPDATE_REGISTRATION -eq "1") {
+        Write-Step "Automatic update registration was skipped for this test run."
+        return
+    }
+    $updateScript = Join-Path $EditableRoot "scripts\update-windows.ps1"
+    if (-not (Test-Path -LiteralPath $updateScript -PathType Leaf)) {
+        throw "The release ZIP is missing scripts\update-windows.ps1."
+    }
+    $arguments = '-NoLogo -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $updateScript + '" -CodexPath "' + $script:CodexExecutable + '" -EditableRoot "' + $EditableRoot + '"'
+    try {
+        if (-not (Get-Command "Register-ScheduledTask" -ErrorAction SilentlyContinue)) {
+            throw "Scheduled Tasks commands are unavailable."
+        }
+        $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $arguments
+        $logon = New-ScheduledTaskTrigger -AtLogOn
+        $periodic = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(10) -RepetitionInterval (New-TimeSpan -Hours 6) -RepetitionDuration (New-TimeSpan -Days 3650)
+        Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger @($logon, $periodic) -Description "Update the Goldhand Clinic Blog Codex plugin from the latest validated release." -Force | Out-Null
+        Write-Step "Automatic updates are enabled at sign-in and every six hours."
+        return
+    } catch {
+        Write-Warning "Scheduled Task registration failed. Using the Startup folder fallback: $($_.Exception.Message)"
+    }
+
+    $startup = [Environment]::GetFolderPath("Startup")
+    if ([string]::IsNullOrWhiteSpace($startup)) {
+        throw "Automatic updates could not be registered."
+    }
+    if (-not (Test-Path -LiteralPath $startup -PathType Container)) {
+        New-Item -ItemType Directory -Path $startup -Force | Out-Null
+    }
+    $fallback = Join-Path $startup "GoldhandClinicPluginUpdate.cmd"
+    $content = "@echo off`r`nstart `"`" /min powershell.exe $arguments`r`n"
+    $encoding = New-Object System.Text.ASCIIEncoding
+    [IO.File]::WriteAllText($fallback, $content, $encoding)
+    Write-Step "Automatic updates are enabled at Windows sign-in."
 }
 
 function Install-DownloadedPlugin {
-    Write-Step "Installing the editable plugin without changing the ChatGPT app or Git."
-    Disable-AutoUpdate
-    Copy-EditableTree
-    Refresh-EditableSupportFiles
+    Write-Step "Installing the managed plugin without changing the ChatGPT app or Git."
     Ensure-Python
 
     if ($env:CODEX_HOME -and -not (Test-Path -LiteralPath $env:CODEX_HOME)) {
@@ -381,13 +385,15 @@ function Install-DownloadedPlugin {
     $env:GOLDHAND_CODEX_PATH = $script:CodexExecutable
     Write-Step "Found Codex at $script:CodexExecutable"
 
-    $localVersion = Set-UniqueLocalVersion
     $before = (Invoke-Codex -Arguments @("plugin", "list", "--json") -Capture) | ConvertFrom-Json
     $beforeInstalled = $before.installed | Where-Object { $_.pluginId -eq $PluginSelector } | Select-Object -First 1
     $previousSourceType = if ($beforeInstalled) { [string]$beforeInstalled.marketplaceSource.sourceType } else { "" }
     $previousMarketplaceSource = if ($beforeInstalled) { [string]$beforeInstalled.marketplaceSource.source } else { "" }
     $canRestoreConnection = $beforeInstalled -and (@("local", "git") -contains $previousSourceType) -and (-not [string]::IsNullOrWhiteSpace($previousMarketplaceSource))
+    $treeResult = $null
     try {
+        $treeResult = Copy-ManagedTree
+        $localVersion = Set-UniqueLocalVersion
         Invoke-Codex -Arguments @("plugin", "remove", $PluginSelector, "--json") -IgnoreFailure -Capture | Out-Null
         Invoke-Codex -Arguments @("plugin", "marketplace", "remove", $MarketplaceName, "--json") -IgnoreFailure -Capture | Out-Null
         Invoke-Codex -Arguments @("plugin", "marketplace", "add", $EditableRoot, "--json") -Capture | Out-Null
@@ -400,33 +406,41 @@ function Install-DownloadedPlugin {
             throw "The plugin was not enabled after installation."
         }
         if ($installed.marketplaceSource.sourceType -ne "local") {
-            throw "The installed plugin is not connected to the editable local copy."
+            throw "The installed plugin is not connected to the managed local copy."
         }
         if ([string]$installed.version -ne [string]$localVersion) {
             throw "The installed version does not match the downloaded local copy."
         }
+        Register-AutoUpdate
     } catch {
         $installError = $_.Exception
-        if ($canRestoreConnection) {
-            Write-Warning "Install failed. Restoring the previous plugin connection."
-            try {
+        Write-Warning "Install failed. Restoring the previous managed version."
+        try {
+            Invoke-Codex -Arguments @("plugin", "remove", $PluginSelector, "--json") -IgnoreFailure -Capture | Out-Null
+            Invoke-Codex -Arguments @("plugin", "marketplace", "remove", $MarketplaceName, "--json") -IgnoreFailure -Capture | Out-Null
+            if ($treeResult) {
+                Restore-ManagedTree -BackupRoot ([string]$treeResult.BackupRoot) -Replaced ([bool]$treeResult.Replaced)
+            }
+            if ($canRestoreConnection) {
                 Invoke-Codex -Arguments @("plugin", "marketplace", "remove", $MarketplaceName, "--json") -IgnoreFailure -Capture | Out-Null
                 Invoke-Codex -Arguments @("plugin", "marketplace", "add", $previousMarketplaceSource, "--json") -Capture | Out-Null
                 Invoke-Codex -Arguments @("plugin", "add", $PluginSelector, "--json") -Capture | Out-Null
-            } catch {
-                Write-Warning "Could not restore the previous plugin connection: $($_.Exception.Message)"
             }
+        } catch {
+            Write-Warning "Could not completely restore the previous plugin version: $($_.Exception.Message)"
         }
         throw $installError
     }
 
-    $skillPath = Join-Path $EditableRoot "plugins\$PluginName\skills\$PluginName\SKILL.md"
-    Create-DesktopShortcut
+    if ($treeResult -and $treeResult.BackupRoot) {
+        try { [void](Remove-TempDirectoryBestEffort -LiteralPath ([string]$treeResult.BackupRoot)) } catch {
+        }
+    }
+    Remove-LegacyDesktopShortcut
     Write-Host ""
     Write-Step "INSTALLATION COMPLETE"
     Write-Step "Open ChatGPT, start a new task, and select the Goldhand Clinic Blog plugin."
-    Write-Step "Editable instructions: $skillPath"
-    Write-Step "After editing, run goldhand-clinic-blog-apply-my-edits.cmd from the Desktop."
+    Write-Step "Future validated releases will update automatically on Windows."
 }
 
 try {

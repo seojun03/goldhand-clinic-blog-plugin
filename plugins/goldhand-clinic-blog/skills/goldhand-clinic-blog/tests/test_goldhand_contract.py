@@ -1221,6 +1221,47 @@ class BuilderTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "credential-after-first-body-marker"):
             PAGE_BUILDER.validate_credential_placement(article)
 
+    def test_builder_appends_clickable_blog_photo_and_map_exactly_once(self) -> None:
+        article = PAGE_BUILDER.ensure_closing_links(valid_article())
+        article = PAGE_BUILDER.ensure_closing_links(article)
+        self.assertEqual(article.count('data-goldhand-closing-links="true"'), 1)
+        self.assertEqual(article.count('data-goldhand-photo-link="official-blog"'), 1)
+        self.assertEqual(article.count('class="se-component se-image'), 1)
+        self.assertEqual(article.count('class="se-component se-placesMap'), 1)
+        self.assertEqual(article.count('data-module='), 2)
+        self.assertEqual(article.count('data-module-v2='), 2)
+        self.assertIn("https://blog.naver.com/goldhand7582_", article)
+        self.assertIn('data-linktype="img"', article)
+        self.assertIn('&quot;linkUse&quot;:&quot;true&quot;', article)
+        self.assertIn('&quot;type&quot;:&quot;v2_image&quot;', article)
+        self.assertRegex(
+            article,
+            r'<a\b(?=[^>]*href="https://blog\.naver\.com/goldhand7582_")(?=[^>]*data-linktype="img")[^>]*>\s*<img\b',
+        )
+        self.assertNotIn("se-oglink", article)
+        self.assertNotIn("se-oglink-title", article)
+        self.assertNotIn("se-oglink-summary", article)
+        self.assertNotIn("se-oglink-url", article)
+        self.assertIn("https://map.naver.com/p/entry/place/1598180269", article)
+        self.assertIn('data-place-id="1598180269"', article)
+        self.assertNotIn("og_270x270.png", article)
+        self.assertNotIn("한의원로고", article)
+        self.assertRegex(article, r'data-goldhand-closing-links="true"[\s\S]*?</section>\s*</article>$')
+
+    def test_builder_rejects_logo_and_nonperson_actual_photo(self) -> None:
+        library = json.loads((SKILL_DIR / "assets" / "media-library.json").read_text(encoding="utf-8"))
+        logo = next(item for item in library["assets"] if item["id"] == "GH0069")
+        article = valid_article().replace(
+            "</article>",
+            (
+                f'<img data-real-photo="true" data-goldhand-media="{logo["id"]}" '
+                f'data-media-sha256="{logo["sha256"]}" '
+                f'data-reference-source-url="{logo["url"]}" src="{logo["url"]}"></article>'
+            ),
+        )
+        with self.assertRaisesRegex(ValueError, "원장 치료·진찰·상담 사진이 아니므로"):
+            PAGE_BUILDER.validate_person_media_policy(article, library)
+
     def test_build_page_publishes_local_image_as_https(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -1259,6 +1300,23 @@ class BuilderTests(unittest.TestCase):
         )
         result = HTML_VALIDATOR.validate_html(PAGE_BUILDER.build_page(TITLE, article))
         self.assertIn("naver-rejected-data-image", {item["code"] for item in result["issues"]})
+
+    def test_copy_page_rejects_text_card_or_nonclickable_blog_photo(self) -> None:
+        page = PAGE_BUILDER.build_page(TITLE, valid_article())
+        nonclickable = page.replace('data-linktype="img"', 'data-linktype="none"', 1)
+        nonclickable_result = HTML_VALIDATOR.validate_html(nonclickable)
+        self.assertIn(
+            "official-blog-photo-link-count",
+            {item["code"] for item in nonclickable_result["issues"]},
+        )
+
+        text_card = page.replace('class="se-component se-image', 'class="se-component se-oglink', 1)
+        text_card = text_card.replace('data-linktype="img"', 'data-linktype="oglink"', 1)
+        text_card_result = HTML_VALIDATOR.validate_html(text_card)
+        self.assertIn(
+            "text-oglink-card-forbidden",
+            {item["code"] for item in text_card_result["issues"]},
+        )
 
     def test_editorial_close_page_allows_two_tables_without_summary(self) -> None:
         article = editorial_close_article(include_summary=False).replace(
@@ -1459,7 +1517,7 @@ class StateAndMediaTests(unittest.TestCase):
         self.assertEqual(result["entries"][0]["realMediaIds"], entry["realMediaIds"])
         self.assertEqual(result["entries"][0]["realMediaHashes"], entry["realMediaHashes"])
 
-    def test_media_never_fills_with_unrelated_or_duplicate_group(self) -> None:
+    def test_media_never_fills_with_objects_or_duplicate_group(self) -> None:
         library = {
             "assets": [
                 {"id": "A", "safeAuto": True, "requiresReview": False, "bundledPath": "assets/gpt-image-test-fixture.png", "sha256": "a", "url": "https://example.com/a.jpg", "sourceTitle": "교통사고 통증", "caption": "ICT 물리치료", "filename": "ICT.jpg", "context": "교통사고", "tokens": ["교통사고"], "tags": ["traffic-accident"], "postOrder": 1, "imageOrder": 1, "sourceLogNo": "1", "duplicateGroup": "same"},
@@ -1475,7 +1533,7 @@ class StateAndMediaTests(unittest.TestCase):
             count=6,
             recent_ids=set(),
         )
-        self.assertEqual(result["selectedCount"], 1, result)
+        self.assertEqual(result["selectedCount"], 0, result)
         self.assertEqual(result["status"], "shortage")
 
     def test_media_reuses_recent_trust_photos_only_to_reach_six(self) -> None:
@@ -1487,6 +1545,8 @@ class StateAndMediaTests(unittest.TestCase):
                 "tokens": [], "tags": ["clinic-space"], "postOrder": index,
                 "imageOrder": 1, "sourceLogNo": str(index), "duplicateGroup": "",
                 "bundledPath": "assets/gpt-image-test-fixture.png", "sha256": f"trust-{index}",
+                "sceneType": "director-patient-consultation", "personInteraction": True,
+                "directorVisible": True, "trustPriority": 100,
             }
             for index in range(1, 8)
         ]
@@ -1498,7 +1558,7 @@ class StateAndMediaTests(unittest.TestCase):
         self.assertEqual(result["freshCount"], 4, result)
         self.assertEqual(result["fallbackRecentTrustCount"], 2, result)
         self.assertEqual(result["status"], "minimum-complete")
-        self.assertTrue(all(item["selectionRole"] == "recent-trust-fallback" for item in result["selected"][-2:]))
+        self.assertTrue(all(item["selectionRole"] == "recent-director-patient-fallback" for item in result["selected"][-2:]))
 
     def test_media_does_not_reuse_recent_when_six_fresh_photos_exist(self) -> None:
         assets = [
@@ -1509,6 +1569,8 @@ class StateAndMediaTests(unittest.TestCase):
                 "tokens": [], "tags": ["clinic-space"], "postOrder": index,
                 "imageOrder": 1, "sourceLogNo": str(index), "duplicateGroup": "",
                 "bundledPath": "assets/gpt-image-test-fixture.png", "sha256": f"fresh-{index}",
+                "sceneType": "director-patient-treatment", "personInteraction": True,
+                "directorVisible": True, "trustPriority": 100,
             }
             for index in range(1, 9)
         ]
@@ -1556,8 +1618,14 @@ class StateAndMediaTests(unittest.TestCase):
         self.assertEqual(library["schemaVersion"], 2)
         self.assertEqual(library["assetCount"], 113)
         self.assertEqual(library["bundledAssetCount"], 113)
+        self.assertEqual(library["safeAutoCount"], 6)
         self.assertEqual(OFFICIAL_MEDIA_SYNC.validate_library(library), [])
         self.assertTrue(all(str(item["bundledPath"]).startswith("assets/official-media/") for item in library["assets"]))
+        approved = [item for item in library["assets"] if item.get("safeAuto")]
+        self.assertTrue(all(item.get("personInteraction") is True for item in approved))
+        self.assertTrue(all(item.get("directorVisible") is True for item in approved))
+        self.assertTrue(all(str(item.get("sceneType", "")).startswith("director-patient-") for item in approved))
+        self.assertFalse(any(re.search(r"(?:로고|logo)", str(item.get("filename", "")), re.I) for item in approved))
 
 
 class TopicSourceBoundaryTests(unittest.TestCase):
@@ -1859,6 +1927,7 @@ class SkillPackageTests(unittest.TestCase):
             "assets/wipark-reference-corpus.json",
             "assets/reference-master-profiles.json",
             "assets/goldhand-naver-native-design-system.json",
+            "assets/goldhand-closing-links.json",
             "assets/callilife-ogq-media-library.json",
             "assets/gpt-image-test-fixture.png",
             "assets/goldhand-value-proof-library.json",
@@ -1889,6 +1958,12 @@ class SkillPackageTests(unittest.TestCase):
         self.assertEqual(design["realGoldhandMedia"]["minimumCount"], 6)
         self.assertEqual(design["realGoldhandMedia"]["maximumCount"], 12)
         self.assertTrue(design["realGoldhandMedia"]["recentReuseAllowedOnlyBelowMinimum"])
+        self.assertTrue(design["realGoldhandMedia"]["personInteractionRequired"])
+        self.assertTrue(design["realGoldhandMedia"]["directorVisibleRequired"])
+        self.assertEqual(design["fixedClosingLinks"]["placeId"], "1598180269")
+        self.assertEqual(design["fixedClosingLinks"]["order"], ["goldhand-official-blog-linked-photo", "goldhand-naver-place-map"])
+        self.assertTrue(design["fixedClosingLinks"]["blogPhotoIsTheLink"])
+        self.assertTrue(design["fixedClosingLinks"]["visibleBlogLinkTextForbidden"])
         self.assertEqual(design["generatedReferenceMedia"]["contentPreservation"], "medical-information-layout")
         self.assertEqual(
             design["generatedReferenceMedia"]["allowedVariationModes"],
@@ -1912,8 +1987,11 @@ class SkillPackageTests(unittest.TestCase):
         self.assertIn("위석 원문의 말투·종결어미", skill)
         self.assertIn("validate_goldhand_voice.py", skill)
         self.assertIn("실제 금손한의원 사진을 매 글 6~12장", skill)
-        self.assertIn("새 안전 사진이 6장보다 적을 때만", skill)
+        self.assertIn("새 승인 사진이 6장보다 적을 때만", skill)
         self.assertIn("assets/official-media", skill)
+        self.assertIn("goldhand-closing-links.json", skill)
+        self.assertIn("1598180269", skill)
+        self.assertIn("로고·간판·건물 외부·약·환제·탕약·장비·제품·빈 원내 공간", skill)
         self.assertNotIn("Desktop/" + "금손한의원 사진", skill)
         self.assertIn("진료실 발화 가능성 검사", skill)
         self.assertIn("같은 생성 원리에서 나온 문장군", skill)
@@ -1922,6 +2000,9 @@ class SkillPackageTests(unittest.TestCase):
         self.assertIn("goldhand-naver-native-v4", skill)
         self.assertIn("첫 정보 본문의 구분선·소제목·설명보다 앞", skill)
         self.assertIn("placing the fixed Goldhand credential table after the complete introduction", openai_yaml)
+        self.assertIn("Never use a Goldhand logo", openai_yaml)
+        self.assertIn("Naver Place map block", openai_yaml)
+        self.assertIn("clickable Goldhand director-consultation photo", openai_yaml)
         self.assertIn("data-mobile-group", skill)
         self.assertNotIn("Notion TOP 5", skill)
 
@@ -1990,6 +2071,47 @@ class SkillPackageTests(unittest.TestCase):
         )
         afterglow_result = GOLDHAND_VOICE_VALIDATOR.validate(afterglow, profile)
         self.assertIn("lesson-afterglow-ending", {item["code"] for item in afterglow_result["issues"]})
+
+        literary_location = example.replace(
+            "아픈 곳만 말씀하지 마시고",
+            "아픈 자리만 말씀하지 마시고",
+            1,
+        )
+        literary_location_result = GOLDHAND_VOICE_VALIDATOR.validate(literary_location, profile)
+        self.assertIn(
+            "literary-body-location",
+            {item["code"] for item in literary_location_result["issues"]},
+        )
+
+        abstract_gait = example.replace(
+            "진료할 때 같이 말씀해 주세요.",
+            "걷기가 달라지면 진료할 때 말씀해 주세요.",
+            1,
+        )
+        abstract_gait_result = GOLDHAND_VOICE_VALIDATOR.validate(abstract_gait, profile)
+        self.assertIn(
+            "abstract-gait-description",
+            {item["code"] for item in abstract_gait_result["issues"]},
+        )
+
+        abstract_predicate = example.replace(
+            "진료할 때 같이 말씀해 주세요.",
+            "이 내용이 치료 방향에 차이를 만듭니다.",
+            1,
+        )
+        abstract_predicate_result = GOLDHAND_VOICE_VALIDATOR.validate(abstract_predicate, profile)
+        self.assertIn(
+            "abstract-editorial-predicate",
+            {item["code"] for item in abstract_predicate_result["issues"]},
+        )
+
+        natural_gait = example.replace(
+            "진료할 때 같이 말씀해 주세요.",
+            "평소보다 걷기 힘들다면 진료할 때 말씀해 주세요.",
+            1,
+        )
+        natural_gait_result = GOLDHAND_VOICE_VALIDATOR.validate(natural_gait, profile)
+        self.assertEqual(natural_gait_result["status"], "pass", natural_gait_result)
 
     def test_wipark_controls_content_but_not_voice(self) -> None:
         briefs = json.loads((SKILL_DIR / "assets" / "wipark-content-briefs.json").read_text(encoding="utf-8"))
