@@ -127,6 +127,7 @@ jobs:
           GOLDHAND_EDITABLE_ROOT: ${{ runner.temp }}\GoldhandClinicPlugin-full
           GOLDHAND_FORCE_UPDATE: "1"
           GOLDHAND_RELEASE_TAG: "ci-managed-update"
+          GOLDHAND_AUTO_UPDATE_TASK_NAME: "GoldhandClinicPluginUpdateCI"
         run: |
           $archive = Join-Path $env:RUNNER_TEMP "managed-update.zip"
           git archive --format=zip --prefix=release/ --output=$archive HEAD
@@ -135,8 +136,9 @@ jobs:
           $env:GOLDHAND_CODEX_PATH = Get-Content -LiteralPath (Join-Path $env:RUNNER_TEMP "codex-path.txt") -Raw -Encoding UTF8
           $stale = Join-Path $env:GOLDHAND_EDITABLE_ROOT "stale-file-that-must-disappear.txt"
           Set-Content -LiteralPath $stale -Value "stale" -Encoding ASCII
-          $updateOutput = @(& (Join-Path $env:GOLDHAND_EDITABLE_ROOT "scripts\update-windows.ps1") -CodexPath $env:GOLDHAND_CODEX_PATH -EditableRoot $env:GOLDHAND_EDITABLE_ROOT 2>&1)
-          if (($updateOutput -join "`n") -notmatch "Automatic update registration was skipped") { throw "Managed updater attempted to register itself again" }
+          Unregister-ScheduledTask -TaskName $env:GOLDHAND_AUTO_UPDATE_TASK_NAME -Confirm:$false -ErrorAction SilentlyContinue
+          & (Join-Path $env:GOLDHAND_EDITABLE_ROOT "scripts\update-windows.ps1") -CodexPath $env:GOLDHAND_CODEX_PATH -EditableRoot $env:GOLDHAND_EDITABLE_ROOT
+          if (Get-ScheduledTask -TaskName $env:GOLDHAND_AUTO_UPDATE_TASK_NAME -ErrorAction SilentlyContinue) { throw "Managed updater registered itself again" }
           if (Test-Path -LiteralPath $stale) { throw "Managed update preserved a stale file" }
           $state = (Get-Content -LiteralPath (Join-Path $env:GOLDHAND_EDITABLE_ROOT ".goldhand-managed-release") -Raw -Encoding UTF8).Trim()
           if ($state -ne "ci-managed-update") { throw "Managed release state mismatch: $state" }
