@@ -82,7 +82,7 @@
 ### 2. 금손한의원 소개 — 정보 본문 직전 고정 표
 
 - `credential` 표는 모든 글에서 정확히 한 번 사용한다.
-- 독자 고민과 고정 인사는 편집 마스터가 정한 순서로 모두 끝내고, `solution-preview` 전체가 끝난 직후에 배치한다.
+- 독자 고민과 고정 인사는 편집 마스터가 정한 순서로 모두 끝내고, `solution-preview` 전체가 끝난 뒤에 배치한다. `before-credential` 실제 사진 1장 구성에서만 표 바로 위 사진을 허용한다.
 - `credential` 다음의 첫 콘텐츠 컴포넌트는 첫 정보 본문의 `divider` 또는 `section-heading`이어야 한다. 구분선과 소제목을 함께 쓰면 `credential`은 첫 구분선 바로 앞에 둔다.
 - `solution-preview`와 `credential` 사이, `credential`과 첫 정보 본문 사이에 이미지·일반 본문·`article-summary`·다른 표를 끼우지 않는다. 시각 간격만 만드는 `data-preview-gap="true"`는 콘텐츠로 보지 않는다.
 - 이 위치는 주제·편집 마스터·이미지 유무와 관계없이 모든 자동모드·정밀작성모드 글에 동일하게 적용한다.
@@ -129,9 +129,9 @@
 - 가치입증 6행은 `assets/goldhand-value-proof-library.json`과 문구·순서가 정확히 같아야 한다.
 - 모든 셀에 `1px solid #D6D6D6` 구분선을 넣고, 글자는 가로·세로 중앙 정렬한다.
 - 표는 100% 너비, 붙은 셀 테두리, 좌우 자동 여백으로 중앙 배치한다.
-- `clinic-hours`는 첨부 레퍼런스처럼 `요일 / 진료시간 / 비고` 3열로 만들고 폭은 `24% / 38% / 38%`로 고정한다. 첫 행은 금손 골드 `#C99F75`와 흰 글자, 요일 셀은 크림 `#F3E8DD`와 골드 브라운 `#7A5434`를 쓴다.
+- `clinic-hours`는 첨부 레퍼런스처럼 `요일 / 진료시간 / 비고` 3열로 만들고 폭은 `24% / 38% / 38%`로 고정한다. 첫 행은 금손 골드 `#C99F75`와 흰 글자, 요일 셀은 크림 `#F3E8DD`와 골드 브라운 `#7A5434`를 쓴다. 본문 행은 월·수·금, 화·목, 토·일만 사용하고 공휴일·설·추석 행은 만들지 않는다.
 
-- `clinic-info`는 금손한의원 골드 제목띠 다음 위치·찾아오는 길·전화·카카오톡·네이버 예약을 한 행씩 쌓는 1열 다행 표다. 모든 셀은 `100%` 폭과 기본 높이·행간·줄바꿈을 동일하게 둔다.
+- `clinic-info`는 금손한의원 골드 제목띠 다음 위치·찾아오는 길·전화만 한 행씩 쌓는 1열 다행 표다. 카카오톡·네이버 예약 행은 만들지 않는다. 모든 셀은 `100%` 폭과 기본 높이·행간·줄바꿈을 동일하게 둔다.
 
 ```html
 <td style="width:100%;height:64px;background-color:#C99F75;border:1px solid #D6D6D6;color:#FFFFFF;font-weight:700;text-align:center;vertical-align:middle;line-height:1.8;word-break:keep-all;">금손한의원</td>
@@ -161,5 +161,6 @@
 - `solution-preview → credential → 첫 정보 본문 divider/section-heading` 사이에 다른 콘텐츠가 끼어 있음
 - `clinic-info` 표 누락 또는 불필요한 `article-summary`로 산문을 반복함
 - `clinic-hours` 셀의 24:38:38 폭 또는 `clinic-info` 셀의 100% 적층 행 폭·중앙 정렬·기본 높이 누락
+- `clinic-hours`에 공휴일·설·추석 행이 있거나 `clinic-info`에 카카오톡·네이버 예약 행이 있음
 - 1행×1열 가짜 표, CSS 카드, 외부 박스 스타일 발견
 - `data-goldhand-design-system="goldhand-naver-native-v4"` 누락

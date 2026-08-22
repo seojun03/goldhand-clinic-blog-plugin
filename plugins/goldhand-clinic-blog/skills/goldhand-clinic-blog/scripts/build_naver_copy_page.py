@@ -21,11 +21,24 @@ from pathlib import Path
 
 OUTPUT_DIR_ENV = "GOLDHAND_OUTPUT_DIR"
 IMAGE_HOST_CONFIG_ENV = "GOLDHAND_IMAGE_HOST_CONFIG"
-DEFAULT_IMAGE_HOST_CONFIG = Path.home() / ".codex" / "state" / "goldhand-clinic-blog" / "image-host.json"
 SKILL_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_MEDIA_LIBRARY = SKILL_DIR / "assets" / "media-library.json"
 PERSON_SCENE_PREFIX = "director-patient-"
+ALLOWED_CLOSING_TRUST_SCENES = {
+    "director-agreement-pose",
+    "director-community-pose",
+    "credential-detail",
+}
 LOGO_DESCRIPTOR = re.compile(r"(?:로고|logo)", re.I)
+
+
+def codex_home_dir() -> Path:
+    override = os.environ.get("CODEX_HOME", "").strip()
+    return Path(override).expanduser().resolve() if override else Path.home() / ".codex"
+
+
+def default_image_host_config() -> Path:
+    return codex_home_dir() / "state" / "goldhand-clinic-blog" / "image-host.json"
 
 
 def parse_args() -> argparse.Namespace:
@@ -113,7 +126,7 @@ def validate_credential_placement(article: str) -> None:
 
 
 def image_host_config() -> tuple[Path, str]:
-    config_path = Path(os.environ.get(IMAGE_HOST_CONFIG_ENV, str(DEFAULT_IMAGE_HOST_CONFIG))).expanduser()
+    config_path = Path(os.environ.get(IMAGE_HOST_CONFIG_ENV, str(default_image_host_config()))).expanduser()
     if not config_path.is_file():
         raise ValueError(
             "GPT 생성 이미지를 네이버에 붙여넣으려면 금손 전용 HTTPS 이미지 호스트 설정이 필요합니다: "
@@ -159,17 +172,59 @@ def verify_published_image(url: str) -> None:
         raise ValueError(f"게시 이미지 주소를 확인할 수 없습니다: {url}") from exc
 
 
-def deploy_image_host(project_dir: Path) -> None:
+def resolve_vercel_cli(platform_name: str | None = None) -> str:
+    """Resolve the npm CLI shim on both Windows and POSIX systems."""
+
+    candidates = ("vercel.cmd", "vercel.exe", "vercel") if (platform_name or os.name) == "nt" else ("vercel",)
+    for candidate in candidates:
+        resolved = shutil.which(candidate)
+        if resolved:
+            return resolved
+    if (platform_name or os.name) == "nt":
+        explicit_roots = [
+            os.environ.get("NPM_CONFIG_PREFIX", ""),
+            str(Path(os.environ["APPDATA"]) / "npm") if os.environ.get("APPDATA") else "",
+            str(Path(os.environ["LOCALAPPDATA"]) / "npm") if os.environ.get("LOCALAPPDATA") else "",
+        ]
+        for root in explicit_roots:
+            if not root:
+                continue
+            for candidate in ("vercel.cmd", "vercel.exe"):
+                path = Path(root) / candidate
+                if path.is_file():
+                    return str(path)
+    else:
+        explicit_paths = [
+            codex_home_dir() / "state" / "goldhand-clinic-blog" / "bin" / "vercel",
+            Path.home() / ".local" / "bin" / "vercel",
+            Path("/opt/homebrew/bin/vercel"),
+            Path("/usr/local/bin/vercel"),
+        ]
+        for path in explicit_paths:
+            if path.is_file() and os.access(path, os.X_OK):
+                return str(path)
+    expected = "vercel.cmd 또는 vercel.exe" if (platform_name or os.name) == "nt" else "vercel"
+    raise ValueError(f"금손 이미지 게시용 Vercel CLI를 찾을 수 없습니다: {expected}")
+
+
+def vercel_deploy_command(platform_name: str | None = None) -> list[str]:
+    resolved = resolve_vercel_cli(platform_name)
+    if (platform_name or os.name) == "nt" and Path(resolved).suffix.lower() in {".cmd", ".bat"}:
+        return ["cmd.exe", "/d", "/s", "/c", resolved, "--prod", "--yes"]
+    return [resolved, "--prod", "--yes"]
+
+
+def deploy_image_host(project_dir: Path, platform_name: str | None = None) -> None:
     try:
         subprocess.run(
-            ["vercel", "--prod", "--yes"],
+            vercel_deploy_command(platform_name),
             cwd=project_dir,
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
         )
-    except (OSError, subprocess.CalledProcessError) as exc:
+    except (OSError, subprocess.CalledProcessError, ValueError) as exc:
         detail = getattr(exc, "stderr", "") or str(exc)
         raise ValueError(f"금손 이미지 HTTPS 게시에 실패했습니다: {detail.strip()[:400]}") from exc
 
@@ -304,6 +359,23 @@ def is_approved_director_patient_photo(asset: dict[str, object]) -> bool:
     )
 
 
+def is_approved_closing_trust_photo(asset: dict[str, object]) -> bool:
+    return (
+        asset.get("closingTrustEligible") is True
+        and asset.get("closingTrustReviewed") is True
+        and asset.get("closingTrustRequiresReview") is False
+        and str(asset.get("closingTrustSceneType", "")) in ALLOWED_CLOSING_TRUST_SCENES
+        and (
+            asset.get("closingTrustDirectorVisible") is True
+            or asset.get("closingTrustDocumentVisible") is True
+        )
+        and bool(str(asset.get("closingTrustApprovedAlt", "")).strip())
+        and bool(str(asset.get("closingTrustContextText", "")).strip())
+        and str(asset.get("url", "")).startswith("https://")
+        and bool(str(asset.get("sha256", "")).strip())
+    )
+
+
 def validate_person_media_policy(
     article: str,
     library: dict[str, object] | None = None,
@@ -312,6 +384,9 @@ def validate_person_media_policy(
 
     indexed = media_by_id(library or load_json_object(DEFAULT_MEDIA_LIBRARY))
     failures: list[str] = []
+    for index, tag in enumerate(re.findall(r"<img\b[^>]*>", article, flags=re.I | re.S), start=1):
+        if attribute_value(tag, "data-real-photo") == "true" and attribute_value(tag, "data-trust-photo") == "true":
+            failures.append(f"{index}번 사진은 실제 진료 사진과 마무리 신뢰 사진을 동시에 표시할 수 없습니다.")
     for index, tag in enumerate(
         re.findall(
             r"<img\b(?=[^>]*\bdata-real-photo\s*=\s*['\"]true['\"])[^>]*>",
@@ -327,6 +402,26 @@ def validate_person_media_policy(
             continue
         if not is_approved_director_patient_photo(asset):
             failures.append(f"{asset_id}는 원장 치료·진찰·상담 사진이 아니므로 사용할 수 없습니다.")
+            continue
+        if attribute_value(tag, "data-media-sha256") != str(asset.get("sha256", "")):
+            failures.append(f"{asset_id}의 파일 해시가 내장 라이브러리와 다릅니다.")
+        if attribute_value(tag, "data-reference-source-url") != str(asset.get("url", "")):
+            failures.append(f"{asset_id}의 공식 원본 URL이 내장 라이브러리와 다릅니다.")
+    for index, tag in enumerate(
+        re.findall(
+            r"<img\b(?=[^>]*\bdata-trust-photo\s*=\s*['\"]true['\"])[^>]*>",
+            article,
+            flags=re.I | re.S,
+        ),
+        start=1,
+    ):
+        asset_id = attribute_value(tag, "data-goldhand-media")
+        asset = indexed.get(asset_id)
+        if asset is None:
+            failures.append(f"{index}번 마무리 신뢰 사진의 내장 ID가 없습니다: {asset_id or 'missing-id'}")
+            continue
+        if not is_approved_closing_trust_photo(asset):
+            failures.append(f"{asset_id}는 검수된 협약·수료·기부·봉사 신뢰 사진이 아니므로 사용할 수 없습니다.")
             continue
         if attribute_value(tag, "data-media-sha256") != str(asset.get("sha256", "")):
             failures.append(f"{asset_id}의 파일 해시가 내장 라이브러리와 다릅니다.")

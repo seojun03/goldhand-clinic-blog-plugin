@@ -78,7 +78,9 @@ def default_state_path() -> Path:
     override = os.environ.get("GOLDHAND_STATE_FILE", "").strip()
     if override:
         return Path(override).expanduser().resolve()
-    return Path.home() / ".codex" / "state" / "goldhand-clinic-blog" / "recent-articles.json"
+    codex_home = os.environ.get("CODEX_HOME", "").strip()
+    root = Path(codex_home).expanduser().resolve() if codex_home else Path.home() / ".codex"
+    return root / "state" / "goldhand-clinic-blog" / "recent-articles.json"
 
 
 def stable_number(*parts: str) -> int:

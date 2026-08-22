@@ -199,6 +199,20 @@ def contains_only_preview_gaps(fragment: str) -> bool:
     return not remainder.strip()
 
 
+def contains_only_preview_gaps_and_before_credential_photo(fragment: str) -> bool:
+    figures = list(
+        re.finditer(
+            r"<figure\b(?=[^>]*\bdata-real-photo\s*=\s*['\"]true['\"])(?=[^>]*\bdata-real-photo-slot\s*=\s*['\"]before-credential['\"])[^>]*>.*?</figure>",
+            fragment,
+            flags=re.I | re.S,
+        )
+    )
+    if len(figures) != 1:
+        return False
+    remainder = fragment[:figures[0].start()] + fragment[figures[0].end():]
+    return contains_only_preview_gaps(remainder)
+
+
 def credential_placement_issues(article: str) -> list[str]:
     issues: list[str] = []
     credential_matches = list(
@@ -224,9 +238,14 @@ def credential_placement_issues(article: str) -> list[str]:
         solution_match = solution_matches[0]
         if credential_match.start() < solution_match.end():
             issues.append("금손한의원 소개 credential 표는 도입과 해결 방향 예고가 모두 끝난 뒤에 배치해야 합니다.")
-        elif not contains_only_preview_gaps(article[solution_match.end():credential_match.start()]):
+        elif not (
+            contains_only_preview_gaps(article[solution_match.end():credential_match.start()])
+            or contains_only_preview_gaps_and_before_credential_photo(
+                article[solution_match.end():credential_match.start()]
+            )
+        ):
             issues.append(
-                "해결 방향 예고와 금손한의원 소개 credential 표 사이에는 빈 preview-gap 외의 본문·이미지·표를 둘 수 없습니다."
+                "해결 방향 예고와 금손한의원 소개 credential 표 사이에는 빈 preview-gap 또는 before-credential 실제 사진 1장만 둘 수 있습니다."
             )
 
     intro_matches = list(
@@ -471,7 +490,7 @@ def validate(
     minimum_tables = int(table_spec.get("minimumCount", 0)) if isinstance(table_spec, dict) else 0
     maximum_tables = int(table_spec.get("maximumCount", 999)) if isinstance(table_spec, dict) else 999
     if editorial_close:
-        minimum_tables, maximum_tables = 2, 3
+        minimum_tables, maximum_tables = 3, 4
     if len(native_tables) < minimum_tables or len(native_tables) > maximum_tables:
         issues.append(
             f"네이버 순정 table이 {len(native_tables)}개입니다. 허용 범위는 {minimum_tables}~{maximum_tables}개입니다."
@@ -525,6 +544,13 @@ def validate(
         maximum_rows = int(purpose_spec.get("maximumRows", 999))
         minimum_columns = int(purpose_spec.get("minimumColumns", 2))
         maximum_columns = int(purpose_spec.get("maximumColumns", 999))
+        table_visible_text = visible_text(body)
+        for forbidden_text in purpose_spec.get("forbiddenVisibleTexts", []):
+            forbidden_value = str(forbidden_text)
+            if forbidden_value and forbidden_value in table_visible_text:
+                issues.append(
+                    f"표 {table_index}에 자동 출력 제외 문구가 있습니다: {forbidden_value}"
+                )
         if len(rows) < minimum_rows or len(rows) > maximum_rows:
             issues.append(
                 f"표 {table_index}은 {len(rows)}행입니다. {purpose or '미등록'} 표 허용 범위는 {minimum_rows}~{maximum_rows}행입니다."
@@ -742,18 +768,17 @@ def validate(
         issues.append(f"solution-preview가 {role_counts.get('solution-preview', 0)}개입니다. 정확히 1개여야 합니다.")
     issues.extend(credential_placement_issues(article))
     family_contract = profile.get("familyContract", {}) if isinstance(profile, dict) else {}
-    if isinstance(family_contract, dict) and family_contract:
+    if isinstance(family_contract, dict):
         question_positions = [index for index, role in enumerate(roles) if role == "reader-question"]
         greeting_positions = [index for index, role in enumerate(roles) if role == "greeting-authority"]
         solution_positions = [index for index, role in enumerate(roles) if role == "solution-preview"]
-        placement = str(family_contract.get("questionPlacement", ""))
         if len(greeting_positions) != 1:
             issues.append(f"greeting-authority가 {len(greeting_positions)}개입니다. 정확히 1개여야 합니다.")
         elif len(question_positions) in allowed_question_counts:
-            if placement == "before-greeting" and max(question_positions) > greeting_positions[0]:
-                issues.append("선택한 마스터는 독자 고민 2~3개가 원장 인사보다 먼저 와야 합니다.")
-            if placement == "after-greeting" and min(question_positions) < greeting_positions[0]:
-                issues.append("선택한 마스터는 원장 인사 뒤에 독자 고민 2~3개가 와야 합니다.")
+            intro_roles = [role for role in roles if role in {"reader-question", "greeting-authority"}]
+            expected_intro_roles = ["reader-question"] * len(question_positions) + ["greeting-authority"]
+            if intro_roles != expected_intro_roles:
+                issues.append("모든 글은 독자 고민 질문 2~3개가 연속으로 나온 뒤 원장 인사가 와야 합니다.")
         if len(solution_positions) == 1 and len(question_positions) in allowed_question_counts:
             if solution_positions[0] < max(question_positions):
                 issues.append("해결 방향 예고는 독자 고민 2~3개 뒤에 와야 합니다.")
