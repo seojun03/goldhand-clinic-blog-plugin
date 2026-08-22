@@ -80,6 +80,7 @@ def main() -> int:
     require("Register-AutoUpdate" in installer and "New-ScheduledTaskTrigger" in installer, "automatic update registration is missing")
     require("goldhand-clinic-blog-plugin.zip" in launcher, "isolated CMD must download the validated release ZIP")
     require("releases/latest" in updater and "goldhand-clinic-blog-plugin.zip" in updater, "release-only updater is missing")
+    require(f'$env:{ENV_PREFIX}_SKIP_AUTO_UPDATE_REGISTRATION = "1"' in updater, "managed updater must not register its own running task again")
     require("archive/refs/heads/main.zip" not in launcher and "archive/refs/heads/main.zip" not in updater, "Windows install paths must not consume unvalidated main branch ZIPs")
     require("Restore the previous plugin when replacement registration fails" in workflow, "Windows CI rollback regression test is missing")
     require("Failed update did not restore the previous plugin tree" in workflow, "Windows CI does not verify rollback tree integrity")

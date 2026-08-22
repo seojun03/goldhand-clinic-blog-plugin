@@ -94,6 +94,7 @@ try {
         $previousSkip = $env:GOLDHAND_SKIP_AUTO_UPDATE_REGISTRATION
         try {
             $env:GOLDHAND_RELEASE_TAG = $release.Tag
+            $env:GOLDHAND_SKIP_AUTO_UPDATE_REGISTRATION = "1"
             & $installer.FullName -CodexPath $CodexPath -EditableRoot $EditableRoot
         } finally {
             if ($null -eq $previousTag) { Remove-Item Env:GOLDHAND_RELEASE_TAG -ErrorAction SilentlyContinue } else { $env:GOLDHAND_RELEASE_TAG = $previousTag }
