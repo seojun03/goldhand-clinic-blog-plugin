@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import re
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -38,7 +41,10 @@ TOPIC_SELECTOR = load_module("select_topic_idea")
 TOPIC_SOURCE_VALIDATOR = load_module("validate_topic_source_library")
 EDITORIAL_PROFILE_VALIDATOR = load_module("validate_editorial_master_profiles")
 GOLDHAND_VOICE_VALIDATOR = load_module("validate_goldhand_voice")
+NATURAL_SPEECH_SUITE_VALIDATOR = load_module("validate_natural_speech_suite")
+FINAL_WRITING_VOICE_VALIDATOR = load_module("validate_final_voice_review")
 WIPARK_CONTENT_SELECTOR = load_module("select_wipark_content_reference")
+REFERENCE_LEARNING_VALIDATOR = load_module("validate_reference_learning")
 
 KEYWORD = "동천동 한의원"
 TITLE = f"{KEYWORD} 통증이 반복되는 움직임과 생활 기준"
@@ -61,7 +67,7 @@ def divider_markup() -> str:
 
 def table_markup(purpose: str, rows: list[list[tuple[str, str]]], *, attributes: str = "") -> str:
     cell_contract = "border:1px solid #D6D6D6;text-align:center;vertical-align:middle;"
-    clinic_contract = "width:50%;height:64px;line-height:1.8;word-break:keep-all;" if purpose == "clinic-info" else ""
+    clinic_contract = "height:64px;line-height:1.8;word-break:keep-all;" if purpose in {"clinic-hours", "clinic-info"} else ""
     row_markup = "".join(
         "<tr>" + "".join(f'<td style="{style}{clinic_contract}{cell_contract}">{text}</td>' for text, style in row) + "</tr>"
         for row in rows
@@ -213,10 +219,60 @@ def mobile_markup(text: str, *, first_role: str = "") -> str:
     return "".join(parts)
 
 
+def writing_voice_review(
+    title: str,
+    before_body: list[str],
+    final_body: list[str],
+    *,
+    expressive_jobs: dict[int, str] | None = None,
+) -> dict[str, object]:
+    expressive_jobs = expressive_jobs or {}
+    revisions = [
+        {
+            "paragraphIndex": index,
+            "before": before,
+            "after": after,
+            "expressiveJob": expressive_jobs.get(
+                index,
+                "환자가 뜻을 한 번에 알아듣고 실제 장면을 떠올리도록 직접적인 말로 바꿈",
+            ),
+        }
+        for index, (before, after) in enumerate(zip(before_body, final_body), start=1)
+        if before != after
+    ]
+    return {
+        "contractId": "writing-voice-final-rehear-v1",
+        "skillName": "writing-voice",
+        "stage": "after-complete-visible-prose-and-seo-before-production-assembly",
+        "beforeTitle": title,
+        "beforeBody": before_body,
+        "decision": "revised" if revisions else "no-change-needed",
+        "reviewChecks": {
+            "wholeDraftReadAtSpeakingSpeed": True,
+            "genericConnectiveTissueReviewed": True,
+            "flattenedRhythmReviewed": True,
+            "attentionAllocationReviewed": True,
+            "unsupportedPolishReviewed": True,
+            "distinctiveGrainPreserved": True,
+            "wholeDraftReheardAfterEdits": True,
+        },
+        "frozenMaterial": {
+            "contentAndOrderPreserved": True,
+            "factsAndMedicalBoundariesPreserved": True,
+            "claimStrengthPreserved": True,
+            "referenceMechanismsPreserved": True,
+            "keywordAndTitlePromisePreserved": True,
+            "htmlComponentsAndLinksPreserved": True,
+        },
+        "revisions": revisions,
+        "finalStatus": "pass",
+    }
+
+
 def valid_article() -> str:
     paragraphs = [
         "안녕하세요, 금손한의원 박준희 원장입니다.",
-        f"{KEYWORD}을 찾는 분 가운데 같은 자리가 자꾸 불편해지는 이유를 몰라 치료 선택을 망설이는 분이 있습니다. 오늘은 아픈 자리만 볼 때 놓치기 쉬운 움직임과 생활 조건, 다른 검사를 먼저 생각할 신호까지 살펴보며 자신의 상태를 구분할 기준을 정리하겠습니다.",
+        f"{KEYWORD}을 찾는 분 가운데 같은 곳이 자꾸 불편해지는 이유를 몰라 치료 선택을 망설이는 분이 있습니다. 오늘은 아픈 곳만 볼 때 놓치기 쉬운 움직임과 생활 조건, 다른 검사를 먼저 생각할 신호까지 설명하겠습니다.",
         "통증은 한 지점에 느껴져도 그 부위만의 문제로 단정하기 어렵습니다. 목을 돌리는 범위, 어깨뼈의 움직임, 골반과 발의 지지처럼 주변 관절이 함께 움직이는 방식을 차분히 비교해야 합니다.",
         "불편이 시작된 날의 활동량과 수면, 오래 유지한 자세도 중요한 단서입니다. 평소와 다른 운동을 했는지, 한쪽 손만 반복해 썼는지, 쉬었을 때와 움직일 때 차이가 있는지를 정리하면 설명이 구체적이 됩니다.",
         f"제가 {KEYWORD} 진료에서 먼저 듣는 것은 증상의 이름보다 생활 속 장면입니다. 같은 어깨 불편이라도 팔을 들 때와 가만히 있을 때의 양상이 다르고, 목이나 등 움직임이 함께 제한되는지도 사람마다 다릅니다.",
@@ -285,7 +341,7 @@ def valid_article() -> str:
         role = "explanation" if index == 2 else "neutral-close" if index == 16 else ""
         body_parts.append(mobile_markup(paragraph, first_role=role))
     body_parts.append(mobile_markup(
-        "아픈 자리만 좇기보다 반복되는 움직임과 생활 조건을 함께 살피는 것이 자신의 상태를 설명할 출발점이 됩니다."
+        "아픈 곳만 보지 말고 언제 어떤 동작에서 다시 아픈지도 함께 봐야 합니다."
     ))
     body_parts.append(
         table_markup(
@@ -309,8 +365,8 @@ def valid_article() -> str:
     body_parts.append('<p data-preview-gap="true" aria-hidden="true" style="margin:0;text-align:center;color:transparent;">&#8288;</p>')
     body = "".join(body_parts)
     body = body.replace(
-        "같은 자리가 자꾸<br>불편해지는 이유를 몰라",
-        '<span data-goldhand-emphasis="highlight" style="background-color:#FFF2A8;">같은 자리가 자꾸<br>불편해지는 이유</span>를 몰라',
+        "같은 곳이 자꾸<br>불편해지는 이유를 몰라",
+        '<span data-goldhand-emphasis="highlight" style="background-color:#FFF2A8;">같은 곳이 자꾸<br>불편해지는 이유</span>를 몰라',
         1,
     ).replace(
         "통증 부위보다 먼저 볼 것",
@@ -325,8 +381,8 @@ def valid_article() -> str:
         '<u data-reference-underline-role="key-point">경과를 다시 살피는 이유</u>',
         1,
     ).replace(
-        "아픈 자리만 좇기보다",
-        '<span data-goldhand-emphasis="highlight" style="background-color:#FFF2A8;">아픈 자리만 좇기보다</span>',
+        "아픈 곳만 보지 말고",
+        '<span data-goldhand-emphasis="highlight" style="background-color:#FFF2A8;">아픈 곳만 보지 말고</span>',
         1,
     ).replace(
         "영상 검사나 다른 의료기관의 평가",
@@ -337,45 +393,74 @@ def valid_article() -> str:
         '<span data-goldhand-emphasis="red" style="color:#E53935;font-weight:700;">운동을 이어가지 않는 편</span>',
         1,
     )
+    clinic_hours = table_markup(
+        "clinic-hours",
+        [
+            [
+                ("요일", "width:24%;background-color:#C99F75;color:#FFFFFF;font-weight:700;"),
+                ("진료시간", "width:38%;background-color:#C99F75;color:#FFFFFF;font-weight:700;"),
+                ("비고", "width:38%;background-color:#C99F75;color:#FFFFFF;font-weight:700;"),
+            ],
+            [
+                ("월·수·금", "width:24%;background-color:#F3E8DD;color:#7A5434;font-weight:700;"),
+                ("09:30~20:00", "width:38%;color:#4D4D4D;"),
+                ("야간 진료", "width:38%;color:#4D4D4D;"),
+            ],
+            [
+                ("화·목", "width:24%;background-color:#F3E8DD;color:#7A5434;font-weight:700;"),
+                ("09:30~18:00", "width:38%;color:#4D4D4D;"),
+                ("&nbsp;", "width:38%;color:#4D4D4D;"),
+            ],
+            [
+                ("토·일", "width:24%;background-color:#F3E8DD;color:#7A5434;font-weight:700;"),
+                ("09:00~13:00", "width:38%;color:#4D4D4D;"),
+                ("&nbsp;", "width:38%;color:#4D4D4D;"),
+            ],
+            [
+                ("공휴일", "width:24%;background-color:#F3E8DD;color:#7A5434;font-weight:700;"),
+                ("09:30~18:00", "width:38%;color:#4D4D4D;"),
+                ("설·추석 연휴 휴진", "width:38%;color:#4D4D4D;"),
+            ],
+        ],
+        attributes='data-reference-role="clinic-hours"',
+    )
     contact = table_markup(
         "clinic-info",
         [
             [
-                ("한의원", "background-color:#F3E8DD;color:#7A5434;font-weight:700;text-align:center;"),
-                ("금손한의원", "color:#4D4D4D;"),
+                ("금손한의원", "width:100%;background-color:#C99F75;color:#FFFFFF;font-weight:700;"),
             ],
             [
-                ("주소", "background-color:#F3E8DD;color:#7A5434;font-weight:700;text-align:center;"),
-                ("전남광주통합특별시 서구 유림로98번길 3, 2층", "color:#4D4D4D;"),
+                ("위치<br>전남광주통합특별시 서구 유림로98번길 3, 2층", "width:100%;color:#4D4D4D;"),
             ],
             [
-                ("찾아오는 길", "background-color:#F3E8DD;color:#7A5434;font-weight:700;text-align:center;"),
-                ("동천파출소·동천동 행정복지센터 건너편", "color:#4D4D4D;"),
+                ("찾아오는 길<br>동천파출소·동천동 행정복지센터 건너편", "width:100%;background-color:#FBF8F4;color:#4D4D4D;"),
             ],
             [
-                ("전화", "background-color:#F3E8DD;color:#7A5434;font-weight:700;text-align:center;"),
-                ("062-515-7582", "color:#4D4D4D;"),
+                ("전화 062-515-7582", "width:100%;color:#7A5434;font-size:19px;font-weight:700;"),
             ],
             [
-                ("문의·예약", "background-color:#F3E8DD;color:#7A5434;font-weight:700;text-align:center;"),
-                ("카카오톡에서 @금손한의원 검색 후 채널 문의 · 네이버에서 금손한의원 검색 후 진료 예약", "color:#4D4D4D;"),
+                ("카카오톡<br>@금손한의원 검색 후 채널 문의", "width:100%;background-color:#FBF8F4;color:#4D4D4D;"),
             ],
             [
-                ("진료시간", "background-color:#F3E8DD;color:#7A5434;font-weight:700;text-align:center;"),
-                ("월·수·금 09:30~20:00 · 화·목 09:30~18:00 · 토·일 09:00~13:00 · 공휴일 09:30~18:00 · 설·추석 연휴 휴진", "color:#4D4D4D;"),
+                ("네이버 예약<br>금손한의원 검색 후 진료 예약", "width:100%;color:#4D4D4D;"),
             ],
         ],
         attributes='data-goldhand-role="contact" data-reference-role="contact"',
     )
     return f"""
     <article data-goldhand-type="정보전달형" data-master-reference-id="INFO03"
+      data-writing-voice-review="writing-voice-final-rehear-v1"
+      data-writing-voice-status="pass"
       data-decoration-master-reference-id="INFO03"
       data-reference-source="https://blog.naver.com/wi-parkclinic/224337414108"
       data-goldhand-design-system="goldhand-naver-native-v4"
       style="width:100%;max-width:580px;margin:0 auto;color:#4D4D4D;text-align:center;">
-      {question_markup("통증이 반복되는 이유를 아픈 자리에서만 찾아도 될까요?")}
+      {question_markup("통증이 반복되는 이유를 아픈 곳에서만 찾아도 될까요?")}
       {question_markup(QUESTION_TWO)}
-      {BODY_OPEN}{body}</section>{contact}
+      {BODY_OPEN}{body}</section>
+      <p data-reference-role="clinic-hours-heading" style="text-align:center;">진료시간 안내</p>
+      {clinic_hours}{contact}
     </article>
     """
 
@@ -391,6 +476,18 @@ def editorial_close_article(*, include_summary: bool = True, one_question: bool 
         1,
     )
     article = article.replace(KEYWORD, "동천동 진료", 2)
+    article = article.replace(
+        '<section data-reference-role="solution-preview">',
+        '<section data-reference-role="solution-preview" '
+        'data-intro-persuasion-device="specific-number-low-friction-topic-payoff" '
+        'data-reader-payoff="다른 검사를 먼저 생각할 신호">',
+        1,
+    )
+    article = article.replace(
+        'data-reference-role="neutral-close"',
+        'data-reference-role="neutral-close" data-closing-payoff="몸의 신호"',
+        1,
+    )
     reading_hook = (
         '<p data-reference-role="reading-time-hook" data-reading-minutes="3" data-mobile-group="true" '
         'style="margin:0;text-align:center;color:#4D4D4D;font-size:16px;line-height:1.9;word-break:keep-all;">'
@@ -473,6 +570,30 @@ def editorial_close_article(*, include_summary: bool = True, one_question: bool 
     return article
 
 
+def wipark_editorial_close_article() -> str:
+    return editorial_close_article().replace(
+        'data-editorial-master-id="BM224231647991"',
+        'data-editorial-master-id="WP224337414108"',
+        1,
+    ).replace(
+        'data-editorial-reference-source="https://blog.naver.com/beomeo_sm/224231647991"',
+        'data-editorial-reference-source="https://blog.naver.com/wi-parkclinic/224337414108"',
+        1,
+    ).replace(
+        'data-editorial-source-role="title-tone-content-sequence-only"',
+        'data-editorial-source-role="editorial-reasoning-content-flow-and-expression-principles"',
+        1,
+    ).replace(
+        'data-editorial-profile-status="ready"',
+        'data-editorial-profile-status="ready" '
+        'data-reference-writing-profile="INFO03" '
+        'data-reference-writing-intelligence="goldhand-reference-writing-intelligence-v1" '
+        'data-title-mechanism="urgent-questions-with-direct-answer" '
+        'data-closing-mechanism="two-answer-recap-and-calm-next-step"',
+        1,
+    )
+
+
 def editorial_fidelity_article() -> str:
     beats = [
         "exercise-effort-frustration",
@@ -497,22 +618,49 @@ def editorial_fidelity_article() -> str:
 
 class TitleTests(unittest.TestCase):
     def test_editorial_close_numeric_title_passes(self) -> None:
+        intelligence = json.loads(
+            (SKILL_DIR / "assets" / "reference-writing-intelligence.json").read_text(encoding="utf-8")
+        )
         result = TITLE_VALIDATOR.validate_title(
             "광주 한의원 추천, 운동해도 살이 안 빠지는 3가지 이유",
             "광주 한의원 추천",
             answer_count=3,
             editorial_close=True,
+            writing_intelligence=intelligence,
+            reference_master_id="INFO12",
+            title_mechanism_id="same-effort-different-result-plus-success-conditions",
         )
         self.assertEqual(result["status"], "pass", result)
         self.assertTrue(result["metrics"]["editorialClose"])
 
-    def test_editorial_close_title_without_number_fails(self) -> None:
+    def test_editorial_close_title_without_number_can_follow_reference_psychology(self) -> None:
+        intelligence = json.loads(
+            (SKILL_DIR / "assets" / "reference-writing-intelligence.json").read_text(encoding="utf-8")
+        )
         result = TITLE_VALIDATOR.validate_title(
-            "광주 한의원 추천, 운동하는데 왜 살이 잘 안 빠질까요?",
+            "광주 한의원 추천, 검사에선 괜찮다는데 계단에서 왜 아플까요?",
             "광주 한의원 추천",
             editorial_close=True,
+            writing_intelligence=intelligence,
+            reference_master_id="INFO06",
+            title_mechanism_id="test-normal-but-pain-remains-question",
         )
-        self.assertIn("title-numeric-hook-missing", {item["code"] for item in result["issues"]})
+        self.assertNotEqual(result["status"], "fail", result)
+        self.assertEqual(result["metrics"]["answerPromises"], [])
+
+    def test_editorial_close_rejects_title_mechanism_from_another_reference(self) -> None:
+        intelligence = json.loads(
+            (SKILL_DIR / "assets" / "reference-writing-intelligence.json").read_text(encoding="utf-8")
+        )
+        result = TITLE_VALIDATOR.validate_title(
+            "광주 한의원 추천, 검사에선 괜찮다는데 계단에서 왜 아플까요?",
+            "광주 한의원 추천",
+            editorial_close=True,
+            writing_intelligence=intelligence,
+            reference_master_id="INFO06",
+            title_mechanism_id="responder-versus-nonresponder-contrast",
+        )
+        self.assertIn("title-mechanism-mismatch", {item["code"] for item in result["issues"]})
 
     def test_valid_title_is_not_blocked(self) -> None:
         evidence = (SKILL_DIR / "references" / "clinic-facts.md").read_text(encoding="utf-8")
@@ -746,7 +894,7 @@ class ArticleTests(unittest.TestCase):
         self.assertEqual(result["metrics"]["generatedImages"], 1)
         self.assertEqual(result["metrics"]["realPhotos"], 6)
 
-    def test_editorial_close_requires_three_minute_hook(self) -> None:
+    def test_specific_number_intro_requires_one_reading_time_hook(self) -> None:
         article = re.sub(
             r'<p\b(?=[^>]*data-reference-role="reading-time-hook")[^>]*>.*?</p>',
             "",
@@ -762,10 +910,61 @@ class ArticleTests(unittest.TestCase):
         )
         self.assertIn("reading-time-hook-count", {item["code"] for item in result["issues"]})
 
+    def test_specific_number_intro_allows_two_minutes_with_topic_payoff(self) -> None:
+        article = editorial_close_article().replace(
+            'data-reading-minutes="3"', 'data-reading-minutes="2"', 1
+        ).replace("3분만 읽어", "2분만 읽어", 1)
+        evidence = (SKILL_DIR / "references" / "clinic-facts.md").read_text(encoding="utf-8")
+        result = ARTICLE_VALIDATOR.validate_article(
+            article,
+            EDITORIAL_TITLE,
+            KEYWORD,
+            evidence=evidence,
+            editorial_close=True,
+        )
+        self.assertEqual(result["status"], "pass", result)
+        self.assertEqual(result["metrics"]["introPersuasionDeviceId"], "specific-number-low-friction-topic-payoff")
+
+    def test_non_time_intro_device_does_not_require_reading_time_hook(self) -> None:
+        article = re.sub(
+            r'<p\b(?=[^>]*data-reference-role="reading-time-hook")[^>]*>.*?</p>',
+            "",
+            editorial_close_article().replace(
+                "specific-number-low-friction-topic-payoff",
+                "contrast-self-identification",
+                1,
+            ),
+            count=1,
+            flags=re.I | re.S,
+        )
+        evidence = (SKILL_DIR / "references" / "clinic-facts.md").read_text(encoding="utf-8")
+        result = ARTICLE_VALIDATOR.validate_article(
+            article,
+            EDITORIAL_TITLE,
+            KEYWORD,
+            evidence=evidence,
+            editorial_close=True,
+        )
+        self.assertEqual(result["status"], "pass", result)
+
+    def test_editorial_close_requires_visible_topic_specific_payoff(self) -> None:
+        article = editorial_close_article().replace(
+            ' data-reader-payoff="다른 검사를 먼저 생각할 신호"',
+            "",
+            1,
+        )
+        result = ARTICLE_VALIDATOR.validate_article(
+            article,
+            EDITORIAL_TITLE,
+            KEYWORD,
+            editorial_close=True,
+        )
+        self.assertIn("reader-payoff-missing", {item["code"] for item in result["issues"]})
+
     def test_editorial_close_requires_intro_highlight(self) -> None:
         article = editorial_close_article().replace(
-            '<span data-goldhand-emphasis="highlight" style="background-color:#FFF2A8;">같은 자리가 자꾸<br>불편해지는 이유</span>',
-            "같은 자리가 자꾸<br>불편해지는 이유",
+            '<span data-goldhand-emphasis="highlight" style="background-color:#FFF2A8;">같은 곳이 자꾸<br>불편해지는 이유</span>',
+            "같은 곳이 자꾸<br>불편해지는 이유",
             1,
         )
         result = ARTICLE_VALIDATOR.validate_article(
@@ -897,15 +1096,7 @@ class ArticleTests(unittest.TestCase):
         )
 
     def test_editorial_close_accepts_same_source_wipark_master(self) -> None:
-        article = editorial_close_article().replace(
-            'data-editorial-master-id="BM224231647991"',
-            'data-editorial-master-id="WP224337414108"',
-            1,
-        ).replace(
-            'data-editorial-reference-source="https://blog.naver.com/beomeo_sm/224231647991"',
-            'data-editorial-reference-source="https://blog.naver.com/wi-parkclinic/224337414108"',
-            1,
-        )
+        article = wipark_editorial_close_article()
         result = ARTICLE_VALIDATOR.validate_article(
             article,
             EDITORIAL_TITLE,
@@ -916,6 +1107,35 @@ class ArticleTests(unittest.TestCase):
         self.assertNotIn("editorial-master-id-invalid", codes, result)
         self.assertNotIn("editorial-reference-source-invalid", codes, result)
         self.assertNotIn("editorial-reference-source-prefix-mismatch", codes, result)
+        self.assertNotIn("reference-writing-profile-mismatch", codes, result)
+        self.assertNotIn("article-title-mechanism-mismatch", codes, result)
+        self.assertNotIn("article-closing-mechanism-mismatch", codes, result)
+        self.assertNotIn("intro-persuasion-device-mismatch", codes, result)
+        self.assertNotIn("writing-voice-review-missing", codes, result)
+        self.assertNotIn("writing-voice-status-not-pass", codes, result)
+        self.assertEqual(result["metrics"]["referenceWritingProfileId"], "INFO03")
+        self.assertEqual(result["metrics"]["finalWritingVoiceReviewId"], "writing-voice-final-rehear-v1")
+        self.assertEqual(result["metrics"]["finalWritingVoiceStatus"], "pass")
+
+    def test_wipark_article_requires_completed_writing_voice_review(self) -> None:
+        article = wipark_editorial_close_article().replace(
+            ' data-writing-voice-review="writing-voice-final-rehear-v1"',
+            "",
+            1,
+        ).replace(
+            ' data-writing-voice-status="pass"',
+            "",
+            1,
+        )
+        result = ARTICLE_VALIDATOR.validate_article(
+            article,
+            EDITORIAL_TITLE,
+            KEYWORD,
+            editorial_close=True,
+        )
+        codes = {item["code"] for item in result["issues"]}
+        self.assertIn("writing-voice-review-missing", codes, result)
+        self.assertIn("writing-voice-status-not-pass", codes, result)
 
 
 class ReferenceMasterTests(unittest.TestCase):
@@ -1084,11 +1304,15 @@ class ReferenceMasterTests(unittest.TestCase):
         self.assertEqual(result["status"], "fail")
         self.assertIn("빨간 글씨 강조", " ".join(result["issues"]))
 
-    def test_unequal_clinic_info_columns_fail(self) -> None:
-        article = valid_article().replace("width:50%;height:64px;", "width:40%;height:64px;", 1)
+    def test_clinic_info_row_width_fails(self) -> None:
+        article = valid_article().replace(
+            "width:100%;background-color:#C99F75;",
+            "width:40%;background-color:#C99F75;",
+            1,
+        )
         result = REFERENCE_VALIDATOR.validate(article, self.profiles(), "INFO03")
         self.assertEqual(result["status"], "fail")
-        self.assertIn("좌우 폭", " ".join(result["issues"]))
+        self.assertIn("적층 행 폭", " ".join(result["issues"]))
 
     def test_editorial_close_rejects_one_question_even_without_summary(self) -> None:
         article = editorial_close_article(include_summary=False, one_question=True)
@@ -1221,32 +1445,29 @@ class BuilderTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "credential-after-first-body-marker"):
             PAGE_BUILDER.validate_credential_placement(article)
 
-    def test_builder_appends_clickable_blog_photo_and_map_exactly_once(self) -> None:
-        article = PAGE_BUILDER.ensure_closing_links(valid_article())
-        article = PAGE_BUILDER.ensure_closing_links(article)
-        self.assertEqual(article.count('data-goldhand-closing-links="true"'), 1)
-        self.assertEqual(article.count('data-goldhand-photo-link="official-blog"'), 1)
-        self.assertEqual(article.count('class="se-component se-image'), 1)
-        self.assertEqual(article.count('class="se-component se-placesMap'), 1)
-        self.assertEqual(article.count('data-module='), 2)
-        self.assertEqual(article.count('data-module-v2='), 2)
-        self.assertIn("https://blog.naver.com/goldhand7582_", article)
-        self.assertIn('data-linktype="img"', article)
-        self.assertIn('&quot;linkUse&quot;:&quot;true&quot;', article)
-        self.assertIn('&quot;type&quot;:&quot;v2_image&quot;', article)
-        self.assertRegex(
-            article,
-            r'<a\b(?=[^>]*href="https://blog\.naver\.com/goldhand7582_")(?=[^>]*data-linktype="img")[^>]*>\s*<img\b',
+    def test_builder_strips_only_legacy_closing_supplement(self) -> None:
+        original = valid_article()
+        legacy = original.replace(
+            "</article>",
+            (
+                '<section data-goldhand-closing-links="true">'
+                '<p>&lt;함께 보면 좋은 글&gt;</p>'
+                '<div class="se-component se-oglink">최신 글</div>'
+                '<div class="se-component se-placesMap">금손한의원 지도</div>'
+                "</section></article>"
+            ),
         )
-        self.assertNotIn("se-oglink", article)
-        self.assertNotIn("se-oglink-title", article)
-        self.assertNotIn("se-oglink-summary", article)
-        self.assertNotIn("se-oglink-url", article)
-        self.assertIn("https://map.naver.com/p/entry/place/1598180269", article)
-        self.assertIn('data-place-id="1598180269"', article)
-        self.assertNotIn("og_270x270.png", article)
-        self.assertNotIn("한의원로고", article)
-        self.assertRegex(article, r'data-goldhand-closing-links="true"[\s\S]*?</section>\s*</article>$')
+        cleaned = PAGE_BUILDER.strip_legacy_closing_links(legacy)
+        self.assertEqual(cleaned, original)
+        self.assertEqual(PAGE_BUILDER.strip_legacy_closing_links(cleaned), original)
+
+        page = PAGE_BUILDER.build_page(TITLE, legacy)
+        article = re.search(r"<article\b[^>]*>.*?</article>", page, flags=re.I | re.S).group(0)
+        self.assertNotIn('data-goldhand-closing-links="true"', article)
+        self.assertNotIn("&lt;함께 보면 좋은 글&gt;", article)
+        self.assertNotIn('class="se-component se-oglink', article)
+        self.assertNotIn('class="se-component se-placesMap', article)
+        self.assertRegex(article, r'data-native-table-purpose="clinic-info"[\s\S]*?</table>\s*</article>$')
 
     def test_builder_rejects_logo_and_nonperson_actual_photo(self) -> None:
         library = json.loads((SKILL_DIR / "assets" / "media-library.json").read_text(encoding="utf-8"))
@@ -1262,6 +1483,18 @@ class BuilderTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "원장 치료·진찰·상담 사진이 아니므로"):
             PAGE_BUILDER.validate_person_media_policy(article, library)
 
+    def test_local_file_copy_is_synchronous_and_does_not_inject_text_decoration(self) -> None:
+        page = PAGE_BUILDER.build_page(TITLE, valid_article())
+        self.assertNotIn("run.style.fontWeight = '400'", page)
+        self.assertNotIn("run.style.textDecoration = 'none'", page)
+        self.assertIn("굵게·밑줄·취소선", page)
+        self.assertIn("window.location.protocol === 'file:'", page)
+        self.assertIn("복사 실패 · 클립보드가 바뀌지 않았습니다", page)
+        self.assertLess(
+            page.index("window.location.protocol === 'file:'"),
+            page.index("navigator.clipboard?.write"),
+        )
+
     def test_build_page_publishes_local_image_as_https(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -1270,9 +1503,11 @@ class BuilderTests(unittest.TestCase):
                 b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89"
                 b"\x00\x00\x00\rIDAT\x08\xd7c\xf8\xcf\xc0\xf0\x1f\x00\x05\x00\x01\xff\x89\x99=\x1d\x00\x00\x00\x00IEND\xaeB`\x82"
             )
-            article = valid_article().replace(
-                "</article>",
-                f'<img src="data:," data-local-image="{image_path}" alt="사용자 이미지" /></article>',
+            article = re.sub(
+                r'(<table\b(?=[^>]*data-native-table-purpose="clinic-info"))',
+                f'<img src="data:," data-local-image="{image_path}" alt="사용자 이미지" />\\1',
+                valid_article(),
+                count=1,
             )
             published = PAGE_BUILDER.publish_local_images(
                 article,
@@ -1301,22 +1536,23 @@ class BuilderTests(unittest.TestCase):
         result = HTML_VALIDATOR.validate_html(PAGE_BUILDER.build_page(TITLE, article))
         self.assertIn("naver-rejected-data-image", {item["code"] for item in result["issues"]})
 
-    def test_copy_page_rejects_text_card_or_nonclickable_blog_photo(self) -> None:
+    def test_copy_page_rejects_legacy_closing_supplement(self) -> None:
         page = PAGE_BUILDER.build_page(TITLE, valid_article())
-        nonclickable = page.replace('data-linktype="img"', 'data-linktype="none"', 1)
-        nonclickable_result = HTML_VALIDATOR.validate_html(nonclickable)
-        self.assertIn(
-            "official-blog-photo-link-count",
-            {item["code"] for item in nonclickable_result["issues"]},
+        legacy_page = page.replace(
+            "</article>",
+            (
+                '<section data-goldhand-closing-links="true">'
+                '<p style="text-align:center;">&lt;함께 보면 좋은 글&gt;</p>'
+                '<div class="se-component se-oglink">https://blog.naver.com/goldhand7582_/224379815063</div>'
+                '<div class="se-component se-placesMap">https://map.naver.com/p/entry/place/1598180269</div>'
+                "</section></article>"
+            ),
+            1,
         )
-
-        text_card = page.replace('class="se-component se-image', 'class="se-component se-oglink', 1)
-        text_card = text_card.replace('data-linktype="img"', 'data-linktype="oglink"', 1)
-        text_card_result = HTML_VALIDATOR.validate_html(text_card)
-        self.assertIn(
-            "text-oglink-card-forbidden",
-            {item["code"] for item in text_card_result["issues"]},
-        )
+        result = HTML_VALIDATOR.validate_html(legacy_page)
+        codes = {item["code"] for item in result["issues"]}
+        self.assertIn("closing-supplement-forbidden", codes)
+        self.assertIn("clinic-info-not-last", codes)
 
     def test_editorial_close_page_allows_two_tables_without_summary(self) -> None:
         article = editorial_close_article(include_summary=False).replace(
@@ -1900,8 +2136,37 @@ class ReferenceCorpusTests(unittest.TestCase):
             self.assertEqual(profile["renderContract"]["requiredRoleMinimums"]["reader-question"], 2)
             self.assertEqual(profile["renderContract"]["requiredRoleMaximums"]["reader-question"], 3)
             self.assertEqual(profile["renderContract"]["requiredRoleMinimums"]["solution-preview"], 1)
+            self.assertTrue(profile["writingContract"]["referenceExpressionLearningEnabled"])
+            self.assertTrue(profile["toneContract"]["referenceRhetoricalReasoningEnabled"])
+            self.assertTrue(profile["editorialReasoningContract"]["adaptationDecisionRequired"])
+            self.assertNotIn("sourceToneBlocked", json.dumps(profile, ensure_ascii=False))
         self.assertEqual(counts, {"정보전달형": 11})
         self.assertNotIn("INFO02", profiles)
+
+    def test_reference_writing_intelligence_contains_eleven_valid_profiles(self) -> None:
+        intelligence = json.loads(
+            (SKILL_DIR / "assets" / "reference-writing-intelligence.json").read_text(encoding="utf-8")
+        )
+        family = json.loads(
+            (SKILL_DIR / "assets" / "two-reader-hooks-reference-family.json").read_text(encoding="utf-8")
+        )
+        errors = REFERENCE_LEARNING_VALIDATOR.validate_intelligence(intelligence, family)
+        self.assertEqual(errors, [])
+        self.assertEqual(len(intelligence["profiles"]), 11)
+        self.assertEqual(
+            intelligence["profiles"]["INFO06"]["openingMechanism"]["numericPrincipleChain"],
+            [
+                "specific-number",
+                "perceived-concreteness",
+                "low-effort",
+                "attention",
+                "topic-specific-payoff",
+            ],
+        )
+        self.assertEqual(
+            intelligence["profiles"]["INFO08"]["openingMechanism"]["primaryDeviceId"],
+            "specific-number-low-friction-topic-payoff",
+        )
 
 
 class SkillPackageTests(unittest.TestCase):
@@ -1914,6 +2179,7 @@ class SkillPackageTests(unittest.TestCase):
             "references/two-reader-hooks-reference-audit.md",
             "references/reference-master-library.md",
             "references/reference-exact-reconstruction.md",
+            "references/reference-editorial-reasoning.md",
             "references/official-blog-inventory.md",
             "references/topic-idea-types.md",
             "references/beomeo-source-inventory.md",
@@ -1921,11 +2187,14 @@ class SkillPackageTests(unittest.TestCase):
             "references/wipark-reference-inventory.md",
             "references/wipark-content-source-policy.md",
             "references/goldhand-official-voice.md",
+            "references/natural-speech-rewrite-protocol.md",
+            "references/final-writing-voice-review.md",
             "assets/media-library.json",
             "assets/topic-idea-library.json",
             "assets/beomeo-topic-idea-library.json",
             "assets/wipark-reference-corpus.json",
             "assets/reference-master-profiles.json",
+            "assets/reference-writing-intelligence.json",
             "assets/goldhand-naver-native-design-system.json",
             "assets/goldhand-closing-links.json",
             "assets/callilife-ogq-media-library.json",
@@ -1934,14 +2203,19 @@ class SkillPackageTests(unittest.TestCase):
             "assets/two-reader-hooks-reference-family.json",
             "assets/wipark-content-briefs.json",
             "assets/goldhand-official-voice-profile.json",
+            "assets/writing-voice-final-review-contract.json",
             "scripts/select_topic_idea.py",
             "scripts/validate_topic_source_library.py",
             "scripts/select_reference_master.py",
             "scripts/validate_reference_reconstruction.py",
             "scripts/select_wipark_content_reference.py",
+            "scripts/validate_reference_learning.py",
             "scripts/validate_goldhand_voice.py",
+            "scripts/validate_natural_speech_suite.py",
+            "scripts/validate_final_voice_review.py",
             "scripts/sync_official_media_assets.py",
             "scripts/recommend_media.py",
+            "../writing-voice/SKILL.md",
         ):
             self.assertTrue((SKILL_DIR / relative).is_file(), relative)
         skill = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
@@ -1953,23 +2227,35 @@ class SkillPackageTests(unittest.TestCase):
         self.assertEqual(design["layout"]["bodyTextAlign"], "center")
         self.assertEqual(design["textEmphasis"]["minimumTotalCount"], 6)
         self.assertEqual(design["textEmphasis"]["highlight"]["minimumCount"], 3)
-        self.assertEqual(design["retentionHooks"]["readingTime"]["minutes"], 3)
+        self.assertFalse(design["retentionHooks"]["titleRequiresNumericAnswerPromise"])
+        self.assertFalse(design["retentionHooks"]["readingTime"]["requiredForEveryArticle"])
+        self.assertEqual(design["retentionHooks"]["readingTime"]["minimumMinutes"], 1)
+        self.assertEqual(design["retentionHooks"]["readingTime"]["maximumMinutes"], 5)
+        self.assertTrue(design["retentionHooks"]["readingTime"]["topicSpecificPayoffRequired"])
         self.assertEqual(design["generatedReferenceMedia"]["creator"], "callilife")
         self.assertEqual(design["realGoldhandMedia"]["minimumCount"], 6)
         self.assertEqual(design["realGoldhandMedia"]["maximumCount"], 12)
         self.assertTrue(design["realGoldhandMedia"]["recentReuseAllowedOnlyBelowMinimum"])
         self.assertTrue(design["realGoldhandMedia"]["personInteractionRequired"])
         self.assertTrue(design["realGoldhandMedia"]["directorVisibleRequired"])
-        self.assertEqual(design["fixedClosingLinks"]["placeId"], "1598180269")
-        self.assertEqual(design["fixedClosingLinks"]["order"], ["goldhand-official-blog-linked-photo", "goldhand-naver-place-map"])
-        self.assertTrue(design["fixedClosingLinks"]["blogPhotoIsTheLink"])
-        self.assertTrue(design["fixedClosingLinks"]["visibleBlogLinkTextForbidden"])
+        self.assertFalse(design["fixedClosingLinks"]["enabled"])
+        self.assertFalse(design["fixedClosingLinks"]["requiredOnEveryArticle"])
+        self.assertEqual(design["fixedClosingLinks"]["articleEndsWith"], "clinic-info")
+        self.assertTrue(design["finalWritingVoiceReview"]["requiredOnEveryArticle"])
+        self.assertFalse(design["finalWritingVoiceReview"]["allowForcedEdit"])
+        self.assertEqual(
+            design["finalWritingVoiceReview"]["contractId"],
+            "writing-voice-final-rehear-v1",
+        )
         self.assertEqual(design["generatedReferenceMedia"]["contentPreservation"], "medical-information-layout")
         self.assertEqual(
             design["generatedReferenceMedia"]["allowedVariationModes"],
             ["person-identity-subtle-variation", "nonperson-style-subtle-variation"],
         )
-        self.assertEqual(design["tablePurposes"]["clinic-info"]["columnWidth"], "50%")
+        self.assertEqual(design["tablePurposes"]["clinic-hours"]["columnWidths"], ["24%", "38%", "38%"])
+        self.assertEqual(design["tablePurposes"]["clinic-info"]["minimumColumns"], 1)
+        self.assertEqual(design["tablePurposes"]["clinic-info"]["maximumColumns"], 1)
+        self.assertEqual(design["tablePurposes"]["clinic-info"]["columnWidth"], "100%")
         self.assertEqual(design["textEmphasis"]["red"]["minimumCount"], 1)
         credential_placement = design["editorialCloseOverrides"]["credentialPlacement"]
         self.assertTrue(credential_placement["appliesToEveryArticle"])
@@ -1984,27 +2270,65 @@ class SkillPackageTests(unittest.TestCase):
         self.assertIn("wipark-content-briefs.json", skill)
         self.assertIn("최근 3개", skill)
         self.assertIn("goldhand-official-voice-v1", skill)
-        self.assertIn("위석 원문의 말투·종결어미", skill)
+        self.assertIn("위석 원문의 완성 문장", skill)
+        self.assertIn("referenceWritingIntelligence", skill)
         self.assertIn("validate_goldhand_voice.py", skill)
+        self.assertIn("validate_natural_speech_suite.py", skill)
+        self.assertIn("validate_final_voice_review.py", skill)
+        self.assertIn("final-writing-voice-review.md", skill)
+        self.assertIn("writing-voice-final-rehear-v1", skill)
         self.assertIn("실제 금손한의원 사진을 매 글 6~12장", skill)
         self.assertIn("새 승인 사진이 6장보다 적을 때만", skill)
         self.assertIn("assets/official-media", skill)
-        self.assertIn("goldhand-closing-links.json", skill)
-        self.assertIn("1598180269", skill)
+        self.assertIn("clinic-info 운영정보 표에서 끝", skill)
+        self.assertIn("`clinic-hours` 진료시간 3열 표", skill)
+        self.assertNotIn("goldhand-naver-editor-finisher", skill)
         self.assertIn("로고·간판·건물 외부·약·환제·탕약·장비·제품·빈 원내 공간", skill)
         self.assertNotIn("Desktop/" + "금손한의원 사진", skill)
         self.assertIn("진료실 발화 가능성 검사", skill)
-        self.assertIn("같은 생성 원리에서 나온 문장군", skill)
+        self.assertIn("natural-speech-rewrite-protocol.md", skill)
+        self.assertIn("orderedContentAtoms", skill)
+        self.assertIn("sourceProseWithheld=true", skill)
+        self.assertIn("별도 발화 편집", skill)
+        self.assertIn("질문의 기능·구체성·리듬·설득 심리", skill)
         self.assertIn("data-question-source", skill)
         self.assertIn("solution-preview", skill)
         self.assertIn("goldhand-naver-native-v4", skill)
         self.assertIn("첫 정보 본문의 구분선·소제목·설명보다 앞", skill)
-        self.assertIn("placing the fixed Goldhand credential table after the complete introduction", openai_yaml)
-        self.assertIn("Never use a Goldhand logo", openai_yaml)
-        self.assertIn("Naver Place map block", openai_yaml)
-        self.assertIn("clickable Goldhand director-consultation photo", openai_yaml)
+        self.assertIn("reference-editorial-reasoning.md", openai_yaml)
+        self.assertIn("specific number -> perceived concreteness -> low effort -> attention -> topic-specific payoff", openai_yaml)
+        self.assertIn("Preserve the fixed Goldhand credential table after the complete introduction", openai_yaml)
+        self.assertIn("Never use a logo, sign, building", openai_yaml)
+        self.assertNotIn("Naver Place map block", openai_yaml)
+        self.assertNotIn("clickable Goldhand director-consultation photo", openai_yaml)
+        self.assertIn("Keep the fixed clinic information table unchanged as the final article component", openai_yaml)
+        self.assertIn("Do not append a related-reading label", openai_yaml)
+        self.assertIn("Use orderedContentAtoms as the factual skeleton and flowBeats as the editorial sequence", openai_yaml)
+        self.assertIn("naturalize the adapted reasoning without erasing it", openai_yaml)
+        self.assertIn("separate spoken-editor pass", openai_yaml)
+        self.assertIn("final writing-voice rehear pass", openai_yaml)
+        self.assertIn("$writing-voice", openai_yaml)
         self.assertIn("data-mobile-group", skill)
         self.assertNotIn("Notion TOP 5", skill)
+
+    def test_writing_voice_skill_is_bundled_exactly(self) -> None:
+        bundled = SKILL_DIR.parent / "writing-voice" / "SKILL.md"
+        self.assertTrue(bundled.is_file())
+        self.assertEqual(
+            hashlib.sha256(bundled.read_bytes()).hexdigest(),
+            "4dcbc094c3c129f7c33d012ceff4b327a7c0084cfed3459ffdee8122d81e0fbd",
+        )
+        text = bundled.read_text(encoding="utf-8")
+        self.assertIn("name: writing-voice", text)
+        self.assertIn("Make the writer easier to hear", text)
+        self.assertIn("Do not add, remove, reorder, promote, or demote material", text)
+
+    def test_shared_skill_package_has_no_owner_machine_paths(self) -> None:
+        owner_machine_prefix = "/Users/" + "seojun"
+        for path in SKILL_DIR.rglob("*"):
+            if not path.is_file() or path.suffix.lower() not in {".md", ".json", ".py", ".yaml", ".yml"}:
+                continue
+            self.assertNotIn(owner_machine_prefix, path.read_text(encoding="utf-8"), str(path))
 
     def test_official_goldhand_voice_is_required_and_emoticons_fail(self) -> None:
         profile = json.loads((SKILL_DIR / "assets" / "goldhand-official-voice-profile.json").read_text(encoding="utf-8"))
@@ -2057,7 +2381,7 @@ class SkillPackageTests(unittest.TestCase):
         self.assertIn("over-softened-medical-guidance", {item["code"] for item in softened_result["issues"]})
 
         meta = example.replace(
-            "제가 진료할 때 먼저 여쭙는 건",
+            "제가 진료할 때 여쭙는 건",
             "이번 글에서는 함께 살펴보겠습니다",
             1,
         )
@@ -2113,15 +2437,264 @@ class SkillPackageTests(unittest.TestCase):
         natural_gait_result = GOLDHAND_VOICE_VALIDATOR.validate(natural_gait, profile)
         self.assertEqual(natural_gait_result["status"], "pass", natural_gait_result)
 
-    def test_wipark_controls_content_but_not_voice(self) -> None:
+        symmetric = example.replace(
+            "진료할 때 같이 말씀해 주세요.",
+            "하루 편했다고 다 나았다고 말할 수는 없습니다. 반대로 다음 날 아팠다고 치료가 소용없었다고 볼 수도 없습니다.",
+            1,
+        )
+        symmetric_result = GOLDHAND_VOICE_VALIDATOR.validate(symmetric, profile)
+        self.assertIn(
+            "symmetric-caveat-chain",
+            {item["code"] for item in symmetric_result["issues"]},
+        )
+
+        possibility = example.replace(
+            "진료할 때 같이 말씀해 주세요.",
+            "아플 수 있습니다. 저릴 수 있습니다. 뻐근할 수 있습니다. 힘들 수 있습니다. 달라질 수 있습니다. 불편할 수 있습니다.",
+            1,
+        )
+        possibility_result = GOLDHAND_VOICE_VALIDATOR.validate(possibility, profile)
+        self.assertIn(
+            "possibility-ending-overuse",
+            {item["code"] for item in possibility_result["issues"]},
+        )
+
+        treatment_catalogue = example.replace(
+            "진료할 때 같이 말씀해 주세요.",
+            "침, 약침, 추나, 물리치료, 한약을 차례로 고려합니다.",
+            1,
+        )
+        treatment_catalogue_result = GOLDHAND_VOICE_VALIDATOR.validate(treatment_catalogue, profile)
+        self.assertIn(
+            "treatment-catalogue",
+            {item["code"] for item in treatment_catalogue_result["issues"]},
+        )
+
+        priority = example.replace(
+            "진료할 때 같이 말씀해 주세요.",
+            "먼저 시작을 묻고 먼저 잠을 묻고 먼저 식사를 묻고 먼저 걷기를 묻고 먼저 약을 묻고 먼저 검사를 묻습니다.",
+            1,
+        )
+        priority_result = GOLDHAND_VOICE_VALIDATOR.validate(priority, profile)
+        self.assertIn(
+            "priority-transition-overuse",
+            {item["code"] for item in priority_result["issues"]},
+        )
+
+        contrast = example.replace(
+            "진료할 때 같이 말씀해 주세요.",
+            "반대로 아침에는 괜찮습니다. 반대로 오후에는 아픕니다. 반대로 밤에는 잠을 설칩니다.",
+            1,
+        )
+        contrast_result = GOLDHAND_VOICE_VALIDATOR.validate(contrast, profile)
+        self.assertIn(
+            "binary-contrast-overuse",
+            {item["code"] for item in contrast_result["issues"]},
+        )
+
+    def test_mobile_br_is_not_a_sentence_boundary_for_voice_cadence(self) -> None:
+        fragment = "<article><p>모니터를 오래 내려다보면<br>오후에 목이 뻐근해집니다.</p><p>다음 문장입니다.</p></article>"
+        text = GOLDHAND_VOICE_VALIDATOR.prose_text(fragment)
+        self.assertEqual(
+            GOLDHAND_VOICE_VALIDATOR.prose_sentences(text),
+            ["모니터를 오래 내려다보면 오후에 목이 뻐근해집니다.", "다음 문장입니다."],
+        )
+
+    def test_final_writing_voice_review_accepts_accounted_local_revision(self) -> None:
+        contract = json.loads(
+            (SKILL_DIR / "assets" / "writing-voice-final-review-contract.json").read_text(encoding="utf-8")
+        )
+        title = "광주 한의원 팔을 들 때 아픈 이유"
+        before = [
+            "현재의 불편 양상을 종합적으로 살펴볼 필요가 있습니다.",
+            "통증이 심해지면 운동을 멈추셔야 합니다.",
+        ]
+        final = [
+            "팔을 들 때 어디가 어떻게 아픈지 먼저 봐야 합니다.",
+            "통증이 심해지면 운동을 멈추셔야 합니다.",
+        ]
+        case = {
+            "title": title,
+            "finalBody": final,
+            "writingVoiceReview": writing_voice_review(
+                title,
+                before,
+                final,
+                expressive_jobs={
+                    1: "환자가 팔을 드는 장면과 아픈 곳을 바로 떠올리도록 추상적인 말을 직접적인 설명으로 바꿈"
+                },
+            ),
+        }
+        result = FINAL_WRITING_VOICE_VALIDATOR.validate_case(case, contract)
+        self.assertEqual(result["status"], "pass", result)
+        self.assertEqual(result["metrics"]["changedParagraphs"], 1)
+
+    def test_final_writing_voice_review_allows_no_change_when_voice_already_holds(self) -> None:
+        contract = json.loads(
+            (SKILL_DIR / "assets" / "writing-voice-final-review-contract.json").read_text(encoding="utf-8")
+        )
+        title = "광주 한의원 목이 다시 뻐근한 이유"
+        body = ["모니터를 오래 내려다보면 오후에 목이 다시 뻐근해집니다."]
+        case = {
+            "title": title,
+            "finalBody": body,
+            "writingVoiceReview": writing_voice_review(title, body, body),
+        }
+        result = FINAL_WRITING_VOICE_VALIDATOR.validate_case(case, contract)
+        self.assertEqual(result["status"], "pass", result)
+        self.assertEqual(result["metrics"]["changedParagraphs"], 0)
+
+    def test_final_writing_voice_review_rejects_generic_or_unaccounted_change(self) -> None:
+        contract = json.loads(
+            (SKILL_DIR / "assets" / "writing-voice-final-review-contract.json").read_text(encoding="utf-8")
+        )
+        title = "광주 한의원 어깨 통증"
+        before = ["어깨의 불편 양상을 확인합니다."]
+        final = ["팔을 들 때 어깨 앞쪽이 아픈지 봅니다."]
+        review = writing_voice_review(title, before, final)
+        review["revisions"][0]["expressiveJob"] = "더 자연스럽게"
+        review["frozenMaterial"]["claimStrengthPreserved"] = False
+        case = {"title": title, "finalBody": final, "writingVoiceReview": review}
+        result = FINAL_WRITING_VOICE_VALIDATOR.validate_case(case, contract)
+        codes = {item["code"] for item in result["issues"]}
+        self.assertIn("writing-voice-expressive-job-missing", codes, result)
+        self.assertIn("writing-voice-frozen-material-failed", codes, result)
+
+    def test_final_writing_voice_review_is_required(self) -> None:
+        contract = json.loads(
+            (SKILL_DIR / "assets" / "writing-voice-final-review-contract.json").read_text(encoding="utf-8")
+        )
+        result = FINAL_WRITING_VOICE_VALIDATOR.validate_case(
+            {"title": "광주 한의원 목 통증", "finalBody": ["오후에 목이 뻐근합니다."]},
+            contract,
+        )
+        self.assertIn("writing-voice-review-missing", {item["code"] for item in result["issues"]})
+
+    def test_plain_draft_suite_rejects_three_sentence_paragraph_template(self) -> None:
+        profile = json.loads((SKILL_DIR / "assets" / "goldhand-official-voice-profile.json").read_text(encoding="utf-8"))
+        briefs = json.loads((SKILL_DIR / "assets" / "wipark-content-briefs.json").read_text(encoding="utf-8"))
+        atom_ids = [atom["id"] for atom in briefs["briefs"]["INFO01"]["orderedContentAtoms"]]
+        paragraph = "광주 한의원에서 모니터를 봅니다. 오후에는 목이 뻐근합니다. 어깨도 같이 올라가죠."
+        final_body = ["안녕하세요, 금손한의원 박준희 원장입니다.", *[paragraph for _ in range(10)]]
+        case = {
+            "iteration": 1,
+            "briefId": "INFO01",
+            "keyword": "광주 한의원",
+            "title": "광주 한의원 목 통증을 볼 2가지",
+            "finalBody": final_body,
+            "atomCoverage": {atom_id: "모니터를 봅니다" for atom_id in atom_ids},
+            "manualReview": {
+                "soundsSpoken": True,
+                "onePassMeaning": True,
+                "sceneIsVisible": True,
+                "noTemplateFlow": True,
+                "finalStatus": "pass",
+                "revisionHistory": ["검수"],
+            },
+            "writingVoiceReview": writing_voice_review(
+                "광주 한의원 목 통증을 볼 2가지",
+                final_body,
+                final_body,
+            ),
+        }
+        result = NATURAL_SPEECH_SUITE_VALIDATOR.validate_suite(
+            {"cases": [case]},
+            profile,
+            briefs,
+            expected_count=1,
+        )
+        codes = {item["code"] for item in result["issues"]}
+        self.assertIn("paragraph-cadence-single-template", codes)
+        self.assertIn("paragraph-cadence-dominance", codes)
+        self.assertIn("paragraph-cadence-run", codes)
+        self.assertFalse(any(code.startswith("writing-voice:") for code in codes), result)
+
+    def test_plain_draft_suite_rejects_cross_draft_eight_word_copy(self) -> None:
+        repeated = NATURAL_SPEECH_SUITE_VALIDATOR.repeated_cross_case_phrases(
+            [
+                {"iteration": 1, "finalBody": ["하나 둘 셋 넷 다섯 여섯 일곱 여덟 아홉"]},
+                {"iteration": 2, "finalBody": ["다른 시작 하나 둘 셋 넷 다섯 여섯 일곱 여덟 아홉"]},
+            ]
+        )
+        self.assertTrue(repeated, repeated)
+
+    def test_wipark_selector_emits_editorial_reasoning_and_goldhand_adaptation(self) -> None:
         briefs = json.loads((SKILL_DIR / "assets" / "wipark-content-briefs.json").read_text(encoding="utf-8"))
         profiles = json.loads((SKILL_DIR / "assets" / "reference-master-profiles.json").read_text(encoding="utf-8"))
         selected = WIPARK_CONTENT_SELECTOR.select(
             "광주 한의원", "", briefs, profiles, {"entries": []}, count=1, seed="content-voice-contract"
         )[0]
-        self.assertTrue(selected["orderedGeneralInformation"])
-        self.assertTrue(selected["sourceToneBlocked"])
+        self.assertTrue(selected["orderedContentAtoms"])
+        self.assertNotIn("orderedGeneralInformation", selected)
+        self.assertTrue(selected["sourceProseWithheld"])
+        self.assertTrue(selected["contentAtomCoverageRequired"])
+        self.assertTrue(selected["sourceSentenceImitationBlocked"])
+        self.assertTrue(selected["referenceExpressionLearningEnabled"])
+        self.assertTrue(selected["referenceEditorialReasoningEnabled"])
+        self.assertTrue(selected["goldhandFactReplacementRequired"])
+        self.assertTrue(selected["adaptationDecisionRequired"])
+        self.assertNotIn("sourceToneBlocked", selected)
+        self.assertTrue(selected["finalVoiceReviewRequired"])
+        self.assertEqual(selected["finalVoiceReviewerSkill"], "writing-voice")
+        self.assertEqual(selected["finalVoiceReviewContractId"], "writing-voice-final-rehear-v1")
+        self.assertTrue(selected["referenceWritingIntelligence"]["flowBeats"])
+        self.assertTrue(selected["referenceWritingIntelligence"]["microExpressionPatterns"])
         self.assertEqual(selected["voiceProfileId"], "goldhand-official-voice-v1")
+        self.assertEqual(selected["voiceProtocolId"], "natural-speech-rewrite-protocol-v1")
+        self.assertEqual(selected["contentAtomIds"], [atom["id"] for atom in selected["orderedContentAtoms"]])
+
+    def test_two_active_tasks_reserve_different_references_for_same_keyword(self) -> None:
+        selector = SCRIPTS / "select_wipark_content_reference.py"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            state = root / "recent.json"
+            reservations = root / "reservations"
+            common = [
+                sys.executable,
+                str(selector),
+                "--keyword",
+                "광주 한의원 추천",
+                "--seed",
+                "parallel-contract",
+                "--state",
+                str(state),
+                "--reservation-dir",
+                str(reservations),
+            ]
+            first = subprocess.Popen(
+                [*common, "--run-id", "parallel-run-one"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            second = subprocess.Popen(
+                [*common, "--run-id", "parallel-run-two"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            first_stdout, first_stderr = first.communicate(timeout=10)
+            second_stdout, second_stderr = second.communicate(timeout=10)
+            self.assertEqual(first.returncode, 0, first_stderr)
+            self.assertEqual(second.returncode, 0, second_stderr)
+            first_payload = json.loads(first_stdout)
+            second_payload = json.loads(second_stdout)
+            self.assertNotEqual(first_payload["masterId"], second_payload["masterId"])
+            self.assertEqual(first_payload["reservation"]["runId"], "parallel-run-one")
+            self.assertEqual(second_payload["reservation"]["runId"], "parallel-run-two")
+
+    def test_all_wipark_briefs_have_ordered_nonprose_content_atoms(self) -> None:
+        briefs = json.loads((SKILL_DIR / "assets" / "wipark-content-briefs.json").read_text(encoding="utf-8"))
+        self.assertEqual(briefs["schemaVersion"], 2)
+        seen: set[str] = set()
+        for master_id, brief in briefs["briefs"].items():
+            atoms = WIPARK_CONTENT_SELECTOR.content_atoms(brief, master_id)
+            self.assertEqual(len(atoms), 4)
+            for atom in atoms:
+                self.assertNotIn(atom["id"], seen)
+                seen.add(atom["id"])
+                for value in [*atom["observables"], *atom["meaning"]]:
+                    self.assertNotRegex(value, r"(?:습니다|합니다|입니다|됩니다|다)\s*[.!?]$")
 
 
 if __name__ == "__main__":

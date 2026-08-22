@@ -123,8 +123,9 @@ def editorial_source_issues(tag: str) -> tuple[list[str], str, str]:
     elif role_values and role_values[0] not in {
         "title-tone-content-sequence-only",
         "topic-reader-concerns-general-information-sequence-only",
+        "editorial-reasoning-content-flow-and-expression-principles",
     }:
-        issues.append("data-editorial-source-role은 topic-reader-concerns-general-information-sequence-only여야 합니다.")
+        issues.append("data-editorial-source-role은 등록된 콘텐츠·편집 판단 역할이어야 합니다.")
     if status_values != ["ready"]:
         issues.append("data-editorial-profile-status는 원문 본문 감사와 프로필 검증을 마친 ready여야 합니다.")
     return issues, master_id, source_url
@@ -548,13 +549,13 @@ def validate(
             if declarations.get("vertical-align") != "middle":
                 issues.append(f"표 {table_index} 셀 {cell_index}은 세로 중앙 정렬이어야 합니다.")
             if purpose == "clinic-info":
-                required_width = str(purpose_spec.get("columnWidth", "50%")).lower()
+                required_width = str(purpose_spec.get("columnWidth", "100%")).lower()
                 required_height = str(purpose_spec.get("minimumCellHeight", "64px")).lower()
                 required_line_height = str(purpose_spec.get("requiredLineHeight", "1.8")).lower()
                 required_word_break = str(purpose_spec.get("requiredWordBreak", "keep-all")).lower()
                 if declarations.get("width") != required_width:
                     issues.append(
-                        f"운영정보 표 셀 {cell_index}의 좌우 폭은 모두 {required_width}여야 합니다."
+                        f"운영정보 표 셀 {cell_index}의 적층 행 폭은 모두 {required_width}여야 합니다."
                     )
                 if declarations.get("height") != required_height:
                     issues.append(
@@ -567,6 +568,28 @@ def validate(
                 if declarations.get("word-break") != required_word_break:
                     issues.append(
                         f"운영정보 표 셀 {cell_index}은 word-break:{required_word_break}을 사용해야 합니다."
+                    )
+            if purpose == "clinic-hours":
+                widths = [str(value).lower() for value in purpose_spec.get("columnWidths", ["24%", "38%", "38%"])]
+                required_width = widths[(cell_index - 1) % len(widths)]
+                required_height = str(purpose_spec.get("minimumCellHeight", "64px")).lower()
+                required_line_height = str(purpose_spec.get("requiredLineHeight", "1.8")).lower()
+                required_word_break = str(purpose_spec.get("requiredWordBreak", "keep-all")).lower()
+                if declarations.get("width") != required_width:
+                    issues.append(
+                        f"진료시간 표 셀 {cell_index}의 열 폭은 {required_width}여야 합니다."
+                    )
+                if declarations.get("height") != required_height:
+                    issues.append(
+                        f"진료시간 표 셀 {cell_index}의 기본 높이는 {required_height}여야 합니다."
+                    )
+                if declarations.get("line-height") != required_line_height:
+                    issues.append(
+                        f"진료시간 표 셀 {cell_index}의 행간은 {required_line_height}이어야 합니다."
+                    )
+                if declarations.get("word-break") != required_word_break:
+                    issues.append(
+                        f"진료시간 표 셀 {cell_index}은 word-break:{required_word_break}을 사용해야 합니다."
                     )
         if rows:
             header_cells_by_purpose[purpose] = re.findall(

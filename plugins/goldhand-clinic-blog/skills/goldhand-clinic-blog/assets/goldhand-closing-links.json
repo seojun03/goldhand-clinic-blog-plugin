@@ -1,22 +1,11 @@
 {
-  "schemaVersion": 2,
-  "requiredOnEveryArticle": true,
-  "blog": {
-    "url": "https://blog.naver.com/goldhand7582_",
-    "mobileUrl": "https://m.blog.naver.com/goldhand7582_",
-    "thumbnailMediaId": "GH0018",
-    "presentation": "linked-photo",
-    "visibleText": false
-  },
-  "place": {
-    "placeId": "1598180269",
-    "name": "금손한의원",
-    "address": "전남광주통합특별시 서구 유림로98번길 3, 2층",
-    "latitude": 35.1712875,
-    "longitude": 126.864364,
-    "telephone": "062-515-7582",
-    "url": "https://map.naver.com/p/entry/place/1598180269",
-    "searchEngine": "naver",
-    "searchType": "s"
-  }
+  "schemaVersion": 4,
+  "enabled": false,
+  "requiredOnEveryArticle": false,
+  "articleEndsWith": "clinic-info",
+  "forbiddenClosingElements": [
+    "related-post-label",
+    "latest-blog-post-link",
+    "naver-place-map"
+  ]
 }

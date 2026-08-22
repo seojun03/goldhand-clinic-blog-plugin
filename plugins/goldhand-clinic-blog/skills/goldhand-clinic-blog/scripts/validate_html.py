@@ -18,7 +18,7 @@ REQUIRED_SNIPPETS = {
     "plain-mime": "text/plain",
     "copy-fallback": "execCommand('copy')",
     "copy-preview": "__goldhandCopyPreview",
-    "bold-underline-reminder": "B·U",
+    "bold-underline-reminder": "굵게·밑줄·취소선",
     "mobile-breakpoint": "@media (max-width:640px)",
     "writing-master": "data-master-reference-id=",
     "decoration-master": "data-decoration-master-reference-id=",
@@ -35,18 +35,14 @@ REQUIRED_SNIPPETS = {
     "native-table-preset": 'data-native-table-preset="naver-table1-default"',
     "credential-table": 'data-native-table-purpose="credential"',
     "summary-table": 'data-native-table-purpose="article-summary"',
+    "clinic-hours-table": 'data-native-table-purpose="clinic-hours"',
     "contact-table": 'data-native-table-purpose="clinic-info"',
     "native-copy-sanitizer": "stripInternalMetadata",
     "editorial-copy-sanitizer": "name.startsWith('data-editorial-')",
     "article-wrapper-strip": "root.querySelector('article')",
-    "fixed-closing-links": 'data-goldhand-closing-links="true"',
-    "official-blog-photo-link": 'data-goldhand-photo-link="official-blog"',
-    "native-map": 'class="se-component se-placesMap',
-    "native-module-data": 'class="__se_module_data"',
-    "official-blog-link": "https://blog.naver.com/goldhand7582_",
-    "official-place-link": "https://map.naver.com/p/entry/place/1598180269",
-    "official-place-id": "1598180269",
-    "native-copy-component-preservation": "parent.closest('strong,b,u,.se-image,.se-placesMap')",
+    "closing-supplement-disabled": "requiresNativeFinisher:false",
+    "native-input-buffer": "INPUT_BUFFER_DATA;",
+    "native-copy-component-preservation": "element.matches('.se-component.se-oglink,.se-component.se-placesMap')",
 }
 
 
@@ -97,56 +93,21 @@ def validate_html(raw: str, *, max_megabytes: float = 30.0) -> dict[str, object]
         add(issues, "error", "custom-box-marker", "CSS 카드용 data-goldhand-box가 남아 있습니다.")
     if article_match:
         article_html = article_match.group(0)
-        closing_matches = list(
-            re.finditer(
-                r"<section\b(?=[^>]*\bdata-goldhand-closing-links\s*=\s*['\"]true['\"])[^>]*>.*?</section>",
-                article_html,
-                flags=re.I | re.S,
-            )
+        forbidden_closing_patterns = (
+            r"data-goldhand-closing-links\s*=",
+            r"(?:&lt;|<)함께 보면 좋은 글(?:&gt;|>)",
+            r"class\s*=\s*['\"][^'\"]*\bse-oglink\b",
+            r"class\s*=\s*['\"][^'\"]*\bse-placesMap\b",
+            r"https://blog\.naver\.com/goldhand7582_/\d+",
+            r"https://map\.naver\.com/p/entry/place/1598180269",
         )
-        if len(closing_matches) != 1:
+        if any(re.search(pattern, article_html, flags=re.I | re.S) for pattern in forbidden_closing_patterns):
             add(
                 issues,
                 "error",
-                "fixed-closing-links-count",
-                f"금손 공식 블로그 링크와 네이버 지도 고정 블록은 정확히 1개여야 합니다. 현재 {len(closing_matches)}개입니다.",
+                "closing-supplement-forbidden",
+                "운영정보 뒤의 함께 보면 좋은 글·최신 블로그 링크·네이버 지도는 출력하지 않아야 합니다.",
             )
-        else:
-            closing_match = closing_matches[0]
-            remainder = re.sub(r"</article>\s*$", "", article_html[closing_match.end():], flags=re.I)
-            if remainder.strip():
-                add(issues, "error", "fixed-closing-links-not-last", "금손 공식 블로그 링크와 네이버 지도는 글의 맨 마지막이어야 합니다.")
-            closing_html = closing_match.group(0)
-            photo_links = re.findall(
-                r"<a\b(?=[^>]*\bhref\s*=\s*['\"]https://blog\.naver\.com/goldhand7582_['\"])(?=[^>]*\bdata-linktype\s*=\s*['\"]img['\"])[^>]*>\s*<img\b[^>]*>\s*</a>",
-                closing_html,
-                flags=re.I | re.S,
-            )
-            if len(photo_links) != 1:
-                add(
-                    issues,
-                    "error",
-                    "official-blog-photo-link-count",
-                    f"공식 블로그는 승인된 상담 사진 한 장 자체에 링크해야 합니다. 현재 {len(photo_links)}개입니다.",
-                )
-            if re.search(r"\bse-oglink(?:-|\b)|\bdata-linktype\s*=\s*['\"]oglink['\"]", closing_html, flags=re.I):
-                add(issues, "error", "text-oglink-card-forbidden", "제목·설명·주소가 보이는 OG 링크 카드는 사용하지 않습니다.")
-            if not re.search(r"\bclass\s*=\s*['\"][^'\"]*\bse-image\b", closing_html, flags=re.I):
-                add(issues, "error", "native-blog-image-missing", "사진형 공식 블로그 링크의 네이버 이미지 구조가 없습니다.")
-            if "&quot;linkUse&quot;:&quot;true&quot;" not in closing_html or "&quot;type&quot;:&quot;v2_image&quot;" not in closing_html:
-                add(issues, "error", "native-blog-image-link-data", "사진형 공식 블로그 링크의 linkUse 또는 v2_image 데이터가 없습니다.")
-            if len(re.findall(r"\bclass\s*=\s*['\"][^'\"]*\bse-placesMap\b", closing_html, flags=re.I)) < 1:
-                add(issues, "error", "native-map-missing", "글 마지막에 네이버 지도 구조가 없습니다.")
-            if len(re.findall(r"\bdata-module\s*=", closing_html, flags=re.I)) != 2:
-                add(issues, "error", "native-module-legacy-count", "금손 링크·지도에는 네이버 data-module 두 개가 필요합니다.")
-            if len(re.findall(r"\bdata-module-v2\s*=", closing_html, flags=re.I)) != 2:
-                add(issues, "error", "native-closing-module-count", "사진형 공식 블로그 링크와 지도용 네이버 모듈 데이터가 각각 하나씩 필요합니다.")
-            if "https://blog.naver.com/goldhand7582_" not in closing_html:
-                add(issues, "error", "official-blog-link-missing", "금손한의원 공식 블로그 링크가 없습니다.")
-            if "https://map.naver.com/p/entry/place/1598180269" not in closing_html or "1598180269" not in closing_html:
-                add(issues, "error", "official-map-link-missing", "금손한의원 네이버 플레이스 링크 또는 장소 ID가 없습니다.")
-            if re.search(r"(?:og_270x270\.png|한의원로고|goldhand-mark\.svg)", closing_html, flags=re.I):
-                add(issues, "error", "closing-logo-forbidden", "글 마지막 공식 블로그 연결 사진에도 로고 이미지를 사용할 수 없습니다.")
         if re.search(r"<figcaption\b", article_html, flags=re.I):
             add(issues, "error", "visible-image-caption-forbidden", "복사용 HTML에 보이는 이미지 캡션이 남아 있습니다.")
         real_photo_count = len(
@@ -240,6 +201,30 @@ def validate_html(raw: str, *, max_megabytes: float = 30.0) -> dict[str, object]
                     "금손한의원 소개 credential 표와 첫 정보 본문 divider·section-heading 사이에는 빈 preview-gap 외의 본문·이미지·표를 둘 수 없습니다.",
                 )
         tables = re.findall(r"<table\b[^>]*>.*?</table>", article_html, flags=re.I | re.S)
+        clinic_info_matches = list(
+            re.finditer(
+                r"<table\b(?=[^>]*\bdata-native-table-purpose\s*=\s*['\"]clinic-info['\"])[^>]*>.*?</table>",
+                article_html,
+                flags=re.I | re.S,
+            )
+        )
+        clinic_hours_matches = list(
+            re.finditer(
+                r"<table\b(?=[^>]*\bdata-native-table-purpose\s*=\s*['\"]clinic-hours['\"])[^>]*>.*?</table>",
+                article_html,
+                flags=re.I | re.S,
+            )
+        )
+        if len(clinic_hours_matches) != 1:
+            add(issues, "error", "clinic-hours-count", f"진료시간 표는 정확히 1개여야 합니다. 현재 {len(clinic_hours_matches)}개입니다.")
+        elif clinic_info_matches and clinic_hours_matches[0].end() > clinic_info_matches[0].start():
+            add(issues, "error", "clinic-hours-order", "진료시간 표는 위치·전화 운영정보 표보다 앞에 있어야 합니다.")
+        if len(clinic_info_matches) != 1:
+            add(issues, "error", "clinic-info-count", f"운영정보 표는 정확히 1개여야 합니다. 현재 {len(clinic_info_matches)}개입니다.")
+        else:
+            trailing = re.sub(r"</article>\s*$", "", article_html[clinic_info_matches[0].end():], flags=re.I)
+            if not contains_only_preview_gaps(trailing):
+                add(issues, "error", "clinic-info-not-last", "운영정보 표 뒤에는 다른 본문·링크·지도 컴포넌트를 둘 수 없습니다.")
         non_table_html = re.sub(r"<table\b[^>]*>.*?</table>", "", article_html, flags=re.I | re.S)
         if re.search(
             r"(?:^|;)\s*(?:border(?:-(?:top|right|bottom|left|radius))?|box-shadow|background-image)\s*:",
@@ -247,12 +232,13 @@ def validate_html(raw: str, *, max_megabytes: float = 30.0) -> dict[str, object]
             flags=re.I,
         ):
             add(issues, "error", "custom-box-css", "표 밖에 외부 카드 CSS가 남아 있습니다.")
-        valid_table_count = 2 <= len(tables) <= 3 if editorial_close else len(tables) == 3
+        valid_table_count = 3 <= len(tables) <= 4 if editorial_close else len(tables) == 4
         if not valid_table_count:
-            requirement = "가치입증·운영정보 표와 선택 요약표를 합쳐 2~3개" if editorial_close else "가치입증·요약·운영정보 순정 표가 각각"
+            requirement = "가치입증·진료시간·운영정보 표와 선택 요약표를 합쳐 3~4개" if editorial_close else "가치입증·요약·진료시간·운영정보 순정 표가 각각"
             add(issues, "error", "native-table-count", f"{requirement} 필요합니다. 현재 {len(tables)}개입니다.")
         for index, table in enumerate(tables, start=1):
             is_clinic_info = 'data-native-table-purpose="clinic-info"' in table
+            is_clinic_hours = 'data-native-table-purpose="clinic-hours"' in table
             if 'data-naver-native-component="table"' not in table or 'data-native-table-preset="naver-table1-default"' not in table:
                 add(issues, "error", "native-table-contract", f"표 {index}에 네이버 표1 계약이 없습니다.")
             table_tag = re.search(r"<table\b[^>]*>", table, flags=re.I)
@@ -269,17 +255,30 @@ def validate_html(raw: str, *, max_megabytes: float = 30.0) -> dict[str, object]
                     add(issues, "error", "table-cell-center", f"표 {index} 셀 {cell_index}이 가로·세로 중앙 정렬이 아닙니다.")
                 if is_clinic_info and not all(
                     snippet in normalized_cell
-                    for snippet in ("width:50%", "height:64px", "line-height:1.8", "word-break:keep-all")
+                    for snippet in ("width:100%", "height:64px", "line-height:1.8", "word-break:keep-all")
                 ):
                     add(
                         issues,
                         "error",
-                        "clinic-info-centered-equal-columns",
-                        f"운영정보 표 셀 {cell_index}은 50:50 폭·64px 기본 높이·중앙 가독성 설정을 사용해야 합니다.",
+                        "clinic-info-stacked-rows",
+                        f"운영정보 표 셀 {cell_index}은 100% 폭의 1열 적층 행과 64px 기본 높이·중앙 가독성 설정을 사용해야 합니다.",
                     )
+                if is_clinic_hours:
+                    expected_width = "width:24%" if (cell_index - 1) % 3 == 0 else "width:38%"
+                    if not all(
+                        snippet in normalized_cell
+                        for snippet in (expected_width, "height:64px", "line-height:1.8", "word-break:keep-all")
+                    ):
+                        add(
+                            issues,
+                            "error",
+                            "clinic-hours-column-layout",
+                            f"진료시간 표 셀 {cell_index}은 24:38:38 폭과 64px 높이·중앙 가독성 설정을 사용해야 합니다.",
+                        )
+        alignment_html = article_html
         for match in re.finditer(
             r"<(?P<tag>p|h[2-6]|blockquote)\b(?P<attrs>[^>]*)>",
-            article_html,
+            alignment_html,
             flags=re.I | re.S,
         ):
             normalized = re.sub(r"\s+", "", match.group("attrs")).lower()

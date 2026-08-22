@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import json
 import os
 import sys
+import time
 from datetime import date
 from pathlib import Path
 
@@ -52,6 +54,10 @@ OPTIONAL_SCALAR_FIELDS = (
     "editorialReferenceUrl",
     "editorialSourceRole",
     "editorialProfileStatus",
+    "referenceWritingIntelligenceId",
+    "titleMechanismId",
+    "introPersuasionDeviceId",
+    "closingMechanismId",
 )
 
 OPTIONAL_LIST_FIELDS = (
@@ -116,6 +122,7 @@ def record(state: dict[str, object], entry: dict[str, object]) -> dict[str, obje
         if normalized_entry["editorialSourceRole"] not in {
             "title-tone-content-sequence-only",
             "topic-reader-concerns-general-information-sequence-only",
+            "editorial-reasoning-content-flow-and-expression-principles",
         }:
             raise ValueError("ready 편집 이력의 source role이 올바르지 않습니다.")
     entries = state.get("entries", [])
@@ -181,6 +188,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--editorial-reference-url", default="")
     parser.add_argument("--editorial-source-role", default="")
     parser.add_argument("--editorial-profile-status", default="")
+    parser.add_argument("--reference-writing-intelligence-id", default="")
+    parser.add_argument("--title-mechanism-id", default="")
+    parser.add_argument("--intro-persuasion-device-id", default="")
+    parser.add_argument("--closing-mechanism-id", default="")
+    parser.add_argument("--reservation-master-id", default="")
+    parser.add_argument("--reservation-run-id", default="")
+    parser.add_argument("--reservation-dir", type=Path)
     parser.add_argument("--real-media-id", action="append", dest="real_media_ids", default=[])
     parser.add_argument("--real-media-hash", action="append", dest="real_media_hashes", default=[])
     return parser.parse_args()
@@ -197,6 +211,56 @@ def add_optional(entry: dict[str, object], field: str, value: object) -> None:
     normalized = str(value).strip()
     if normalized:
         entry[field] = normalized
+
+
+def default_reservation_dir(state_path: Path) -> Path:
+    override = os.environ.get("GOLDHAND_RESERVATION_DIR", "").strip()
+    if override:
+        return Path(override).expanduser().resolve()
+    return state_path.parent / "reservations"
+
+
+def release_reservation(reservation_dir: Path, master_id: str, run_id: str) -> bool:
+    path = reservation_dir / f"{master_id}.json"
+    if not path.exists():
+        return False
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict) or str(payload.get("runId", "")) != run_id:
+        return False
+    path.unlink()
+    return True
+
+
+@contextmanager
+def state_write_lock(state_path: Path, *, timeout_seconds: float = 10.0):
+    """Serialize concurrent completions so one task cannot erase another."""
+
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = state_path.with_name(f"{state_path.name}.lock")
+    deadline = time.monotonic() + timeout_seconds
+    descriptor: int | None = None
+    while descriptor is None:
+        try:
+            descriptor = os.open(lock_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            try:
+                if time.time() - lock_path.stat().st_mtime > 30:
+                    lock_path.unlink()
+                    continue
+            except FileNotFoundError:
+                continue
+            if time.monotonic() >= deadline:
+                raise TimeoutError("최근 글 이력 잠금을 10초 안에 확보하지 못했습니다.")
+            time.sleep(0.05)
+    try:
+        os.write(descriptor, str(os.getpid()).encode("ascii"))
+        yield
+    finally:
+        os.close(descriptor)
+        try:
+            lock_path.unlink()
+        except FileNotFoundError:
+            pass
 
 
 def main() -> int:
@@ -238,6 +302,10 @@ def main() -> int:
         "editorialReferenceUrl": args.editorial_reference_url,
         "editorialSourceRole": args.editorial_source_role,
         "editorialProfileStatus": args.editorial_profile_status,
+        "referenceWritingIntelligenceId": args.reference_writing_intelligence_id,
+        "titleMechanismId": args.title_mechanism_id,
+        "introPersuasionDeviceId": args.intro_persuasion_device_id,
+        "closingMechanismId": args.closing_mechanism_id,
         "realMediaIds": args.real_media_ids,
         "realMediaHashes": args.real_media_hashes,
     }
@@ -247,11 +315,23 @@ def main() -> int:
         print("이력 필드는 비워 둘 수 없습니다.", file=sys.stderr)
         return 1
     try:
-        state = json.loads(args.state.read_text(encoding="utf-8")) if args.state.exists() else {}
-        updated = record(state if isinstance(state, dict) else {}, entry)
-        args.state.parent.mkdir(parents=True, exist_ok=True)
-        args.state.write_text(json.dumps(updated, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+        if bool(args.reservation_master_id) != bool(args.reservation_run_id):
+            raise ValueError("예약 해제에는 reservation master ID와 run ID가 모두 필요합니다.")
+        with state_write_lock(args.state):
+            state = json.loads(args.state.read_text(encoding="utf-8")) if args.state.exists() else {}
+            updated = record(state if isinstance(state, dict) else {}, entry)
+            temp_path = args.state.with_name(f"{args.state.name}.{os.getpid()}.tmp")
+            temp_path.write_text(json.dumps(updated, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            os.replace(temp_path, args.state)
+        if args.reservation_master_id:
+            reservation_dir = (args.reservation_dir or default_reservation_dir(args.state)).expanduser().resolve()
+            if not release_reservation(
+                reservation_dir,
+                args.reservation_master_id.strip(),
+                args.reservation_run_id.strip(),
+            ):
+                raise ValueError("완료된 글의 레퍼런스 예약을 해제하지 못했습니다.")
+    except (OSError, UnicodeError, json.JSONDecodeError, TimeoutError, ValueError) as exc:
         print(f"이력 저장 실패: {exc}", file=sys.stderr)
         return 2
     print(json.dumps(updated, ensure_ascii=False, indent=2))

@@ -53,13 +53,13 @@
 - 같은 문구에 노란 하이라이트·밑줄·빨간 글씨를 겹치지 않는다.
 - 빨간 글씨는 운동 중단, 다른 검사 우선, 주의 신호처럼 반드시 구분해야 하는 문장에만 쓴다. 효과나 예약 유도에는 쓰지 않는다.
 
-## 숫자 체류 장치
+## 레퍼런스별 체류 장치
 
-- 제목에는 본문이 실제로 답하는 개수를 `2가지`, `3가지`처럼 숫자로 쓴다.
-- 같은 개수의 번호 소제목을 두며 `validate_title.py --answer-count N`과 본문 제목 약속 검사를 모두 통과한다.
-- 도입 `solution-preview`에는 `data-reference-role="reading-time-hook" data-reading-minutes="3"` 문단을 정확히 한 번 둔다.
-- `팔이 잘 안 올라간다면, 딱 3분만 읽어 보세요.`처럼 짧고 직접적으로 쓴다. 레퍼런스 문장을 그대로 복사하지 않는다.
-- 3분은 1,400~1,800자 정보 글을 읽는 예상 시간이며 치료 기간·효과·성과 수치로 사용하지 않는다.
+- 제목은 선택된 `titleMechanism`의 숫자·권위·대비·지식 공백·생활 장면·결과 모순 가운데 허용된 장치를 쓴다.
+- 제목이 `2가지`, `3단계`처럼 실제 답 개수를 약속한 경우에만 같은 개수의 번호 소제목을 두고 `validate_title.py --answer-count N`을 추가한다.
+- 도입 `solution-preview`에는 선택된 `data-intro-persuasion-device`와 본문에 보이는 `data-reader-payoff`를 둔다.
+- `specific-number-low-friction-topic-payoff`를 선택한 경우에만 `data-reference-role="reading-time-hook" data-reading-minutes="1~5"` 문단을 한 번 둔다.
+- 분 단위 숫자는 읽기 비용을 구체화하고 부담을 낮추는 장치다. 실제 분량에 맞는 숫자 뒤에 그 글에서만 얻는 구체적인 보상을 붙이며 원문 문장을 복사하지 않는다.
 
 ## 고정 순정 컴포넌트
 
@@ -122,18 +122,20 @@
 </table>
 ```
 
-- `credential`은 “금손한의원 소개” 골드 제목 1행 + 고정된 짧은 경력·강점 6행의 1열 표다. `clinic-info`는 2열 고정 운영표다.
+- `credential`은 “금손한의원 소개” 골드 제목 1행 + 고정된 짧은 경력·강점 6행의 1열 표다. 고정 운영정보는 `clinic-hours` 3열 진료시간표와 `clinic-info` 1열 위치·전화 정보표 두 개로 구성한다.
 - `article-summary` 표는 행·열로 보는 편이 산문보다 분명할 때만 한 번 사용하고 첫 행을 금손 골드·흰 글자로 고정한다.
 - 표는 산문을 다시 요약하는 장식이 아니라, 비교·조건·순서처럼 행과 열로 볼 때 더 분명한 정보를 대신 담는다.
-- `credential`, `clinic-info`는 각각 정확히 1개 쓰고 `article-summary`는 0개 또는 1개 쓴다.
+- `credential`, `clinic-hours`, `clinic-info`는 각각 정확히 1개 쓰고 `article-summary`는 0개 또는 1개 쓴다.
 - 가치입증 6행은 `assets/goldhand-value-proof-library.json`과 문구·순서가 정확히 같아야 한다.
 - 모든 셀에 `1px solid #D6D6D6` 구분선을 넣고, 글자는 가로·세로 중앙 정렬한다.
 - 표는 100% 너비, 붙은 셀 테두리, 좌우 자동 여백으로 중앙 배치한다.
-- `clinic-info`는 아래처럼 좌우 모든 셀의 폭을 `50%`로 맞추고 기본 높이·행간·줄바꿈도 동일하게 둔다.
+- `clinic-hours`는 첨부 레퍼런스처럼 `요일 / 진료시간 / 비고` 3열로 만들고 폭은 `24% / 38% / 38%`로 고정한다. 첫 행은 금손 골드 `#C99F75`와 흰 글자, 요일 셀은 크림 `#F3E8DD`와 골드 브라운 `#7A5434`를 쓴다.
+
+- `clinic-info`는 금손한의원 골드 제목띠 다음 위치·찾아오는 길·전화·카카오톡·네이버 예약을 한 행씩 쌓는 1열 다행 표다. 모든 셀은 `100%` 폭과 기본 높이·행간·줄바꿈을 동일하게 둔다.
 
 ```html
-<td style="width:50%;height:64px;background-color:#F3E8DD;border:1px solid #D6D6D6;color:#7A5434;font-weight:700;text-align:center;vertical-align:middle;line-height:1.8;word-break:keep-all;">주소</td>
-<td style="width:50%;height:64px;border:1px solid #D6D6D6;color:#4D4D4D;text-align:center;vertical-align:middle;line-height:1.8;word-break:keep-all;">전남광주통합특별시 서구 유림로98번길 3, 2층</td>
+<td style="width:100%;height:64px;background-color:#C99F75;border:1px solid #D6D6D6;color:#FFFFFF;font-weight:700;text-align:center;vertical-align:middle;line-height:1.8;word-break:keep-all;">금손한의원</td>
+<td style="width:100%;height:64px;border:1px solid #D6D6D6;color:#4D4D4D;text-align:center;vertical-align:middle;line-height:1.8;word-break:keep-all;">위치<br>전남광주통합특별시 서구 유림로98번길 3, 2층</td>
 ```
 
 ## 금지
@@ -158,6 +160,6 @@
 - `credential`이 질문·인사·완성된 `solution-preview`보다 앞에 있거나 첫 정보 본문 구분선·소제목 뒤에 있음
 - `solution-preview → credential → 첫 정보 본문 divider/section-heading` 사이에 다른 콘텐츠가 끼어 있음
 - `clinic-info` 표 누락 또는 불필요한 `article-summary`로 산문을 반복함
-- `clinic-info` 셀의 50:50 폭·중앙 정렬·기본 높이 누락
+- `clinic-hours` 셀의 24:38:38 폭 또는 `clinic-info` 셀의 100% 적층 행 폭·중앙 정렬·기본 높이 누락
 - 1행×1열 가짜 표, CSS 카드, 외부 박스 스타일 발견
 - `data-goldhand-design-system="goldhand-naver-native-v4"` 누락

@@ -61,6 +61,7 @@ def main() -> int:
     launcher = (ROOT / "INSTALL-WINDOWS.cmd").read_text(encoding="ascii")
     installer = (ROOT / "install-from-download-windows.ps1").read_text(encoding="ascii")
     updater = (ROOT / "scripts" / "update-windows.ps1").read_text(encoding="ascii")
+    workflow = (ROOT / ".github" / "workflows" / "windows-install.yml").read_text(encoding="utf-8")
     helper_bytes = (ROOT / "scripts" / "apply-local-edits-windows.ps1").read_bytes()
     require(helper_bytes.startswith(b"\xef\xbb\xbf"), "PowerShell 5.1 edit helper is missing UTF-8 BOM")
     require(f"{ENV_PREFIX}_BOOTSTRAP_ARCHIVE" in launcher, "isolated CMD archive override is missing")
@@ -80,6 +81,9 @@ def main() -> int:
     require("goldhand-clinic-blog-plugin.zip" in launcher, "isolated CMD must download the validated release ZIP")
     require("releases/latest" in updater and "goldhand-clinic-blog-plugin.zip" in updater, "release-only updater is missing")
     require("archive/refs/heads/main.zip" not in launcher and "archive/refs/heads/main.zip" not in updater, "Windows install paths must not consume unvalidated main branch ZIPs")
+    require("Restore the previous plugin when replacement registration fails" in workflow, "Windows CI rollback regression test is missing")
+    require("Failed update did not restore the previous plugin tree" in workflow, "Windows CI does not verify rollback tree integrity")
+    require("Failed update did not restore the previous plugin connection" in workflow, "Windows CI does not verify rollback connection recovery")
     print(f"distribution validation passed: {PLUGIN_NAME} {manifest['version']}")
     return 0
 

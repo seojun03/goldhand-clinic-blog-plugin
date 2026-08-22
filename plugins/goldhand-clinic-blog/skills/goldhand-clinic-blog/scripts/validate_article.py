@@ -16,6 +16,8 @@ from pathlib import Path
 SKILL_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_LIBRARY = SKILL_DIR / "assets" / "media-library.json"
 DEFAULT_EVIDENCE = SKILL_DIR / "references" / "clinic-facts.md"
+DEFAULT_WRITING_INTELLIGENCE = SKILL_DIR / "assets" / "reference-writing-intelligence.json"
+FINAL_WRITING_VOICE_REVIEW_ID = "writing-voice-final-rehear-v1"
 ALLOWED_TYPES = {"정보전달형"}
 EXCLUDED_ROLES = {"cta", "contact", "map", "source", "caption", "media", "proof"}
 MOBILE_EXEMPT_REFERENCE_ROLES = {
@@ -26,6 +28,8 @@ MOBILE_EXEMPT_REFERENCE_ROLES = {
     "evidence-media",
     "divider",
     "contact",
+    "clinic-hours-heading",
+    "clinic-hours",
 }
 EXACT_GREETING = "안녕하세요, 금손한의원 박준희 원장입니다."
 FIXED_CONTACT = (
@@ -85,7 +89,7 @@ NUMBERED_HEADING = re.compile(r"^\s*(?P<count>\d+)\s*[.．)\]]")
 NUMERIC_CLAIM = re.compile(r"\d[\d,]*(?:\.\d+)?\s*(?:%|퍼센트|명|건|회|년차|년|개월|주|일|시간|분)")
 SOLUTION_PREVIEW_CUE = re.compile(r"(?:오늘은|이\s*글에서는|이\s*글에서|아래에서는|지금부터).{0,90}(?:정리|설명|말씀|살펴|알려)", re.S)
 SOLUTION_PAYOFF_CUE = re.compile(r"(?:구분|기준|판단|확인|이해|순서|놓치|살펴)")
-READING_TIME_TEXT = re.compile(r"3\s*분.{0,30}(?:읽어|읽으)", re.S)
+READING_COMMITMENT_TEXT = re.compile(r"(?:읽|집중|살펴)", re.S)
 HOOK_TOKEN_STOP = {"광주", "한의원", "금손한의원", "어떻게", "무엇", "정말", "경우", "있을까요", "할까요"}
 FORBIDDEN_REAL_PHOTO_DESCRIPTOR = re.compile(r"(?:로고|logo|건물\s*외관|건물\s*외부|환제|제품\s*포장|장비|원내\s*공간)", re.I)
 
@@ -134,18 +138,26 @@ def without_editorial_reference_source(fragment: str) -> str:
     )
 
 
-def editorial_source_checks(article: str, issues: list[dict[str, object]]) -> dict[str, str]:
+def editorial_source_checks(
+    article: str,
+    issues: list[dict[str, object]],
+    writing_intelligence: dict[str, object] | None = None,
+) -> dict[str, str]:
     article_tag_match = re.search(r"<article\b[^>]*>", article, re.I | re.S)
     article_tag = article_tag_match.group(0) if article_tag_match else ""
     master_values = attr_values(article_tag, "data-editorial-master-id")
     source_values = attr_values(article_tag, "data-editorial-reference-source")
     role_values = attr_values(article_tag, "data-editorial-source-role")
     status_values = attr_values(article_tag, "data-editorial-profile-status")
+    voice_review_values = attr_values(article_tag, "data-writing-voice-review")
+    voice_status_values = attr_values(article_tag, "data-writing-voice-status")
     for attribute, tag_values in (
         ("data-editorial-master-id", master_values),
         ("data-editorial-reference-source", source_values),
         ("data-editorial-source-role", role_values),
         ("data-editorial-profile-status", status_values),
+        ("data-writing-voice-review", voice_review_values),
+        ("data-writing-voice-status", voice_status_values),
     ):
         if len(attr_values(article, attribute)) != len(tag_values):
             add(
@@ -209,12 +221,13 @@ def editorial_source_checks(article: str, issues: list[dict[str, object]]) -> di
     elif role_values and role_values[0] not in {
         "title-tone-content-sequence-only",
         "topic-reader-concerns-general-information-sequence-only",
+        "editorial-reasoning-content-flow-and-expression-principles",
     }:
         add(
             issues,
             "error",
             "editorial-source-role-invalid",
-            "편집 레퍼런스 역할은 topic-reader-concerns-general-information-sequence-only여야 합니다.",
+            "편집 레퍼런스 역할은 레퍼런스 편집 판단과 금손 사실 재구성 역할이어야 합니다.",
         )
     if status_values != ["ready"]:
         add(
@@ -223,10 +236,101 @@ def editorial_source_checks(article: str, issues: list[dict[str, object]]) -> di
             "editorial-profile-status-not-ready",
             "원문 본문 감사와 프로필 검증을 마친 data-editorial-profile-status=ready 글만 발행할 수 있습니다.",
         )
+    profile_id = ""
+    title_mechanism_id = ""
+    closing_mechanism_id = ""
+    intelligence_id = ""
+    final_voice_review_id = ""
+    final_voice_status = ""
+    if source_match and source_match.group("blog_id") == "wi-parkclinic":
+        profiles = writing_intelligence.get("profiles", {}) if isinstance(writing_intelligence, dict) else {}
+        matching_profiles = [
+            (str(key), value)
+            for key, value in profiles.items()
+            if isinstance(value, dict) and str(value.get("sourceUrl", "")) == source_url
+        ] if isinstance(profiles, dict) else []
+        if len(matching_profiles) != 1:
+            add(
+                issues,
+                "error",
+                "reference-writing-profile-source-unknown",
+                "선택한 Wipark 원문과 일치하는 편집 판단 프로필이 없습니다.",
+            )
+        else:
+            expected_profile_id, learning_profile = matching_profiles[0]
+            profile_values = attr_values(article_tag, "data-reference-writing-profile")
+            intelligence_values = attr_values(article_tag, "data-reference-writing-intelligence")
+            title_values = attr_values(article_tag, "data-title-mechanism")
+            closing_values = attr_values(article_tag, "data-closing-mechanism")
+            if profile_values != [expected_profile_id]:
+                add(
+                    issues,
+                    "error",
+                    "reference-writing-profile-mismatch",
+                    f"data-reference-writing-profile은 {expected_profile_id}여야 합니다.",
+                )
+            else:
+                profile_id = expected_profile_id
+            expected_intelligence = str(writing_intelligence.get("id", "")) if isinstance(writing_intelligence, dict) else ""
+            if intelligence_values != [expected_intelligence]:
+                add(
+                    issues,
+                    "error",
+                    "reference-writing-intelligence-mismatch",
+                    f"data-reference-writing-intelligence는 {expected_intelligence}여야 합니다.",
+                )
+            else:
+                intelligence_id = expected_intelligence
+            title_contract = learning_profile.get("titleMechanism", {})
+            allowed_titles = title_contract.get("allowedIds", []) if isinstance(title_contract, dict) else []
+            if len(title_values) != 1 or title_values[0] not in allowed_titles:
+                add(
+                    issues,
+                    "error",
+                    "article-title-mechanism-mismatch",
+                    f"선택한 프로필의 제목 장치는 {allowed_titles} 중 하나여야 합니다.",
+                )
+            else:
+                title_mechanism_id = title_values[0]
+            closing_contract = learning_profile.get("closingMechanism", {})
+            allowed_closings = closing_contract.get("allowedIds", []) if isinstance(closing_contract, dict) else []
+            if len(closing_values) != 1 or closing_values[0] not in allowed_closings:
+                add(
+                    issues,
+                    "error",
+                    "article-closing-mechanism-mismatch",
+                    f"선택한 프로필의 마무리 장치는 {allowed_closings} 중 하나여야 합니다.",
+                )
+            else:
+                closing_mechanism_id = closing_values[0]
+        if voice_review_values != [FINAL_WRITING_VOICE_REVIEW_ID]:
+            add(
+                issues,
+                "error",
+                "writing-voice-review-missing",
+                f"최종 글쓰기 검수는 data-writing-voice-review={FINAL_WRITING_VOICE_REVIEW_ID}여야 합니다.",
+            )
+        else:
+            final_voice_review_id = voice_review_values[0]
+        if voice_status_values != ["pass"]:
+            add(
+                issues,
+                "error",
+                "writing-voice-status-not-pass",
+                "writing-voice 최종 재청취를 통과한 data-writing-voice-status=pass가 필요합니다.",
+            )
+        else:
+            final_voice_status = voice_status_values[0]
     return {
         "editorialMasterId": master_id,
         "editorialReferenceSource": source_url,
         "editorialProfileStatus": status_values[0] if len(status_values) == 1 else "",
+        "referenceWritingProfileId": profile_id,
+        "referenceWritingIntelligenceId": intelligence_id,
+        "titleMechanismId": title_mechanism_id,
+        "closingMechanismId": closing_mechanism_id,
+        "finalWritingVoiceReviewId": final_voice_review_id,
+        "finalWritingVoiceStatus": final_voice_status,
     }
 
 
@@ -809,6 +913,7 @@ def validate_article(
     media_library: dict[str, dict[str, object]] | None = None,
     evidence: str = "",
     editorial_close: bool = False,
+    writing_intelligence: dict[str, object] | None = None,
 ) -> dict[str, object]:
     issues: list[dict[str, object]] = []
     raw = normalize(raw)
@@ -828,13 +933,27 @@ def validate_article(
     if article_type not in ALLOWED_TYPES:
         add(issues, "error", "invalid-type", f"허용되지 않은 글 유형: {article_type or '없음'}")
 
-    editorial_metrics = editorial_source_checks(article, issues) if editorial_close else {
+    if editorial_close and writing_intelligence is None:
+        try:
+            writing_intelligence = json.loads(DEFAULT_WRITING_INTELLIGENCE.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            add(issues, "error", "reference-writing-intelligence-load", str(exc))
+            writing_intelligence = {}
+
+    editorial_metrics = editorial_source_checks(article, issues, writing_intelligence) if editorial_close else {
         "editorialMasterId": "",
         "editorialReferenceSource": "",
         "editorialProfileStatus": "",
+        "referenceWritingProfileId": "",
+        "referenceWritingIntelligenceId": "",
+        "titleMechanismId": "",
+        "closingMechanismId": "",
+        "finalWritingVoiceReviewId": "",
+        "finalWritingVoiceStatus": "",
     }
 
     question_matches = reference_role_matches(article, ("reader-question",))
+    hook_texts: list[str] = []
     allowed_question_counts = {2, 3}
     if len(question_matches) not in allowed_question_counts:
         add(
@@ -844,7 +963,6 @@ def validate_article(
             f"도입 독자 고민 인용은 2~3개여야 합니다. 현재 {len(question_matches)}개입니다.",
         )
     else:
-        hook_texts: list[str] = []
         for index, match in enumerate(question_matches, start=1):
             block = match.group(0)
             hook_text = re.sub(r"\s+", " ", visible_text(block)).strip()
@@ -869,6 +987,8 @@ def validate_article(
         if not (meaningful_tokens(title) & meaningful_tokens(" ".join(hook_texts))):
             add(issues, "error", "reader-question-title-disconnect", "독자 고민이 제목의 핵심 문제와 연결되지 않습니다.")
 
+    intro_device_id = ""
+    reader_payoff = ""
     solution_matches = reference_role_matches(article, ("solution-preview",))
     if len(solution_matches) != 1:
         add(
@@ -893,21 +1013,103 @@ def validate_article(
             if not SOLUTION_PAYOFF_CUE.search(solution_text):
                 add(issues, "error", "solution-preview-payoff", "해결 방향 예고 문단에 독자가 얻게 될 구분·판단 기준을 넣으세요.")
         if editorial_close:
-            reading_hooks = reference_role_matches(solution_block, ("reading-time-hook",))
-            if len(reading_hooks) != 1:
+            solution_tag_match = re.match(r"<[a-z][\w:-]*\b[^>]*>", solution_block, re.I | re.S)
+            solution_tag = solution_tag_match.group(0) if solution_tag_match else ""
+            device_values = attr_values(solution_tag, "data-intro-persuasion-device")
+            payoff_values = attr_values(solution_tag, "data-reader-payoff")
+            if len(device_values) != 1:
                 add(
                     issues,
                     "error",
-                    "reading-time-hook-count",
-                    f"도입 해결 예고 안에 3분 읽기 안내가 정확히 1개여야 합니다. 현재 {len(reading_hooks)}개입니다.",
+                    "intro-persuasion-device-count",
+                    "해결 방향 예고에는 선택한 레퍼런스의 도입 설득 장치를 정확히 한 개 표시해야 합니다.",
                 )
             else:
+                intro_device_id = device_values[0]
+            if len(payoff_values) != 1 or len(compact(payoff_values[0])) < 6:
+                add(
+                    issues,
+                    "error",
+                    "reader-payoff-missing",
+                    "읽을 이유가 되는 주제별 보상을 data-reader-payoff에 구체적으로 표시해야 합니다.",
+                )
+            else:
+                reader_payoff = payoff_values[0]
+                if compact(reader_payoff) not in compact(solution_text):
+                    add(
+                        issues,
+                        "error",
+                        "reader-payoff-not-visible",
+                        "data-reader-payoff의 구체적인 보상은 해결 방향 예고 문장에 실제로 보여야 합니다.",
+                    )
+                if not (meaningful_tokens(reader_payoff) & meaningful_tokens(f"{title} {' '.join(hook_texts)}")):
+                    add(
+                        issues,
+                        "error",
+                        "reader-payoff-topic-disconnect",
+                        "도입 보상이 제목이나 독자 고민의 핵심 문제와 연결되지 않습니다.",
+                    )
+
+            learning_profile: dict[str, object] = {}
+            profile_id = editorial_metrics.get("referenceWritingProfileId", "")
+            profiles = writing_intelligence.get("profiles", {}) if isinstance(writing_intelligence, dict) else {}
+            if profile_id and isinstance(profiles, dict):
+                raw_learning_profile = profiles.get(profile_id, {})
+                if isinstance(raw_learning_profile, dict):
+                    learning_profile = raw_learning_profile
+            opening_contract = learning_profile.get("openingMechanism", {}) if learning_profile else {}
+            allowed_devices = opening_contract.get("allowedDeviceIds", []) if isinstance(opening_contract, dict) else []
+            if learning_profile and intro_device_id not in allowed_devices:
+                add(
+                    issues,
+                    "error",
+                    "intro-persuasion-device-mismatch",
+                    f"{profile_id}에서 허용한 도입 장치는 {allowed_devices}이며 입력값은 {intro_device_id or '없음'}입니다.",
+                )
+
+            reading_hooks = reference_role_matches(solution_block, ("reading-time-hook",))
+            if intro_device_id == "specific-number-low-friction-topic-payoff":
+                if len(reading_hooks) != 1:
+                    add(
+                        issues,
+                        "error",
+                        "reading-time-hook-count",
+                        f"구체적 숫자로 읽기 부담을 낮추는 장치를 선택했으므로 읽기 안내가 정확히 1개여야 합니다. 현재 {len(reading_hooks)}개입니다.",
+                    )
+                else:
+                    hook_block = reading_hooks[0].group(0)
+                    hook_text = re.sub(r"\s+", " ", visible_text(hook_block)).strip()
+                    minute_values = attr_values(hook_block, "data-reading-minutes")
+                    minutes = int(minute_values[0]) if len(minute_values) == 1 and minute_values[0].isdigit() else 0
+                    if minutes < 1 or minutes > 5:
+                        add(
+                            issues,
+                            "error",
+                            "reading-time-minutes-invalid",
+                            "읽기 시간은 실제 글의 밀도에 맞춘 1~5분의 구체적인 숫자여야 합니다.",
+                        )
+                    if not minutes or not re.search(rf"{minutes}\s*분", hook_text):
+                        add(
+                            issues,
+                            "error",
+                            "reading-time-text-invalid",
+                            "data-reading-minutes의 숫자가 보이는 읽기 안내 문장과 일치해야 합니다.",
+                        )
+                    if not READING_COMMITMENT_TEXT.search(hook_text):
+                        add(
+                            issues,
+                            "error",
+                            "reading-commitment-missing",
+                            "분 단위 숫자에는 읽기나 집중처럼 낮은 노력의 약속이 함께 있어야 합니다.",
+                        )
+            elif reading_hooks:
                 hook_block = reading_hooks[0].group(0)
-                hook_text = re.sub(r"\s+", " ", visible_text(hook_block)).strip()
-                if attr_values(hook_block, "data-reading-minutes") != ["3"]:
-                    add(issues, "error", "reading-time-minutes-invalid", "읽기 안내는 data-reading-minutes=3으로 표시해야 합니다.")
-                if not READING_TIME_TEXT.search(hook_text):
-                    add(issues, "error", "reading-time-text-invalid", "읽기 안내에는 3분과 직접적인 읽기 표현이 함께 있어야 합니다.")
+                add(
+                    issues,
+                    "error",
+                    "reading-time-device-mismatch",
+                    "분 단위 읽기 안내를 썼다면 도입 장치를 specific-number-low-friction-topic-payoff로 표시해야 합니다.",
+                )
 
             intro_highlights = re.findall(
                 r"<span\b(?=[^>]*data-goldhand-emphasis\s*=\s*['\"]highlight['\"])[^>]*>.*?</span>",
@@ -932,6 +1134,37 @@ def validate_article(
             add(issues, "error", "body-before-solution-preview", "첫 정보 소제목·설명보다 해결 방향 예고 문단이 먼저 와야 합니다.")
 
     issues.extend(credential_placement_issues(article))
+
+    closing_payoff = ""
+    if editorial_close:
+        closing_matches = reference_role_matches(article, ("neutral-close",))
+        if len(closing_matches) != 1:
+            add(
+                issues,
+                "error",
+                "reference-closing-count",
+                f"선택한 레퍼런스의 마무리 감정을 재구성한 neutral-close가 정확히 1개여야 합니다. 현재 {len(closing_matches)}개입니다.",
+            )
+        else:
+            closing_block = closing_matches[0].group(0)
+            closing_text = re.sub(r"\s+", " ", visible_text(closing_block)).strip()
+            closing_values = attr_values(closing_block, "data-closing-payoff")
+            if len(closing_values) != 1 or len(compact(closing_values[0])) < 4:
+                add(
+                    issues,
+                    "error",
+                    "closing-payoff-missing",
+                    "마무리에는 본문의 직접 답이나 독자에게 남길 감정을 data-closing-payoff로 표시해야 합니다.",
+                )
+            else:
+                closing_payoff = closing_values[0]
+                if compact(closing_payoff) not in compact(closing_text):
+                    add(
+                        issues,
+                        "error",
+                        "closing-payoff-not-visible",
+                        "data-closing-payoff의 구체적인 회수 문구가 마무리 문장에 실제로 보여야 합니다.",
+                    )
 
     h1 = re.findall(r"<h1\b[^>]*>.*?</h1>", article, flags=re.I | re.S)
     if h1:
@@ -1052,11 +1285,19 @@ def validate_article(
         if "11년차" in sentence and "한의사" not in sentence:
             add(issues, "error", "career-context-missing", f"11년차는 한의사 경력에만 연결하세요: {sentence[:100]}")
 
+    clinic_hours_blocks = reference_role_blocks(article, ("clinic-hours",))
+    if len(clinic_hours_blocks) != 1:
+        add(issues, "error", "clinic-hours-block-count", f"진료시간 블록이 {len(clinic_hours_blocks)}개입니다.")
+
     contact_blocks = role_blocks(article, "contact")
     if len(contact_blocks) != 1:
         add(issues, "error", "contact-block-count", f"고정 운영정보 블록이 {len(contact_blocks)}개입니다.")
-    else:
-        contact_text = re.sub(r"\s+", " ", visible_text(contact_blocks[0])).strip()
+    elif len(clinic_hours_blocks) == 1:
+        contact_text = re.sub(
+            r"\s+",
+            " ",
+            visible_text(clinic_hours_blocks[0]) + " " + visible_text(contact_blocks[0]),
+        ).strip()
         for expected in FIXED_CONTACT:
             if expected not in contact_text:
                 add(issues, "error", "fixed-contact-missing", f"고정 운영정보 누락: {expected}")
@@ -1065,8 +1306,6 @@ def validate_article(
         add(issues, "error", "medical-disclaimer-missing", "사례·치료 경과·효과 내용에는 개인차와 진찰 필요성을 밝혀야 합니다.")
 
     promises = [int(match.group("count")) for match in NUMBERED_PROMISE.finditer(title)]
-    if editorial_close and not promises:
-        add(issues, "error", "title-numeric-hook-missing", "본문이 실제로 답하는 개수를 제목에 숫자로 표시해야 합니다.")
     if promises:
         headings = [visible_text(value).strip() for value in re.findall(r"<h[2-4]\b[^>]*>(.*?)</h[2-4]>", eligible_html, flags=re.I | re.S)]
         numbered = [int(match.group("count")) for heading in headings if (match := NUMBERED_HEADING.search(heading))]
@@ -1105,6 +1344,9 @@ def validate_article(
             **mobile_metrics,
             **image_metrics,
             **editorial_metrics,
+            "introPersuasionDeviceId": intro_device_id,
+            "readerPayoff": reader_payoff,
+            "closingPayoff": closing_payoff,
             "errors": errors,
             "warnings": warnings,
         },
@@ -1120,6 +1362,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-chars", type=int, default=1400)
     parser.add_argument("--max-chars", type=int, default=1800)
     parser.add_argument("--media-library", type=Path, default=DEFAULT_LIBRARY)
+    parser.add_argument("--writing-intelligence", type=Path, default=DEFAULT_WRITING_INTELLIGENCE)
     parser.add_argument("--evidence", action="append", type=Path, default=[])
     parser.add_argument(
         "--editorial-close",
@@ -1135,6 +1378,7 @@ def main() -> int:
     try:
         raw = args.input.read_text(encoding="utf-8")
         library = load_media_library(args.media_library)
+        writing_intelligence = json.loads(args.writing_intelligence.read_text(encoding="utf-8"))
         evidence_paths = args.evidence or [DEFAULT_EVIDENCE]
         evidence = "\n".join(path.read_text(encoding="utf-8") for path in evidence_paths if path.exists())
         result = validate_article(
@@ -1146,6 +1390,7 @@ def main() -> int:
             media_library=library,
             evidence=evidence,
             editorial_close=args.editorial_close,
+            writing_intelligence=writing_intelligence,
         )
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         print(f"원고 검증 실패: {exc}", file=sys.stderr)

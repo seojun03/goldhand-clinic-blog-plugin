@@ -18,6 +18,7 @@ DEFAULT_OUTPUT = SKILL_DIR / "assets" / "reference-master-profiles.json"
 DEFAULT_LIBRARY = SKILL_DIR / "references" / "reference-master-library.md"
 DEFAULT_CONTENT_BRIEFS = SKILL_DIR / "assets" / "wipark-content-briefs.json"
 DEFAULT_VOICE_PROFILE = SKILL_DIR / "assets" / "goldhand-official-voice-profile.json"
+DEFAULT_WRITING_INTELLIGENCE = SKILL_DIR / "assets" / "reference-writing-intelligence.json"
 
 MASTER_CONFIG: dict[str, dict[str, Any]] = {
     "INFO01": {
@@ -286,6 +287,7 @@ def make_profile(
     family_id: str,
     content_brief: dict[str, Any],
     voice_profile_id: str,
+    learning_profile: dict[str, Any],
 ) -> dict[str, Any]:
     blueprint = trim_blueprint(article.get("componentBlueprint", []))
     rewrite_roles(blueprint)
@@ -315,22 +317,38 @@ def make_profile(
             "sourceFactsBlocked": True,
             "sourceSentencesBlocked": True,
             "sourceMediaBlocked": True,
-            "sourceToneBlocked": True,
+            "referenceExpressionLearningEnabled": True,
+            "sourceSentenceImitationBlocked": True,
         },
         "contentContract": {
             "topic": content_brief["topic"],
             "readerConcerns": content_brief["readerConcerns"],
-            "orderedGeneralInformation": content_brief["orderedGeneralInformation"],
+            "orderedContentAtoms": content_brief["orderedContentAtoms"],
             "blockedFromSource": content_brief["blockedFromSource"],
-            "instruction": "선택한 한 편의 주제와 일반 정보 순서는 유지하되 업체 사실과 문장은 사용하지 않는다.",
+            "sourceProseWithheld": True,
+            "contentAtomCoverageRequired": True,
+            "instruction": "내용 원자는 사실 골격으로 유지하고, 선택 레퍼런스의 편집 판단 프로필로 독자 심리·전환·강조·마무리 기능을 함께 재구성한다.",
         },
         "toneContract": {
             "voiceAuthority": voice_profile_id,
-            "sourceToneBlocked": True,
-            "sourceRhythmObservationOnly": {
+            "voiceProtocolId": "natural-speech-rewrite-protocol-v1",
+            "referenceRhetoricalReasoningEnabled": True,
+            "sourceSentenceImitationBlocked": True,
+            "sourceRhythmAndExpressionObservation": {
                 "textStats": article.get("textStats", {}),
             },
-            "instruction": "위석 원문의 말투와 종결어미는 사용하지 않는다. 완성 문장은 금손 공식 74편 말투 프로필로만 쓴다.",
+            "instruction": "위석 문장을 복사하지 않되 설득 장치·전환 방식·미세 표현 기능은 분석해 옮긴다. 금손 공식 말투는 이 기능을 지우지 않고 실제 진료실 생활어로 자연화한다.",
+        },
+        "editorialReasoningContract": {
+            "intelligenceId": "goldhand-reference-writing-intelligence-v1",
+            "profileId": str(article.get("masterId", "")) or str(content_brief.get("masterId", "")),
+            "titleMechanism": learning_profile["titleMechanism"],
+            "openingMechanism": learning_profile["openingMechanism"],
+            "flowBeats": learning_profile["flowBeats"],
+            "microExpressionPatterns": learning_profile["microExpressionPatterns"],
+            "trustMechanism": learning_profile["trustMechanism"],
+            "closingMechanism": learning_profile["closingMechanism"],
+            "adaptationDecisionRequired": True,
         },
         "observedStyle": {
             "textColors": merge_counter(blueprint, "textColors"),
@@ -380,6 +398,9 @@ def make_profile(
             "maximumCenterRatio": 1.0,
             "requiredUnderlineMinimum": 2,
             "maxConsecutiveBodyParagraphs": 3,
+            "titleMechanismControlledByReferenceReasoning": True,
+            "introductionDeviceControlledByReferenceReasoning": True,
+            "closingMechanismControlledByReferenceReasoning": True,
             "mediaPlacementPolicy": "같은 위치를 우선하되 금손 공식 안전 이미지가 부족하면 관련 없는 사진으로 채우지 않는다.",
         },
     }
@@ -405,9 +426,9 @@ def library_markdown(profiles: dict[str, dict[str, Any]]) -> str:
         "",
         "## 역할",
         "",
-        "이 11편은 주제·독자 고민·핵심 일반 정보·정보 공개 순서만 통제한다. 한 글에서는 한 편을 콘텐츠 레퍼런스로 고정한다. 말투는 금손 공식 블로그 74편에서 만든 `goldhand-official-voice-v1`, 꾸밈은 `goldhand-naver-native-v4`만 통제한다. 원문 업체의 경력·수치·치료 주장·사례·문장·사진·말투는 금손한의원 글에 옮기지 않는다.",
+        "이 11편은 주제·독자 고민·핵심 일반 정보뿐 아니라 제목 장치의 심리, 도입 설득, 정보 공개 순서, 전환 방식, 미세 표현 기능, 마무리 감정을 통제한다. 한 글에서는 한 편을 콘텐츠·편집 레퍼런스로 고정한다. 원문 완성 문장과 업체의 경력·수치·치료 주장·사례·사진은 옮기지 않고, 각 기능을 확인된 금손 사실과 박준희 원장의 생활어로 재구성한다. 꾸밈은 `goldhand-naver-native-v4`로 고정한다.",
         "",
-        "주제와 일반 정보 출처는 `wipark-content-briefs.json`, 말투 출처는 `goldhand-official-voice-profile.json`, 금손 사실 출처는 `clinic-facts.md`, 꾸밈 출처는 `goldhand-naver-native-design-system.json`이다. 역할을 서로 바꾸지 않는다.",
+        "주제와 일반 정보 출처는 `wipark-content-briefs.json`, 편집 판단 출처는 `reference-writing-intelligence.json`, 최종 생활어 출처는 `goldhand-official-voice-profile.json`, 금손 사실 출처는 `clinic-facts.md`, 꾸밈 출처는 `goldhand-naver-native-design-system.json`이다. 역할을 서로 바꾸지 않는다.",
         "",
     ]
     lines.extend(["## 허용 레퍼런스 11편", ""])
@@ -423,7 +444,9 @@ def library_markdown(profiles: dict[str, dict[str, Any]]) -> str:
                 f"- 적합한 글: {profile['bestFor']}",
                 f"- 도입: {profile['writingContract']['hook']}",
                 f"- 내용 전개: {profile['writingContract']['contentProgress']}",
-                f"- 말투: `{profile['toneContract']['voiceAuthority']}` 고정; 위석 말투 사용 금지",
+                f"- 제목 심리: {profile['editorialReasoningContract']['titleMechanism']['readerPsychology']}",
+                f"- 도입 설득: {profile['editorialReasoningContract']['openingMechanism']['attentionLogic']}",
+                f"- 말투: 레퍼런스의 설득 기능을 유지한 채 `{profile['toneContract']['voiceAuthority']}`로 생활어 자연화; 원문 문장 복사 금지",
                 f"- 마무리: {profile['writingContract']['close']}",
                 "",
             ]
@@ -439,6 +462,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--library", type=Path, default=DEFAULT_LIBRARY)
     parser.add_argument("--content-briefs", type=Path, default=DEFAULT_CONTENT_BRIEFS)
     parser.add_argument("--voice-profile", type=Path, default=DEFAULT_VOICE_PROFILE)
+    parser.add_argument("--writing-intelligence", type=Path, default=DEFAULT_WRITING_INTELLIGENCE)
     return parser.parse_args()
 
 
@@ -449,6 +473,7 @@ def main() -> int:
         family = json.loads(args.family.read_text(encoding="utf-8"))
         content_briefs = json.loads(args.content_briefs.read_text(encoding="utf-8"))
         voice_profile = json.loads(args.voice_profile.read_text(encoding="utf-8"))
+        writing_intelligence = json.loads(args.writing_intelligence.read_text(encoding="utf-8"))
         articles = {str(item["logNo"]): item for item in corpus["articles"]}
         profiles = {}
         for family_article in family["articles"]:
@@ -461,17 +486,22 @@ def main() -> int:
                 str(family["familyId"]),
                 content_briefs["briefs"][profile_id],
                 str(voice_profile["profileId"]),
+                writing_intelligence["profiles"][profile_id],
             )
+            profiles[profile_id]["editorialReasoningContract"]["profileId"] = profile_id
         output = {
-            "schemaVersion": 4,
+            "schemaVersion": 5,
             "sourceBlogId": "wi-parkclinic",
             "cutoffInclusive": corpus["cutoffInclusive"],
             "referenceFamilyId": family["familyId"],
             "allowedMasterIds": family["allowedMasterIds"],
             "sourceFactsBlocked": True,
-            "sourceToneBlocked": True,
+            "referenceExpressionLearningEnabled": True,
+            "sourceSentenceImitationBlocked": True,
             "topicAndContentAuthority": "wi-parkclinic-reviewed-11-posts",
+            "editorialReasoningAuthority": "goldhand-reference-writing-intelligence-v1",
             "voiceAuthority": str(voice_profile["profileId"]),
+            "voiceProtocolId": "natural-speech-rewrite-protocol-v1",
             "profiles": profiles,
         }
         args.output.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

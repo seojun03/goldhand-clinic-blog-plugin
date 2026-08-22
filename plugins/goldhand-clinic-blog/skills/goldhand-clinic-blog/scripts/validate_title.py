@@ -14,6 +14,7 @@ from pathlib import Path
 SKILL_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_EVIDENCE = SKILL_DIR / "references" / "clinic-facts.md"
 DEFAULT_LIBRARY = SKILL_DIR / "assets" / "topic-idea-library.json"
+DEFAULT_WRITING_INTELLIGENCE = SKILL_DIR / "assets" / "reference-writing-intelligence.json"
 
 FORBIDDEN = {
     "daily-post": re.compile(r"일상글|소소하루"),
@@ -58,6 +59,9 @@ def validate_title(
     idea_reference_id: str = "",
     pattern_id: str = "",
     editorial_close: bool = False,
+    writing_intelligence: dict[str, object] | None = None,
+    reference_master_id: str = "",
+    title_mechanism_id: str = "",
 ) -> dict[str, object]:
     title = normalize(title)
     keyword = normalize(keyword)
@@ -93,18 +97,52 @@ def validate_title(
             add(issues, "error", code, f"장식 문자를 제거하세요: {match.group(0)}")
 
     promises = [int(match.group("count")) for match in NUMBERED_PROMISE.finditer(title)]
-    if editorial_close and not promises:
-        add(
-            issues,
-            "error",
-            "title-numeric-hook-missing",
-            "본문이 실제로 답하는 개수를 제목에 숫자로 표시해야 합니다.",
-        )
     if promises:
         if answer_count is None:
             add(issues, "error", "answer-count-required", "숫자 약속이 있는 제목은 --answer-count로 실제 답 개수를 확인해야 합니다.")
         elif any(count != answer_count for count in promises):
             add(issues, "error", "answer-count-mismatch", f"제목 약속 {promises}와 실제 답 {answer_count}개가 다릅니다.")
+
+    selected_mechanism: dict[str, object] | None = None
+    if editorial_close or reference_master_id or title_mechanism_id:
+        if not reference_master_id:
+            add(
+                issues,
+                "error",
+                "reference-master-id-required",
+                "편집 레퍼런스의 제목 심리를 확인하려면 --reference-master-id가 필요합니다.",
+            )
+        if not title_mechanism_id:
+            add(
+                issues,
+                "error",
+                "title-mechanism-id-required",
+                "제목이 선택한 레퍼런스의 어떤 설득 장치를 옮겼는지 --title-mechanism-id로 표시해야 합니다.",
+            )
+        profiles = writing_intelligence.get("profiles", {}) if isinstance(writing_intelligence, dict) else {}
+        profile = profiles.get(reference_master_id) if isinstance(profiles, dict) else None
+        if reference_master_id and not isinstance(profile, dict):
+            add(
+                issues,
+                "error",
+                "reference-master-id-unknown",
+                f"편집 판단 프로필에 없는 레퍼런스입니다: {reference_master_id}",
+            )
+        elif isinstance(profile, dict):
+            mechanism = profile.get("titleMechanism")
+            if not isinstance(mechanism, dict):
+                add(issues, "error", "title-mechanism-profile-missing", "선택한 레퍼런스에 제목 심리 프로필이 없습니다.")
+            else:
+                selected_mechanism = mechanism
+                allowed = mechanism.get("allowedIds", [])
+                allowed_ids = [str(value) for value in allowed] if isinstance(allowed, list) else []
+                if title_mechanism_id and title_mechanism_id not in allowed_ids:
+                    add(
+                        issues,
+                        "error",
+                        "title-mechanism-mismatch",
+                        f"{reference_master_id}에서 허용한 제목 장치는 {allowed_ids}이며 입력값은 {title_mechanism_id}입니다.",
+                    )
 
     evidence_compact = compact(evidence)
     for match in NUMERIC_CLAIM.finditer(title):
@@ -164,6 +202,9 @@ def validate_title(
             "nonWhitespaceChars": length,
             "keywordCount": keyword_count,
             "answerPromises": promises,
+            "referenceMasterId": reference_master_id,
+            "titleMechanismId": title_mechanism_id,
+            "titleMechanismPsychology": str(selected_mechanism.get("readerPsychology", "")) if selected_mechanism else "",
             "ideaReferenceId": idea_reference_id,
             "titlePatternId": pattern_id,
             "errors": errors,
@@ -180,8 +221,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--answer-count", type=int)
     parser.add_argument("--evidence", type=Path, default=DEFAULT_EVIDENCE)
     parser.add_argument("--library", type=Path, default=DEFAULT_LIBRARY)
+    parser.add_argument("--writing-intelligence", type=Path, default=DEFAULT_WRITING_INTELLIGENCE)
     parser.add_argument("--idea-reference-id", default="")
     parser.add_argument("--pattern-id", default="")
+    parser.add_argument("--reference-master-id", default="")
+    parser.add_argument("--title-mechanism-id", default="")
     parser.add_argument(
         "--editorial-close",
         action="store_true",
@@ -196,6 +240,11 @@ def main() -> int:
     try:
         evidence = args.evidence.read_text(encoding="utf-8") if args.evidence.exists() else ""
         library = json.loads(args.library.read_text(encoding="utf-8")) if args.library.exists() else None
+        writing_intelligence = (
+            json.loads(args.writing_intelligence.read_text(encoding="utf-8"))
+            if args.writing_intelligence.exists()
+            else None
+        )
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         print(f"근거 또는 주제 라이브러리를 읽지 못했습니다: {exc}", file=sys.stderr)
         return 2
@@ -208,6 +257,9 @@ def main() -> int:
         idea_reference_id=args.idea_reference_id.strip(),
         pattern_id=args.pattern_id.strip(),
         editorial_close=args.editorial_close,
+        writing_intelligence=writing_intelligence,
+        reference_master_id=args.reference_master_id.strip(),
+        title_mechanism_id=args.title_mechanism_id.strip(),
     )
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))

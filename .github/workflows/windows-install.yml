@@ -143,3 +143,41 @@ jobs:
           $plugins = (& $env:GOLDHAND_CODEX_PATH plugin list --json) | ConvertFrom-Json
           $installed = $plugins.installed | Where-Object { $_.pluginId -eq "goldhand-clinic-blog@goldhand-clinic" } | Select-Object -First 1
           if (-not $installed.enabled -or $installed.marketplaceSource.sourceType -ne "local") { throw "Managed update was not enabled locally" }
+
+      - name: Restore the previous plugin when replacement registration fails
+        shell: powershell
+        env:
+          CODEX_HOME: ${{ runner.temp }}\full-codex-home
+          GOLDHAND_EDITABLE_ROOT: ${{ runner.temp }}\GoldhandClinicPlugin-full
+          GOLDHAND_SKIP_AUTO_UPDATE_REGISTRATION: "1"
+          GOLDHAND_RELEASE_TAG: "ci-invalid-update"
+        run: |
+          $env:GOLDHAND_CODEX_PATH = Get-Content -LiteralPath (Join-Path $env:RUNNER_TEMP "codex-path.txt") -Raw -Encoding UTF8
+          $statePath = Join-Path $env:GOLDHAND_EDITABLE_ROOT ".goldhand-managed-release"
+          $skillPath = Join-Path $env:GOLDHAND_EDITABLE_ROOT "plugins\goldhand-clinic-blog\skills\goldhand-clinic-blog\SKILL.md"
+          $beforeState = (Get-Content -LiteralPath $statePath -Raw -Encoding UTF8).Trim()
+          $beforeHash = (Get-FileHash -LiteralPath $skillPath -Algorithm SHA256).Hash
+
+          $archive = Join-Path $env:RUNNER_TEMP "invalid-update.zip"
+          $expanded = Join-Path $env:RUNNER_TEMP "invalid-update-expanded"
+          git archive --format=zip --prefix=invalid-release/ --output=$archive HEAD
+          if ($LASTEXITCODE -ne 0) { throw "Could not create invalid update archive" }
+          Expand-Archive -LiteralPath $archive -DestinationPath $expanded
+          $invalidRoot = Join-Path $expanded "invalid-release"
+          Set-Content -LiteralPath (Join-Path $invalidRoot ".agents\plugins\marketplace.json") -Value "{ invalid marketplace json" -Encoding ASCII
+
+          $failedAsExpected = $false
+          try {
+              & (Join-Path $invalidRoot "install-from-download-windows.ps1") -CodexPath $env:GOLDHAND_CODEX_PATH -EditableRoot $env:GOLDHAND_EDITABLE_ROOT
+          } catch {
+              $failedAsExpected = $true
+          }
+          if (-not $failedAsExpected) { throw "The intentionally invalid replacement unexpectedly succeeded" }
+
+          $afterState = (Get-Content -LiteralPath $statePath -Raw -Encoding UTF8).Trim()
+          $afterHash = (Get-FileHash -LiteralPath $skillPath -Algorithm SHA256).Hash
+          if ($afterState -ne $beforeState) { throw "Failed update did not restore the previous release state" }
+          if ($afterHash -ne $beforeHash) { throw "Failed update did not restore the previous plugin tree" }
+          $plugins = (& $env:GOLDHAND_CODEX_PATH plugin list --json) | ConvertFrom-Json
+          $installed = $plugins.installed | Where-Object { $_.pluginId -eq "goldhand-clinic-blog@goldhand-clinic" } | Select-Object -First 1
+          if (-not $installed.enabled -or $installed.marketplaceSource.sourceType -ne "local") { throw "Failed update did not restore the previous plugin connection" }

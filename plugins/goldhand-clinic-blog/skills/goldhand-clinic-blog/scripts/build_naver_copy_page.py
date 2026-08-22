@@ -15,7 +15,6 @@ import shutil
 import subprocess
 import sys
 import urllib.error
-import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -25,7 +24,6 @@ IMAGE_HOST_CONFIG_ENV = "GOLDHAND_IMAGE_HOST_CONFIG"
 DEFAULT_IMAGE_HOST_CONFIG = Path.home() / ".codex" / "state" / "goldhand-clinic-blog" / "image-host.json"
 SKILL_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_MEDIA_LIBRARY = SKILL_DIR / "assets" / "media-library.json"
-DEFAULT_CLOSING_LINKS_CONFIG = SKILL_DIR / "assets" / "goldhand-closing-links.json"
 PERSON_SCENE_PREFIX = "director-patient-"
 LOGO_DESCRIPTOR = re.compile(r"(?:로고|logo)", re.I)
 
@@ -338,143 +336,14 @@ def validate_person_media_policy(
         raise ValueError("실제 사진 정책 위반: " + " ".join(failures))
 
 
-def static_map_url(place: dict[str, object]) -> str:
-    marker = (
-        "color:0x11cc73|size:mid|"
-        f"pos:{place['longitude']} {place['latitude']}|"
-        "viewSizeRatio:0.7|type:d"
-    )
-    query = urllib.parse.urlencode(
-        {"caller": "smarteditor", "markers": marker, "w": 700, "h": 315, "scale": 2}
-    )
-    return f"https://simg.pstatic.net/static.map/v2/map/staticmap.bin?{query}"
-
-
-def json_attribute(value: object) -> str:
-    return html.escape(json.dumps(value, ensure_ascii=False, separators=(",", ":")), quote=True)
-
-
-def closing_links_markup(
-    config: dict[str, object] | None = None,
-    library: dict[str, object] | None = None,
-) -> str:
-    config = config or load_json_object(DEFAULT_CLOSING_LINKS_CONFIG)
-    blog = config.get("blog")
-    place = config.get("place")
-    if not isinstance(blog, dict) or not isinstance(place, dict):
-        raise ValueError("금손 고정 블로그 링크와 지도 설정이 없습니다.")
-    blog_url = str(blog.get("url", "")).strip()
-    map_url = str(place.get("url", "")).strip()
-    if not blog_url.startswith("https://blog.naver.com/goldhand7582_"):
-        raise ValueError("금손 공식 블로그 URL이 올바르지 않습니다.")
-    if not map_url.startswith("https://map.naver.com/"):
-        raise ValueError("금손 네이버 지도 URL이 올바르지 않습니다.")
-    indexed = media_by_id(library or load_json_object(DEFAULT_MEDIA_LIBRARY))
-    thumbnail_id = str(blog.get("thumbnailMediaId", "")).strip()
-    thumbnail = indexed.get(thumbnail_id)
-    if thumbnail is None or not is_approved_director_patient_photo(thumbnail):
-        raise ValueError("공식 블로그로 연결할 사진에는 승인된 원장 치료·상담 사진만 사용할 수 있습니다.")
-
-    blog_module_id = "SE-goldhand-official-blog-photo"
-    map_module_id = "SE-goldhand-naver-place"
-    thumbnail_url = str(thumbnail["url"])
-    thumbnail_width = int(thumbnail.get("width", 0) or 0)
-    thumbnail_height = int(thumbnail.get("height", 0) or 0)
-    thumbnail_size = int(thumbnail.get("sizeBytes", 0) or 0)
-    link_data = {
-        "id": blog_module_id,
-        "src": thumbnail_url,
-        "originalWidth": str(thumbnail_width),
-        "originalHeight": str(thumbnail_height),
-        "linkUse": "true",
-        "link": blog_url,
-        "fileSize": str(thumbnail_size),
-    }
-    blog_module = {
-        "type": "v2_image",
-        "id": blog_module_id,
-        "data": {"ctype": "image", "ai": "false", "fileSize": str(thumbnail_size)},
-    }
-    map_data = {
-        "eventTarget": "placeDesc",
-        "placeId": str(place.get("placeId", "")),
-        "searchEngine": str(place.get("searchEngine", "naver")),
-        "searchType": str(place.get("searchType", "s")),
-        "name": str(place.get("name", "")),
-        "address": str(place.get("address", "")),
-        "latitude": str(place.get("latitude", "")),
-        "longitude": str(place.get("longitude", "")),
-        "tel": str(place.get("telephone", "")),
-    }
-    map_module = {
-        "type": "v2_map",
-        "id": map_module_id,
-        "data": {
-            "layout": "default",
-            "searchEngine": str(place.get("searchEngine", "naver")),
-            "places": [
-                {
-                    "placeId": str(place.get("placeId", "")),
-                    "name": str(place.get("name", "")),
-                    "address": str(place.get("address", "")),
-                    "latlng": {
-                        "@ctype": "position",
-                        "latitude": float(place.get("latitude", 0)),
-                        "longitude": float(place.get("longitude", 0)),
-                    },
-                    "searchType": str(place.get("searchType", "s")),
-                    "tel": str(place.get("telephone", "")),
-                }
-            ],
-        },
-    }
-    e = lambda value: html.escape(str(value), quote=True)
-    map_image = static_map_url(place)
-    return f'''
-  <section data-goldhand-closing-links="true" data-fixed-order="official-blog-then-naver-map" style="width:100%;max-width:580px;margin:48px auto 0;text-align:center;">
-    <p data-preview-gap="true" aria-hidden="true" style="margin:0;text-align:center;color:transparent;">&#8288;</p>
-    <div class="se-component se-image se-l-default goldhand-blog-photo-link" id="{blog_module_id}" data-goldhand-photo-link="official-blog">
-      <div class="se-component-content se-component-content-fit">
-        <div class="se-section se-section-image se-l-default se-section-align-center">
-          <div class="se-module se-module-image">
-            <a href="{e(blog_url)}" class="se-module-image-link __se_image_link __se_link" target="_blank" rel="noopener noreferrer" data-linktype="img" data-linkdata="{json_attribute(link_data)}">
-              <img src="{e(thumbnail_url)}" data-reference-source-url="{e(thumbnail_url)}" class="se-image-resource goldhand-blog-photo-link__image" data-width="{thumbnail_width}" data-height="{thumbnail_height}" referrerpolicy="no-referrer" alt="금손한의원 박준희 원장 상담 사진" style="display:block;width:100%;height:auto;margin:0 auto;">
-            </a>
-          </div>
-        </div>
-      </div>
-      <script type="text/data" class="__se_module_data" data-module="{json_attribute(blog_module)}" data-module-v2="{json_attribute(blog_module)}"></script>
-    </div>
-    <p data-preview-gap="true" aria-hidden="true" style="margin:0;text-align:center;color:transparent;">&#8288;</p>
-    <div class="se-component se-placesMap se-l-default" id="{map_module_id}" data-place-id="{e(place.get('placeId', ''))}">
-      <div class="se-component-content">
-        <div class="se-section se-section-placesMap se-section-align-center se-l-default">
-          <div class="se-module se-module-map-image">
-            <a href="{e(map_url)}" target="_blank" rel="noopener noreferrer" class="__se_link" data-linktype="map" data-linkdata="{json_attribute(map_data)}">
-              <img src="{e(map_image)}" alt="" class="se-map-image">
-            </a>
-          </div>
-          <div class="se-module se-module-map-text">
-            <a href="{e(map_url)}" target="_blank" rel="noopener noreferrer" class="se-map-info __se_link" data-linktype="map" data-linkdata="{json_attribute(map_data)}">
-              <strong class="se-map-title" style="display:block;text-align:center;">{e(place.get('name', '금손한의원'))}</strong>
-              <p class="se-map-address" style="margin:10px 0 0;text-align:center;">{e(place.get('address', ''))}</p>
-            </a>
-          </div>
-        </div>
-      </div>
-      <script type="text/data" class="__se_module_data" data-module="{json_attribute(map_module)}" data-module-v2="{json_attribute(map_module)}"></script>
-    </div>
-  </section>'''
-
-
-def ensure_closing_links(article: str) -> str:
+def strip_legacy_closing_links(article: str) -> str:
     opening = re.compile(
         r"<section\b(?=[^>]*\bdata-goldhand-closing-links\s*=\s*['\"]true['\"])[^>]*>",
         flags=re.I | re.S,
     )
     starts = list(opening.finditer(article))
     if len(starts) > 1:
-        raise ValueError("금손 고정 블로그 링크·지도 블록이 중복됐습니다.")
+        raise ValueError("이전 글말미 링크·지도 블록이 중복됐습니다.")
     cleaned = article
     if starts:
         depth = 0
@@ -488,22 +357,20 @@ def ensure_closing_links(article: str) -> str:
                     end = starts[0].start() + tag.end()
                     break
         if end is None:
-            raise ValueError("금손 고정 블로그 링크·지도 블록의 닫는 태그가 없습니다.")
+            raise ValueError("이전 글말미 링크·지도 블록의 닫는 태그가 없습니다.")
         cleaned = article[:starts[0].start()] + article[end:]
     if not re.search(r"</article>\s*$", cleaned, flags=re.I):
-        raise ValueError("금손 고정 링크·지도를 넣을 article 닫는 태그가 없습니다.")
-    return re.sub(
-        r"\s*</article>\s*$",
-        closing_links_markup() + "\n</article>",
-        cleaned,
-        count=1,
-        flags=re.I,
-    )
+        raise ValueError("article 닫는 태그가 없습니다.")
+    return cleaned
 
 
-def build_page(title: str, article: str, platform_name: str | None = None) -> str:
+def build_page(
+    title: str,
+    article: str,
+    platform_name: str | None = None,
+) -> str:
     validate_person_media_policy(article)
-    article = ensure_closing_links(article)
+    article = strip_legacy_closing_links(article)
     escaped_title = html.escape(title, quote=True)
     escaped_shortcut = html.escape(paste_shortcut(platform_name), quote=True)
     return f'''<!doctype html>
@@ -527,14 +394,6 @@ def build_page(title: str, article: str, platform_name: str | None = None) -> st
     .copy-button[data-state="error"] {{ background:#9E3636; border-color:#9E3636; }}
     #copy-status {{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }}
     #naver-copy-root {{ width:100%; max-width:580px; margin:0 auto; box-shadow:0 12px 34px rgba(0,0,0,.08); }}
-    .goldhand-closing-links, [data-goldhand-closing-links="true"] {{ width:100%; max-width:580px; margin:48px auto 0; text-align:center; }}
-    .goldhand-blog-photo-link .se-module-image-link, .se-map-info, .se-module-map-image > a {{ display:block; color:inherit; text-decoration:none; }}
-    .goldhand-blog-photo-link__image {{ display:block; width:100%; max-height:420px; object-fit:cover; object-position:center; }}
-    .se-placesMap {{ margin-top:28px; background:#FFFFFF; }}
-    .se-map-image {{ display:block; width:100%; height:auto; }}
-    .se-module-map-text {{ padding:22px; border:1px solid #E0E0E0; border-top:0; }}
-    .se-map-title {{ color:#333333; font-size:20px; line-height:1.5; font-weight:700; }}
-    .se-map-address {{ color:#777777; font-size:15px; line-height:1.65; }}
     @media (max-width:640px) {{
       body {{ padding:142px 0 0; background:#fff; }}
       .copy-toolbar {{ align-items:stretch; gap:9px; padding:11px 12px; flex-direction:column; }}
@@ -549,7 +408,7 @@ def build_page(title: str, article: str, platform_name: str | None = None) -> st
   <header class="copy-toolbar">
     <div class="copy-toolbar__text">
       <p class="copy-toolbar__title">금손한의원 네이버 블로그 원고</p>
-      <p class="copy-toolbar__help">네이버 본문에서 B·U가 켜져 있으면 먼저 끄기 → 버튼 클릭 → {escaped_shortcut}</p>
+      <p class="copy-toolbar__help">네이버 본문에서 굵게·밑줄·취소선이 켜져 있으면 먼저 끄기 → 버튼 클릭 → {escaped_shortcut}</p>
     </div>
     <button class="copy-button" id="copy-for-naver" type="button">네이버용 HTML 복사</button>
     <span id="copy-status" role="status" aria-live="polite"></span>
@@ -599,17 +458,108 @@ def build_page(title: str, article: str, platform_name: str | None = None) -> st
           element.removeAttribute('aria-hidden');
           element.style.removeProperty('text-decoration'); element.style.removeProperty('text-decoration-line');
         }});
-        const walker = document.createTreeWalker(copyRoot, NodeFilter.SHOW_TEXT); const nodes = [];
-        let node = walker.nextNode(); while (node) {{ nodes.push(node); node = walker.nextNode(); }}
-        nodes.forEach((textNode) => {{
-          if (!(textNode.nodeValue || '').trim()) return;
-          const parent = textNode.parentElement;
-          if (!parent || parent.closest('strong,b,u,.se-image,.se-placesMap')) return;
-          const run = document.createElement('span'); run.style.fontWeight = '400'; run.style.textDecoration = 'none';
-          parent.insertBefore(run, textNode); run.appendChild(textNode);
-        }});
         return copyRoot;
       }}
+      function nextSeId() {{ return `SE-${{crypto.randomUUID()}}`; }}
+      function escapeHtml(value) {{
+        const node=document.createElement('span'); node.textContent=String(value ?? ''); return node.innerHTML;
+      }}
+      function sourceInlineLines(source, base={{}}) {{
+        const lines=[[]];
+        const append=(text,state) => {{ if (text) lines[lines.length-1].push({{text,...state}}); }};
+        const walk=(node,state) => {{
+          if (node.nodeType===Node.TEXT_NODE) {{ append(node.nodeValue || '',state); return; }}
+          if (node.nodeType!==Node.ELEMENT_NODE) return;
+          const element=node;
+          if (element.tagName==='BR') {{ lines.push([]); return; }}
+          const style=element.style || {{}};
+          const next={{...state}};
+          if (element.matches('b,strong') || /^(?:600|700|800|900|bold)$/i.test(style.fontWeight || '')) next.bold=true;
+          if (element.matches('u') || element.hasAttribute('data-reference-underline-role')) next.underline=true;
+          if (element.matches('i,em')) next.italic=true;
+          if (element.matches('mark,[data-goldhand-emphasis="highlight"]') || style.backgroundColor) {{
+            next.highlight=true; next.background=style.backgroundColor || '#FFF2A8';
+          }}
+          if (element.matches('[data-goldhand-emphasis="red"]') || style.color) next.color=style.color || next.color;
+          [...element.childNodes].forEach((child)=>walk(child,next));
+        }};
+        [...source.childNodes].forEach((child)=>walk(child,base));
+        return lines;
+      }}
+      function nativeRun(run,fontSize,defaultColor) {{
+        const runId=nextSeId(); const classes=['se-ff-nanumgothic',`se-fs${{fontSize}}`];
+        if (run.highlight) classes.push('se-highlight'); classes.push('__se-node');
+        const styles=[`color: ${{run.color || defaultColor}};`];
+        if (run.highlight) styles.push(`background-color: ${{run.background || '#FFF2A8'}};`);
+        let content=escapeHtml(run.text);
+        if (run.bold) content=`<b>${{content}}</b>`;
+        if (run.underline) content=`<u>${{content}}</u>`;
+        if (run.italic) content=`<i>${{content}}</i>`;
+        if (run.highlight) content=`<mark>${{content}}</mark>`;
+        return `<span id="${{runId}}" class="${{classes.join(' ')}}" style="${{styles.join(' ')}}">${{content}}</span>`;
+      }}
+      function nativeParagraphs(source,options={{}}) {{
+        const sourceSize=parseInt(source.style?.fontSize || '',10);
+        const fontSize=options.fontSize || sourceSize || (source.matches('h2,h3,h4,h5,h6') ? 19 : 16);
+        const lineHeight=options.lineHeight || source.style?.lineHeight || (fontSize>=19 ? '1.8' : '1.9');
+        const defaultColor=options.color || source.style?.color || (fontSize>=19 ? 'rgb(0, 0, 0)' : 'rgb(77, 77, 77)');
+        const base={{bold:Boolean(options.bold || source.matches('h2,h3,h4,h5,h6'))}};
+        if (source.hasAttribute('data-naver-gap')) {{ base.bold=false; }}
+        return sourceInlineLines(source,base).map((runs)=>{{
+          const paragraphId=nextSeId();
+          const normalized=runs.length ? runs : [{{text:'\u2060'}}];
+          return `<p id="${{paragraphId}}" class="se-text-paragraph se-text-paragraph-align-center" style="line-height: ${{lineHeight}};">${{normalized.map((run)=>nativeRun(run,fontSize,defaultColor)).join('')}}</p>`;
+        }}).join('');
+      }}
+      function nativeTextComponent(source,options={{}}) {{
+        const compId=nextSeId(); const moduleId=nextSeId();
+        return `<div class="se-component se-text se-l-default" id="${{compId}}" data-compid="${{compId}}" data-a11y-title="본문"><div class="se-component-content"><div class="se-drop-indicator" data-unitid="" data-compid="${{compId}}" data-direction="top"><div class="se-section se-section-text se-l-default"><div id="${{moduleId}}" class="se-module se-module-text __se-unit">${{nativeParagraphs(source,options)}}</div></div></div></div></div>`;
+      }}
+      function nativeQuotationComponent(source) {{
+        const compId=nextSeId(), quoteModule=nextSeId(), quoteParagraph=nextSeId(), quoteRun=nextSeId();
+        const citeModule=nextSeId(), citeParagraph=nextSeId(), citeRun=nextSeId();
+        const text=escapeHtml(source.textContent.trim());
+        return `<div class="se-component se-quotation se-l-default" id="${{compId}}" data-compid="${{compId}}" data-a11y-title="인용구"><button class="se-component-edge-button se-component-edge-button-top __edge-area" type="button" tab-index="-1" data-compid="${{compId}}" data-direction="top"></button><div class="se-component-content"><div class="__se-toolbar-slot __se-cursor-unrelated" style="display:none;"></div><div class="se-drop-indicator" data-unitid="" data-compid="${{compId}}" data-direction="top"><div class="se-section se-section-quotation se-l-default se-section-align-center __se-unit"><div class="se-quotation-container"><div id="${{quoteModule}}" class="se-module se-module-text __se-unit se-quote"><p id="${{quoteParagraph}}" class="se-text-paragraph se-text-paragraph-align-center" style="line-height:1.8;"><span id="${{quoteRun}}" class="se-ff-nanummyeongjo se-fs19 __se-node" style="color:rgb(0, 0, 0);"><i>${{text}}</i></span></p></div><div id="${{citeModule}}" class="se-module se-module-text __se-unit se-is-empty se-cite"><p id="${{citeParagraph}}" class="se-text-paragraph se-text-paragraph-align-center" style="line-height:1.5;"><span id="${{citeRun}}" class="se-ff-nanumgothic se-fs13 __se-node" style="color:rgb(119, 119, 119);"></span><span class="se-placeholder __se_placeholder se-ff-nanumgothic se-fs13">출처 입력</span></p></div></div></div></div></div></div>`;
+      }}
+      function nativeDividerComponent() {{
+        const compId=nextSeId();
+        return `<div class="se-component se-horizontalLine se-l-line1" id="${{compId}}" data-compid="${{compId}}" data-a11y-title="구분선"><button class="se-component-edge-button se-component-edge-button-top __edge-area" type="button" tab-index="-1" data-compid="${{compId}}" data-direction="top"></button><div class="se-component-content"><div class="se-drop-indicator" data-unitid="" data-compid="${{compId}}" data-direction="top"><div draggable="true" class="se-section se-section-horizontalLine se-l-line1 se-section-align-center"><div class="se-module se-module-horizontalLine __se-unit"><span class="se-hr-invisible"></span><hr class="se-hr"><div class="__se-toolbar-slot __se-cursor-unrelated" style="display:none;"></div></div></div></div></div></div>`;
+      }}
+      function nativeImageComponent(source) {{
+        const image=source.matches('img') ? source : source.querySelector('img'); if (!image) return '';
+        const compId=nextSeId(), captionId=nextSeId(), paragraphId=nextSeId(), runId=nextSeId();
+        const src=escapeHtml(image.currentSrc || image.src), alt=escapeHtml(image.alt || '');
+        return `<div class="se-component se-image se-l-default" id="${{compId}}" data-compid="${{compId}}" data-a11y-title="사진"><button class="se-component-edge-button se-component-edge-button-top __edge-area" type="button" tab-index="-1" data-compid="${{compId}}" data-direction="top"></button><div class="se-component-content se-component-content-fit"><div class="se-drop-indicator" data-unitid="" data-compid="${{compId}}" data-direction="top"><div class="se-section se-section-image se-l-default se-section-align-center"><div id="${{compId}}" class="se-module se-module-image __se-unit"><div class="se-drop-indicator" data-unitid="${{compId}}" data-compid="" data-direction="top">${{String.fromCharCode(60)}}img src="${{src}}" alt="${{alt}}" class="se-image-resource" width="580" referrerpolicy="no-referrer"></div><button type="button" class="se-image-delete-button"><span class="se-blind">사진 삭제</span></button><div class="__se-toolbar-slot __se-cursor-unrelated" style="display:none;"></div></div><div id="${{captionId}}" class="se-module se-module-text __se-unit se-is-empty se-caption"><p id="${{paragraphId}}" class="se-text-paragraph se-text-paragraph-align-center" style="line-height:1.5;"><span id="${{runId}}" class="se-ff-nanumgothic se-fs13 __se-node" style="color:rgb(85, 85, 85);"></span><span class="se-placeholder __se_placeholder se-ff-nanumgothic se-fs13">사진 설명을 입력하세요.</span></p><div class="__se-toolbar-slot __se-cursor-unrelated" style="display:none;"></div></div></div></div></div></div>`;
+      }}
+      function nativeTableComponent(source) {{
+        const compId=nextSeId(); const rows=[...source.querySelectorAll('tr')];
+        const rowsHtml=rows.map((row)=>{{
+          const rowId=nextSeId(); const cells=[...row.children].filter((cell)=>cell.matches('td,th'));
+          return `<tr class="se-tr" id="${{rowId}}">${{cells.map((cell)=>{{
+            const cellId=nextSeId(), moduleId=nextSeId();
+            const width=cell.style.width || `${{100/Math.max(cells.length,1)}}%`;
+            const height=cell.style.height || (source.getAttribute('data-native-table-purpose')==='clinic-info' ? '64px' : '40px');
+            const background=cell.style.backgroundColor ? ` background-color:${{cell.style.backgroundColor}};` : '';
+            const cellStyle=`width:${{width}}; height:${{height}};${{background}} border:1px solid rgb(214, 214, 214);`;
+            return `<td id="${{cellId}}" colspan="${{cell.colSpan || 1}}" rowspan="${{cell.rowSpan || 1}}" class="__se-unit se-cell" style="${{cellStyle}}"><div id="${{moduleId}}" class="se-module se-module-text">${{nativeParagraphs(cell,{{fontSize:15,lineHeight:'1.6',color:cell.style.color || 'rgb(77, 77, 77)',bold:/^(?:600|700|800|900|bold)$/i.test(cell.style.fontWeight || '')}})}}</div></td>`;
+          }}).join('')}}</tr>`;
+        }}).join('');
+        return `<div class="se-component se-table se-l-default" id="${{compId}}" data-compid="${{compId}}" data-a11y-title="표"><button class="se-component-edge-button se-component-edge-button-top __edge-area" type="button" tab-index="-1" data-compid="${{compId}}" data-direction="top"></button><div class="se-component-content"><div class="se-drop-indicator" data-unitid="" data-compid="${{compId}}" data-direction="top"><div class="se-section se-section-table se-l-default se-section-align-center" style="width:100%;"><div class="__se-toolbar-slot __se-cursor-unrelated" style="display:none;"></div><div class="se-table-container"><table class="se-table-content" style="border-width:medium;border-style:none;border-color:currentcolor;border-collapse:collapse;"><tbody>${{rowsHtml}}</tbody></table></div></div></div></div></div>`;
+      }}
+      function nativeComponentsFromNode(node) {{
+        if (node.nodeType!==Node.ELEMENT_NODE) return '';
+        const element=node;
+        if (element.matches('script.__se_module_data')) return element.outerHTML;
+        if (element.matches('.se-component.se-oglink,.se-component.se-placesMap')) return element.outerHTML;
+        if (element.matches('blockquote')) return nativeQuotationComponent(element);
+        if (element.matches('p,h2,h3,h4,h5,h6')) return nativeTextComponent(element);
+        if (element.matches('hr')) return nativeDividerComponent();
+        if (element.matches('table')) return nativeTableComponent(element);
+        if (element.matches('figure,img')) return nativeImageComponent(element);
+        if (element.matches('script,style,button')) return '';
+        return [...element.childNodes].map(nativeComponentsFromNode).join('');
+      }}
+      function prepareNativeNaverHtml(copyRoot) {{ return [...copyRoot.childNodes].map(nativeComponentsFromNode).join(''); }}
       function copyRenderedSelection(copyRoot) {{
         copyRoot.style.position='fixed'; copyRoot.style.left='-100000px'; copyRoot.style.top='0'; copyRoot.style.width='580px';
         document.body.appendChild(copyRoot); const selection=window.getSelection(); const range=document.createRange();
@@ -617,21 +567,31 @@ def build_page(title: str, article: str, platform_name: str | None = None) -> st
         const copied=document.execCommand('copy'); selection.removeAllRanges(); copyRoot.remove(); return copied;
       }}
       button.addEventListener('click', async () => {{
-        const prepared = prepareNaverCopyRoot(); const htmlValue = prepared.innerHTML.trim();
+        const prepared = prepareNaverCopyRoot();
+        const nativeHtml = prepareNativeNaverHtml(prepared);
+        const inputBuffer = document.createElement('span');
+        inputBuffer.setAttribute('data-input-buffer', `INPUT_BUFFER_DATA;${{encodeURIComponent(navigator.userAgent)}};blog.naver.com`);
+        const htmlValue = `<meta charset="utf-8">${{inputBuffer.outerHTML}}${{nativeHtml}}`;
         const plainValue = prepared.innerText.replaceAll('\\u00a0','').replaceAll('\\u2060','').replace(/\\n{{3,}}/g,'\\n\\n').trim();
+        if (window.location.protocol === 'file:') {{
+          if (copyRenderedSelection(prepared)) setState('done','복사 완료 · 굵게·밑줄·취소선 확인 후 {escaped_shortcut}');
+          else setState('error','복사 실패 · 클립보드가 바뀌지 않았습니다');
+          return;
+        }}
         try {{
           if (navigator.clipboard?.write && window.ClipboardItem) {{
             await navigator.clipboard.write([new ClipboardItem({{'text/html':new Blob([htmlValue],{{type:'text/html'}}),'text/plain':new Blob([plainValue],{{type:'text/plain'}})}})]);
           }} else if (!copyRenderedSelection(prepared)) throw new Error('rich-copy-unavailable');
-          setState('done','복사 완료 · B·U 확인 후 {escaped_shortcut}');
+          setState('done','복사 완료 · 굵게·밑줄·취소선 확인 후 {escaped_shortcut}');
         }} catch (error) {{
-          try {{ if (!copyRenderedSelection(prepareNaverCopyRoot())) throw error; setState('done','복사 완료 · B·U 확인 후 {escaped_shortcut}'); }}
+          try {{ if (!copyRenderedSelection(prepareNaverCopyRoot())) throw error; setState('done','복사 완료 · 굵게·밑줄·취소선 확인 후 {escaped_shortcut}'); }}
           catch {{ setState('error','복사 차단됨 · 브라우저 권한 확인'); }}
         }}
       }});
       window.__goldhandCopyPreview = () => {{
         const prepared=prepareNaverCopyRoot();
-        return {{html:prepared.innerHTML, plain:prepared.innerText, gaps:prepared.querySelectorAll('[data-naver-gap="true"]').length, images:prepared.querySelectorAll('img').length, photoLinks:prepared.querySelectorAll('.goldhand-blog-photo-link a[href="https://blog.naver.com/goldhand7582_"] img').length, maps:prepared.querySelectorAll('.se-placesMap').length, nativeModules:prepared.querySelectorAll('script.__se_module_data').length}};
+        const nativeHtml=prepareNativeNaverHtml(prepared); const template=document.createElement('template'); template.innerHTML=nativeHtml;
+        return {{html:nativeHtml, plain:prepared.innerText, gaps:prepared.querySelectorAll('[data-naver-gap="true"]').length, images:template.content.querySelectorAll('.se-image').length, relatedLinks:template.content.querySelectorAll('.se-oglink[data-linktype="oglink"]').length, maps:template.content.querySelectorAll('.se-placesMap').length, nativeModules:template.content.querySelectorAll('script.__se_module_data[data-module-v2]').length, nativeComponents:template.content.querySelectorAll('.se-component').length, inputBuffer:true, requiresNativeFinisher:false}};
       }};
     }})();
   </script>

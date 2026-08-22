@@ -28,7 +28,7 @@
   data-editorial-mode="close-adaptation"
   data-editorial-master-id="BM224231647991"
   data-editorial-reference-source="https://blog.naver.com/beomeo_sm/224231647991"
-  data-editorial-source-role="title-tone-content-sequence-only"
+  data-editorial-source-role="editorial-reasoning-content-flow-and-expression-principles"
   data-goldhand-design-system="goldhand-naver-native-v4"
   style="width:100%;max-width:580px;margin:0 auto;color:#4D4D4D;">
   <blockquote
@@ -75,8 +75,8 @@
 - `clinic-info` 정확히 1개: 마지막 contact 역할
 - `credential` 정확히 1개: 1열 “금손한의원 소개” 골드 제목 + 고정 가치입증 6행. 도입의 `solution-preview`가 끝난 직후이자 첫 정보 본문 구분선·소제목보다 앞에 배치
 - 셀에서만 너비·높이·배경색·테두리·글자색·정렬·글자 크기·굵기·행간·세로 정렬·줄바꿈을 사용
-- 세 표 모두 100% 너비, 붙은 회색 구분선, 가로·세로 중앙 정렬
-- `clinic-info`의 모든 셀은 `width:50%;height:64px;line-height:1.8;word-break:keep-all`로 좌우 같은 폭과 중앙 가독성을 고정
+- 모든 표는 100% 너비, 붙은 회색 구분선, 가로·세로 중앙 정렬
+- `clinic-hours`는 `요일 / 진료시간 / 비고` 3열과 `24% / 38% / 38%` 폭을 사용하고, `clinic-info`의 모든 셀은 `width:100%;height:64px;line-height:1.8;word-break:keep-all`로 한 행씩 적층해 중앙 가독성을 고정
 - 표의 정보는 산문과 중복하지 않음
 
 금지: `data-goldhand-box`, 1행×1열 가짜 표, 표 밖 `border`, `border-radius`, `box-shadow`, 배경 이미지, 표 셀 밖의 배경색.
@@ -156,17 +156,11 @@ GPT Image 1~3장과 별도로 실제 금손한의원 사진을 매 글 6~12장 �
 
 실제 사진도 그림이 설명하는 문단 바로 뒤에 한 장씩 배치한다. 내장 실제 사진과 GPT 이미지를 서로 연속해서 붙이거나 마지막에 사진 모음처럼 두지 않는다. `금손한의원 건물 외부`, `금손한의원에서 사용하는 환제`, `진료 모습`, `AI 생성 이미지`처럼 이미지 아래에 보이는 캡션·출처·장면 이름은 어떤 경우에도 쓰지 않는다. 장면 설명은 `alt`와 내부 검수용 `data-*`에만 둔다.
 
-## 고정 글말미 블로그 링크·네이버 지도
+## 글말미 종료 계약
 
-모든 글의 `clinic-info` 운영정보 표 다음이자 article의 맨 마지막에는 `assets/goldhand-closing-links.json`으로 고정한 묶음을 정확히 한 번 둔다.
+모든 글은 `clinic-info` 운영정보 표에서 끝낸다. 그 뒤에는 `<함께 보면 좋은 글>` 문구, 최신 블로그 글 링크·카드, 네이버 지도·장소 컴포넌트, 정적 자리표시자를 넣지 않는다.
 
-1. 금손 공식 블로그 사진 링크: `https://blog.naver.com/goldhand7582_`
-2. 설정에 지정된 승인 원장-환자 상담 사진 자체를 링크로 사용. 금손 로고·일반 네이버 로고·건물 사진 금지
-3. 네이버 플레이스: `https://map.naver.com/p/entry/place/1598180269`, place ID `1598180269`
-4. 공식 블로그 영역에는 사진만 보인다. 제목·소개·`blog.naver.com` 문구는 표시하지 않는다. 지도에는 정적 지도 미리보기와 장소 정보를 보이고 실제 플레이스 링크를 건다.
-5. 복사 본문에는 실제 `<a><img></a>` fallback과 빌더가 생성한 네이버 순정 `se-image`·`v2_image`, `se-placesMap`·`v2_map`, 그리고 두 개의 `script type="text/data" data-module-v2`를 함께 보존한다.
-6. `build_naver_copy_page.py`를 두 번 실행해도 중복되지 않도록 기존 고정 묶음을 제거하고 한 번만 다시 붙인다.
-7. 복사 미리보기 결과는 `photoLinks=1`, `maps=1`, `nativeModules=2`이며 보이는 블로그 링크 문구는 0개여야 한다. 고정 묶음 뒤에 다른 본문·사진·표가 나오면 실패다.
+`build_naver_copy_page.py`는 이전 버전 HTML을 다시 입력받았을 때 `data-goldhand-closing-links="true"`로 표시된 기존 하단 묶음만 제거한다. 제목·본문·이미지·표·강조·모바일 줄바꿈·복사 기능은 바꾸지 않는다. 복사 미리보기 결과는 `relatedLinks=0`, `maps=0`, `nativeModules=0`, `inputBuffer=true`, `requiresNativeFinisher=false`여야 한다.
 
 ## 사용자 소유 callilife 작품을 GPT Image로 재생성
 
